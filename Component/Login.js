@@ -33,7 +33,7 @@ const LoginScreen = () => {
       <Image source={require('../Images/snowe.png')} style={styles.backgroundImage}/>
       
       {/* Title */}
-      <Text style={styles.title}>Snowe</Text>
+      <Text style={styles.title}>Snowe1</Text>
       
       {/* Username Input */}
       <TextInput
