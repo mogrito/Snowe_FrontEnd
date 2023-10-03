@@ -4,7 +4,7 @@ import FeedListItem from './FeedListItem';
 
 // FeedList 컴포넌트는 주어진 로그 목록을 표시하고, 사용자가 페이지 바닥에 스크롤하면 이벤트를 처리합니다.
 // logs: 화면에 표시할 로그 목록
-// onScrolledToBottom: 바닥에 도달했을 때 호출할 함수..
+// onScrolledToBottom: 바닥에 도달했을 때 호출할 함수.!!.
 // ListHeaderComponent: FlatList의 헤더로 표시할 컴포넌트
 function FeedList({logs, onScrolledToBottom, ListHeaderComponent}) {
   const onScroll = e => {
