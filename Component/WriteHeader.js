@@ -61,7 +61,7 @@ function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
         {/* isEditing: 글 편집 중인지 여부 */}
         {/* onAskRemove: 삭제 버튼 클릭 시 호출할 함수 */}
         {isEditing && (
-          // 글 편집 중일 때 삭제 버튼
+          // 글 편집 중일 때 삭제 버튼 나타내기
           <TransparentCircleButton
             name="delete-forever"
             color="#ef5350"

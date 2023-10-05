@@ -1,17 +1,20 @@
-import React, {useContext, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { StyleSheet, View } from 'react-native';
 import FeedList from './FeedList';
 import FloatingWriteButton from './FloatingWriteButton';
+import LogContext from '../context/LogContext';
+import { FlatList } from 'react-native-web';
 
 function SocialView() {
   const [hidden, setHidden] = useState(false);
+  const {logs} = useContext(LogContext);
 
-  const onScrolledToBottom = isBottom => {
+  const onScrolledToBottom = (isBottom) => {
     if (hidden !== isBottom) {
       setHidden(isBottom);
     }
   };
-  //보기용 글
+
   const myLogs = [
     {
       id: '1',
@@ -24,7 +27,9 @@ function SocialView() {
 
   return (
     <View style={styles.block}>
-      <FeedList logs={myLogs} onScrolledToBottom={onScrolledToBottom} />
+      {/* 글 목록을 표시하는 FeedList 컴포넌트 */}
+      <FeedList logs={myLogs} onScrolledToBottom={onScrolledToBottom} /> 
+      {/* 글 작성 버튼을 표시하는 FloatingWriteButton 컴포넌트 */}
       <FloatingWriteButton hidden={hidden} />
     </View>
   );

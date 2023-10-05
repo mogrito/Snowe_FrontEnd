@@ -37,7 +37,7 @@ function FeedListItem({log}) {
 
   const navigation = useNavigation();
 
- // +버튼을 눌렀을 때 Write 화면으로 이동하는 함수
+ // 게시판에서 글을 눌렀을 때 Write 화면으로 이동하는 함수
   const onPress = () => {
     navigation.navigate('Write', {
       log,

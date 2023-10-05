@@ -7,27 +7,27 @@ import FeedListItem from './FeedListItem';
 // onScrolledToBottom: 바닥에 도달했을 때 호출할 함수.!!.
 // ListHeaderComponent: FlatList의 헤더로 표시할 컴포넌트
 function FeedList({logs, onScrolledToBottom, ListHeaderComponent}) {
-  const onScroll = e => {
-    if (!onScrolledToBottom) {
-      return;
-    }
+  // const onScroll = e => {
+  //   if (!onScrolledToBottom) {
+  //     return;
+  //   }
 
-    const {contentSize, layoutMeasurement, contentOffset} = e.nativeEvent;
+  //   const {contentSize, layoutMeasurement, contentOffset} = e.nativeEvent;
     
-    const distanceFromBottom =
-      contentSize.height - layoutMeasurement.height - contentOffset.y;
+  //   const distanceFromBottom =
+  //     contentSize.height - layoutMeasurement.height - contentOffset.y;
 
-    if (
-      contentSize.height > layoutMeasurement.height &&
-      distanceFromBottom < 72
-    ) {
-      // console.log('바닥과 가까워요.');
-      onScrolledToBottom(true);
-    } else {
-      // console.log('바닥과 멀어졌어요.');
-      onScrolledToBottom(false);
-    }
-  };
+  //   if (
+  //     contentSize.height > layoutMeasurement.height &&
+  //     distanceFromBottom < 72
+  //   ) {
+  //     // console.log('바닥과 가까워요.');
+  //     onScrolledToBottom(true);
+  //   } else {
+  //     // console.log('바닥과 멀어졌어요.');
+  //     onScrolledToBottom(false);
+  //   }
+  // };
 
   return (
     <FlatList
@@ -36,7 +36,7 @@ function FeedList({logs, onScrolledToBottom, ListHeaderComponent}) {
       renderItem={({item}) => <FeedListItem log={item} />}
       keyExtractor={log => log.id}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
-      onScroll={onScroll}
+      // onScroll={onScroll}
       ListHeaderComponent={ListHeaderComponent}
     />
   );
