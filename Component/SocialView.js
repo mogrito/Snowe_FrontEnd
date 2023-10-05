@@ -17,7 +17,7 @@ function SocialView() {
 
   const myLogs = [
     {
-      id: '111',
+      id: '111111',
       title: '내 첫 번째 글',
       body: '이것은 내 첫 번째 글입니다.',
       date: '2023-10-03T12:00:00Z',
