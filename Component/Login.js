@@ -20,7 +20,7 @@ const LoginScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Load the custom font asynchronously
+    
     async function loadCustomFont() {
       await Font.loadAsync({
         DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'), // 폰트 경로를 업데이트하세요
@@ -32,14 +32,27 @@ const LoginScreen = () => {
   }, []);
   
 
-  const handleLogin = () => {
-    if (username === 'user' && password === '1234') {
-      // Successful login, you can navigate to another screen here
-      alert('Login successful!');
-      navigation.navigate('MainView');
-    } else {
-      // Failed login, show an error message
-      alert('Invalid username or password');
+  const handleLogin = async() => {
+    try {
+      const response = await fetch('http://localhost:8080/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', //
+        },
+        body: `loginId=${username}&password=${password}`, //
+      });
+  
+      if (response.ok) {
+        // 로그인 성공
+        alert('Login successful!');
+        navigation.navigate('MainView')
+      } else {
+        // 로그인 실패
+        alert('Invalid username or password');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('아이디 또는 비밀번호를 입력해주세요');
     }
   };
 
@@ -82,11 +95,11 @@ const LoginScreen = () => {
           <Text style={styles.sign}>회원이 아니신가요?</Text>
         </TouchableOpacity>
         <View style={{ width: 10 }} />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity  onPress={() => navigation.navigate('ForgetId')} style={styles.button}>
           <Text style={styles.forgotPassword}>아이디 찾기</Text>
         </TouchableOpacity>
         <View style={{ width: 10 }} />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity  onPress={() => navigation.navigate('ForgetPassword')} style={styles.button}>
           <Text style={styles.forgotId}>비밀번호 찾기</Text>
         </TouchableOpacity>
       </View>
