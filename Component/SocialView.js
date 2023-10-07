@@ -6,7 +6,7 @@ import FloatingWriteButton from './FloatingWriteButton';
 function SocialView() {
   const [hidden, setHidden] = useState(false);
   const [boardList, setBoardList] = useState([]);
-  // 컴포넌트 마운트시 조회함수 실행 
+  // 컴포넌트 마운트시 조s회함수 실행 
   useEffect(() => {
     fetchBoardData();
   }, []); 
