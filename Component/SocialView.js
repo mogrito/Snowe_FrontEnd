@@ -37,7 +37,7 @@ function SocialView() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>게시판1</Text>
+      <Text style={styles.header}>게시판</Text>
       <FlatList
         data={boardList}
         keyExtractor={(item) => item.boardId.toString()}
