@@ -6,12 +6,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import LoginScreen from './Component/Login';
 import MainScreen from './Component/MainView';
-import SocialScreen from './Component/SocialView';
 import FirstScreen from './Component/FirstView';
 import RegisterScreen from './Component/Register';
 import ForgotIdScreen from './Component/ForgetId';
 import ForgotPasswordScreen from './Component/ForgetPassword';
 import { CustomDrawerContent } from './Component/Drawer';
+import SocialView from './Component/SocialView';
 
 const Tab = createMaterialBottomTabNavigator();
 const RootStack = createStackNavigator();
@@ -33,7 +33,7 @@ export default function App() {
           <RootStack.Screen
             name="FirstView"
             component={FirstScreen}
-            options={{ headerShown: false }}
+            options={{ headerShown: false }}r
           />
         ) : (
           <RootStack.Screen
@@ -112,7 +112,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="SocialView"
-        component={SocialScreen}
+        component={SocialView}
         options={{
           tabBarLabel: '게시글',
           tabBarIcon: ({ color }) => (

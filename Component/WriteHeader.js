@@ -73,7 +73,6 @@ function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
         <TransparentCircleButton
           name="check"
           color="#009688"
-          
           // onSave: 저장 버튼 클릭 시 호출할 함수
           onPress={onSave}
         />
