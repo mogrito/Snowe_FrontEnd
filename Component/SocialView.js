@@ -34,10 +34,10 @@ function SocialView() {
     navigation.navigate('PostView', { title: board.title, content: board.content, writer: board.writer });
   };
 
-  
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>게시판</Text>
+      <Text style={styles.header}>게시판1</Text>
       <FlatList
         data={boardList}
         keyExtractor={(item) => item.boardId.toString()}
