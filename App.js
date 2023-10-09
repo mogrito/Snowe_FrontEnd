@@ -12,6 +12,8 @@ import ForgotIdScreen from './Component/ForgetId';
 import ForgotPasswordScreen from './Component/ForgetPassword';
 import { CustomDrawerContent } from './Component/Drawer';
 import SocialView from './Component/SocialView';
+import TeacherReserveTestScreen from './Component/TeacherReserveTest';
+
 
 const Tab = createMaterialBottomTabNavigator();
 const RootStack = createStackNavigator();
@@ -110,6 +112,20 @@ function TabNavigator() {
           ),
         }}
       />
+       <Tab.Screen
+        name="TeacherReserveTest"
+        component={TeacherReserveTestScreen}
+        options={{
+          tabBarLabel: '강사 예약',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="clock"
+              color={color}
+              size={26}
+            />
+          ),
+        }}
+      /> 
       <Tab.Screen
         name="SocialView"
         component={SocialView}
@@ -137,7 +153,8 @@ function TabNavigator() {
             />
           ),
         }}
-      /> 
+      />
+      
     </Tab.Navigator>
   );
 }

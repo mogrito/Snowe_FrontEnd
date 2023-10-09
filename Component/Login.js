@@ -36,12 +36,23 @@ const LoginScreen = () => {
     try {
       const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
+        dataType: 'json', 
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded', //
         },
         body: `loginId=${username}&password=${password}`, //
-      });
-  
+      })
+
+      // // 응답데이터 json 처리
+      // .then((res)=>res.json())
+      // // json -> 스트링으로 처리 후 불러올 시 다시 JSON 처리 
+      // .then((data) => {
+      //   sessionStorage.setItem("session",JSON.stringify(data));
+      //   console.log(JSON.parse(sessionStorage.getItem("session")));
+      // });
+
+
       if (response.ok) {
         // 로그인 성공
         alert('Login successful!');
@@ -52,7 +63,7 @@ const LoginScreen = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('아이디 또는 비밀번호를 입력해주세요');
+      alert('An error occurred while logging in.');
     }
   };
 

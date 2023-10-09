@@ -15,17 +15,15 @@ function SocialView() {
   }, []);
 
   async function fetchBoardData() {
-    try {
-              
-      const response = await fetch('http://localhost:8080/board/list');
-      const boardData = await response.json();
-      console.log(boardData);
-      // alert(boardData[0].title);
-      setBoardList(boardData);
-    } catch (error) {
-      console.error(error);
-      alert('안됨');
-    }
+    fetch('http://localhost:8080/board/list')
+  .then(response => response.json())
+  .then(boardData => {
+    console.log(boardData);
+    setBoardList(boardData);
+  })
+  .catch(error => {
+    console.error(error);
+  });
   }
 
   const onBoardPress = (board) => {
