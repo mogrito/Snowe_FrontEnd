@@ -10,9 +10,12 @@ import FirstScreen from './Component/FirstView';
 import RegisterScreen from './Component/Register';
 import ForgotIdScreen from './Component/ForgetId';
 import ForgotPasswordScreen from './Component/ForgetPassword';
+import WriteScreen from './Component/WriteScreen';
+import PostView from './Component/PostView';
 import { CustomDrawerContent } from './Component/Drawer';
 import SocialView from './Component/SocialView';
 import TeacherReserveTestScreen from './Component/TeacherReserveTest';
+import { LogContextProvider } from './context/LogContext';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -30,6 +33,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
+      <LogContextProvider>
       <RootStack.Navigator>
         {showFirstScreen ? (
           <RootStack.Screen
@@ -65,7 +69,18 @@ export default function App() {
           component={ForgotPasswordScreen}
           options={{ headerShown: false }}
         />
+        <RootStack.Screen
+          name="Write"
+          component={WriteScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="PostView"
+          component={PostView}
+          options={{ headerShown: false }}
+        />
       </RootStack.Navigator>
+      </LogContextProvider>
     </NavigationContainer>
   );
 }

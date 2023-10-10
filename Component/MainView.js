@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
   calendar: {
     width: windowWidth * 0.9,
     marginTop: 20,
+    borderRadius: 10,
     
   },
   background: {
@@ -165,6 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'skyblue',
     justifyContent: 'center', 
     alignItems: 'center', 
+    borderRadius: 10,
   },
   weatherText: {
     textAlign: 'center', 
