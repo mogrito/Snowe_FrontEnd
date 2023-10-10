@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Button } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const teacherData = [
-  { id: '1', name: 'Teacher 1', subject: 'Math' },
-  { id: '2', name: 'Teacher 2', subject: 'Science' },
-  { id: '3', name: 'Teacher 3', subject: 'History' },
-  // 추가 강사 데이터를 필요에 따라 추가하세요.
+  { id: '1', name: 'Teacher 1', subject: '수학' },
+  { id: '2', name: 'Teacher 2', subject: '과학' },
+  { id: '3', name: 'Teacher 3', subject: '역사' },
+  // 필요에 따라 추가 강사 데이터를 더 추가하세요.
 ];
 
 function TeacherReserveTestScreen() {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableTimes, setAvailableTimes] = useState([]);
 
@@ -25,13 +23,6 @@ function TeacherReserveTestScreen() {
   const handleDatePress = (date) => {
     setSelectedDate(date.dateString);
     setAvailableTimes(generateAvailableTimes());
-    setTimePickerVisible(true);
-  };
-
-  const handleTimeConfirm = (time) => {
-    // 선택한 시간을 처리하는 로직을 추가하세요.
-    // 예: 예약을 저장하거나 다른 작업을 수행합니다.
-    setTimePickerVisible(false);
   };
 
   const closeModal = () => {
@@ -41,7 +32,7 @@ function TeacherReserveTestScreen() {
     setAvailableTimes([]);
   };
 
-  // 가상의 시간 목록 생성 (9:00부터 21:00까지 30분 간격)
+  // 9:00부터 21:00까지 30분 간격으로 가상의 시간 목록 생성
   const generateAvailableTimes = () => {
     const times = [];
     let hour = 9;
@@ -94,7 +85,7 @@ function TeacherReserveTestScreen() {
             // 예: markedDates, onDayPress 등
           />
 
-          {availableTimes.length > 0 && (
+          {selectedDate && availableTimes.length > 0 && (
             <View style={styles.timeButtonsContainer}>
               {availableTimes.map((time, index) => (
                 <TouchableOpacity
@@ -109,13 +100,6 @@ function TeacherReserveTestScreen() {
           )}
 
           <Button title="닫기" onPress={closeModal} />
-
-          <DateTimePickerModal
-            isVisible={isTimePickerVisible}
-            mode="time"
-            onConfirm={handleTimeConfirm}
-            onCancel={() => setTimePickerVisible(false)}
-          />
         </View>
       </Modal>
     </View>
@@ -178,5 +162,6 @@ const styles = StyleSheet.create({
 });
 
 export default TeacherReserveTestScreen;
+
 
 
