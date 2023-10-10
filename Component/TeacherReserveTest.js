@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Button,Image,Dimensions } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Button, Image, Dimensions } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -14,47 +13,45 @@ const teacherData = [
 
 function TeacherReserveTestScreen() {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isCalendarModalVisible, setCalendarModalVisible] = useState(false);
+  const [isTimeModalVisible, setTimeModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableTimes, setAvailableTimes] = useState([]);
 
   const handleTeacherPress = (teacher) => {
     setSelectedTeacher(teacher);
-    setModalVisible(true);
+    setCalendarModalVisible(true);
   };
 
   const handleDatePress = (date) => {
     setSelectedDate(date.dateString);
     setAvailableTimes(generateAvailableTimes());
-    setModalVisible(true); 
+    setCalendarModalVisible(false); // 달력 모달 닫기
+    setTimeModalVisible(true); // 시간 모달 열기
   };
 
   const handleTimeConfirm = (time) => {
     // 선택한 시간을 처리하는 로직을 추가하세요.
     // 예: 예약을 저장하거나 다른 작업을 수행합니다.
-    setModalVisible(false);
+    setTimeModalVisible(false); // 시간 모달 닫기
   };
 
   const closeModal = () => {
-    setModalVisible(false);
+    setCalendarModalVisible(false); // 달력 모달 닫기
+    setTimeModalVisible(false); // 시간 모달 닫기
     setSelectedTeacher(null);
     setSelectedDate(null);
     setAvailableTimes([]);
   };
 
-  // 가상의 시간 목록 생성 (9:00부터 20:30까지 30분 간격)
+  // 가상의 시간 목록 생성 (9:00부터 20:30까지 1시간 간격)
   const generateAvailableTimes = () => {
     const times = [];
     let hour = 9;
-    let minute = 0;
 
-    while (hour < 21 || (hour === 21 && minute === 0)) {
-      times.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
-      minute += 30;
-      if (minute === 60) {
-        hour += 1;
-        minute = 0;
-      }
+    while (hour < 21) {
+      times.push(`${hour.toString().padStart(2, '0')}:00`);
+      hour += 1;
     }
 
     return times;
@@ -87,7 +84,7 @@ function TeacherReserveTestScreen() {
       </View>
 
       <Modal
-        visible={isModalVisible}
+        visible={isCalendarModalVisible}
         animationType="slide"
         transparent={false}
         onRequestClose={closeModal}
@@ -101,6 +98,18 @@ function TeacherReserveTestScreen() {
               marginTop: 20,
             }}
           />
+          <Button title="닫기" onPress={closeModal} />
+        </View>
+      </Modal>
+
+      <Modal
+        visible={isTimeModalVisible}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <Text style={styles.title}>{selectedTeacher?.name} 강사님</Text>
           {selectedDate && (
             <View style={styles.timeButtonsContainer}>
               {availableTimes.map((time, index) => (
@@ -143,7 +152,6 @@ const styles = StyleSheet.create({
   teacherName: {
     fontSize: 20,
     fontWeight: 'bold',
-    
   },
   teacherSubject: {
     fontSize: 16,
@@ -153,7 +161,6 @@ const styles = StyleSheet.create({
   },
   teacherList: {
     marginTop: 20,
-  
   },
   modalContainer: {
     flex: 1,
@@ -167,10 +174,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    
   },
   timeButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'skyblue',
     padding: 10,
     margin: 5, // 간격 조절
     borderRadius: 5,
