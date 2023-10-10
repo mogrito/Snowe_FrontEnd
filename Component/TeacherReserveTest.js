@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Button,Image,Dimensions } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 
+
+const windowWidth = Dimensions.get('window').width;
+
 const teacherData = [
-  { id: '1', name: 'Teacher 1', subject: '수학' },
-  { id: '2', name: 'Teacher 2', subject: '과학' },
-  { id: '3', name: 'Teacher 3', subject: '역사' },
-  // 필요에 따라 추가 강사 데이터를 더 추가하세요.
+  { id: '1', name: '원빈', subject: '스키', image: require('../Images/face.jpg') },
+  { id: '2', name: '주성', subject: '보드', image: require('../Images/face1.jpg') },
+  { id: '3', name: '정훈', subject: '스키+보드', image: require('../Images/face2.jpg') },
+  // Add image paths for other teachers as needed
 ];
 
 function TeacherReserveTestScreen() {
@@ -23,6 +26,13 @@ function TeacherReserveTestScreen() {
   const handleDatePress = (date) => {
     setSelectedDate(date.dateString);
     setAvailableTimes(generateAvailableTimes());
+    setModalVisible(true); 
+  };
+
+  const handleTimeConfirm = (time) => {
+    // 선택한 시간을 처리하는 로직을 추가하세요.
+    // 예: 예약을 저장하거나 다른 작업을 수행합니다.
+    setModalVisible(false);
   };
 
   const closeModal = () => {
@@ -32,13 +42,13 @@ function TeacherReserveTestScreen() {
     setAvailableTimes([]);
   };
 
-  // 9:00부터 21:00까지 30분 간격으로 가상의 시간 목록 생성
+  // 가상의 시간 목록 생성 (9:00부터 20:30까지 30분 간격)
   const generateAvailableTimes = () => {
     const times = [];
     let hour = 9;
     let minute = 0;
 
-    while (hour <= 21) {
+    while (hour < 21 || (hour === 21 && minute === 0)) {
       times.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
       minute += 30;
       if (minute === 60) {
@@ -62,8 +72,13 @@ function TeacherReserveTestScreen() {
               style={styles.teacherItem}
               onPress={() => handleTeacherPress(item)}
             >
-              <Text style={styles.teacherName}>{item.name}</Text>
-              <Text style={styles.teacherSubject}>{item.subject}</Text>
+              <View style={styles.teacherInfo}>
+                <Image source={item.image} style={styles.teacherImage} />
+                <View>
+                  <Text style={styles.teacherName}>{item.name}</Text>
+                  <Text style={styles.teacherSubject}>{item.subject}</Text>
+                </View>
+              </View>
             </TouchableOpacity>
           )}
           style={styles.teacherList}
@@ -81,11 +96,12 @@ function TeacherReserveTestScreen() {
           <Text style={styles.title}>{selectedTeacher?.name} 강사님</Text>
           <Calendar
             onDayPress={(day) => handleDatePress(day)}
-            // 달력 구성 및 속성 설정
-            // 예: markedDates, onDayPress 등
+            style={{
+              width: windowWidth * 0.9,
+              marginTop: 20,
+            }}
           />
-
-          {selectedDate && availableTimes.length > 0 && (
+          {selectedDate && (
             <View style={styles.timeButtonsContainer}>
               {availableTimes.map((time, index) => (
                 <TouchableOpacity
@@ -98,7 +114,6 @@ function TeacherReserveTestScreen() {
               ))}
             </View>
           )}
-
           <Button title="닫기" onPress={closeModal} />
         </View>
       </Modal>
@@ -128,13 +143,17 @@ const styles = StyleSheet.create({
   teacherName: {
     fontSize: 20,
     fontWeight: 'bold',
+    
   },
   teacherSubject: {
     fontSize: 16,
     color: 'gray',
+    marginLeft: 1,
+    marginTop: 5,
   },
   teacherList: {
     marginTop: 20,
+  
   },
   modalContainer: {
     flex: 1,
@@ -148,16 +167,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    
   },
   timeButton: {
     backgroundColor: 'blue',
     padding: 10,
-    margin: 5,
+    margin: 5, // 간격 조절
     borderRadius: 5,
+    width: 100, // 버튼 너비 조절
+    alignItems: 'center', // 수평 정렬
   },
   timeButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  teacherInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  teacherImage: {
+    width: 50, // Adjust the width as needed
+    height: 50, // Adjust the height as needed
+    borderRadius: 25, // Make it circular by setting borderRadius to half of width/height
+    marginRight: 10, // Add some space between the image and text
   },
 });
 
