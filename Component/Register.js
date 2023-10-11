@@ -24,6 +24,7 @@ const RegisterScreen = () => {
   const [gender, setGender] = useState(''); // 성별을 저장하는 변수
   const [fontLoaded, setFontLoaded] = useState(false);
   const [isUsernameValid, setIsUsernameValid] = useState(false); // 아이디 중복 확인 상태
+  const [isNicknameValid, setIsNicknameValid] = useState(false);  // 닉네임 중복 확인 상태
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -40,10 +41,12 @@ const RegisterScreen = () => {
   // 아이디 중복 변수
   const handleCheckUsername = async () => {
     try {
-      const response = await fetch('API_URL_HERE', {
-        method: 'POST',
+      const response = await fetch('http://localhost:8080/member-count', {
+        method: 'GET',
+        dataType: 'json', 
         headers: {
-          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded', //
         },
         body: JSON.stringify({
           username: username,
@@ -70,12 +73,53 @@ const RegisterScreen = () => {
     }
   };
 
+  const handleCheckNickname = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/member-nickname', {
+        method: 'GET',
+        dataType: 'json', 
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded', //
+        },
+        body: JSON.stringify({
+          nickname: nickname,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.exists) {
+          alert('이미 존재하는 아이디입니다.');
+          setIsNicknameValid(false);
+        } else {
+          alert('사용 가능한 아이디입니다.');
+          setIsNicknameValid(true);
+        }
+      } else {
+        alert('중복 확인에 실패했습니다.');
+        setIsNicknameValid(false);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('아이디를 입력해주세요');
+      setIsNicknameValid(false);
+    }
+  };
+
+
   const handleRegister = async () => {
     try {
       if (!isUsernameValid) {
         alert('아이디 중복 확인을 해주세요.');
         return;
       }
+
+      if (!isNicknameValid) {
+        alert('닉네임 중복 확인을 해주세요.');
+        return;
+      }
+
 
       if (!gender) {
         alert('성별을 선택해주세요.');
@@ -153,7 +197,7 @@ const RegisterScreen = () => {
           value={nickname}
           onChangeText={(text) => setNickname(text)}
         />
-        <TouchableOpacity style={styles.registerCheckButton} onPress={handleCheckUsername}>
+        <TouchableOpacity style={styles.registerCheckButton} onPress={handleCheckNickname}>
           <Text style={styles.registerButtonText}>중복체크</Text>
         </TouchableOpacity>
       </View>
