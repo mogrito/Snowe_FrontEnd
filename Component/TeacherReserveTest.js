@@ -8,7 +8,7 @@ const teacherData = [
   { id: '1', name: '원빈', subject: '스키', image: require('../Images/face.jpg') },
   { id: '2', name: '주성', subject: '보드', image: require('../Images/face1.jpg') },
   { id: '3', name: '정훈', subject: '스키+보드', image: require('../Images/face2.jpg') },
-  // Add image paths for other teachers as needed
+ 
 ];
 
 function TeacherReserveTestScreen() {
@@ -26,19 +26,19 @@ function TeacherReserveTestScreen() {
   const handleDatePress = (date) => {
     setSelectedDate(date.dateString);
     setAvailableTimes(generateAvailableTimes());
-    setCalendarModalVisible(false); // 달력 모달 닫기
-    setTimeModalVisible(true); // 시간 모달 열기
+    setCalendarModalVisible(false); 
+    setTimeModalVisible(true); 
   };
 
   const handleTimeConfirm = (time) => {
-    // 선택한 시간을 처리하는 로직을 추가하세요.
-    // 예: 예약을 저장하거나 다른 작업을 수행합니다.
-    setTimeModalVisible(false); // 시간 모달 닫기
+    // 선택한 시간을 처리하는 로직을 추가
+    // 예: 예약을 저장하거나 다른 작업을 수행
+    setTimeModalVisible(false); 
   };
 
   const closeModal = () => {
-    setCalendarModalVisible(false); // 달력 모달 닫기
-    setTimeModalVisible(false); // 시간 모달 닫기
+    setCalendarModalVisible(false); 
+    setTimeModalVisible(false); 
     setSelectedTeacher(null);
     setSelectedDate(null);
     setAvailableTimes([]);

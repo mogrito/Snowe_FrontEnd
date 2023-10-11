@@ -127,19 +127,20 @@ function MainScreen() {
         {/* 날씨 컴포넌트 */}
         {!isLoading && weatherData && weatherData.main && (
           <View style={styles.weatherContainer}>
+            <Text style={styles.weatherCity}>
+              {weatherData.name}
+            </Text>
             <MaterialCommunityIcons style={styles.weatherIcon}
               name={getWeatherIconName(weatherData.weather[0].main)}
               size={150}
               color="black"
             />
-            <Text style={styles.weatherText}>
-              도시: {weatherData.name}
+            <Text style={styles.weatherexp}>
+              {weatherData.weather[0].description}
             </Text>
-            <Text style={styles.weatherText}>
-              온도: {(weatherData.main.temp - 273.15).toFixed(0)}°C
-            </Text>
-            <Text style={styles.weatherText}>
-              날씨 설명: {weatherData.weather[0].description}
+
+            <Text style={styles.weatherTemp}>
+              {(weatherData.main.temp - 273.15).toFixed(0)}°C
             </Text>
           </View>
         )}
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.9,
     height: 300,
     marginBottom: 0,
-    backgroundColor: 'skyblue',
+    backgroundColor: 'white',
     justifyContent: 'center', 
     alignItems: 'center', 
     borderRadius: 10,
@@ -206,11 +207,26 @@ const styles = StyleSheet.create({
     fontSize: 18, 
   },
   weatherIcon: {
-    color: 'white',
-    
-
+    color: 'black',
 
   },
+  weatherCity: {
+    fontSize: 30,
+    fontWeight: '600'
+
+  },
+  weatherTemp: {
+    fontSize: 20,
+   
+
+  },
+  weatherexp: {
+    fontSize: 30,
+    marginBottom:10,
+    fontWeight: '600'
+
+  },
+
 
 });
 
