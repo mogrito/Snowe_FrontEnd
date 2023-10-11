@@ -8,12 +8,40 @@ import {
   ScrollView,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  FontAwesome
+  , MaterialIcons
+  , Ionicons
+  , Entypo
+  , AntDesign
+  , Feather
+  , Fontisto
+  , Octicons
+  , Zocial
+  , MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import * as Location from 'expo-location';
 
+
 const windowWidth = Dimensions.get('window').width;
+
+function getWeatherIconName(weatherCondition) {
+  switch (weatherCondition) {
+    case 'Clear':
+      return 'weather-sunny';
+    case 'Clouds':
+      return 'weather-cloudy';
+    case 'Rain':
+      return 'weather-rainy';
+    case 'Snow':
+      return 'weather-snowy';
+    case 'Haze':
+      return 'weather-hazy';
+    default:
+      return 'question';
+  }
+}
 
 function MainScreen() {
   const navigation = useNavigation();
@@ -97,16 +125,21 @@ function MainScreen() {
         {isLoading && <Text>Loading...</Text>}
 
         {/* 날씨 컴포넌트 */}
-        {!isLoading && weatherData && weatherData.main && ( 
+        {!isLoading && weatherData && weatherData.main && (
           <View style={styles.weatherContainer}>
+            <MaterialCommunityIcons style={styles.weatherIcon}
+              name={getWeatherIconName(weatherData.weather[0].main)}
+              size={150}
+              color="black"
+            />
             <Text style={styles.weatherText}>
               도시: {weatherData.name}
             </Text>
             <Text style={styles.weatherText}>
-              온도: {(weatherData.main.temp - 273.15).toFixed(0)}°C 
+              온도: {(weatherData.main.temp - 273.15).toFixed(0)}°C
             </Text>
             <Text style={styles.weatherText}>
-              날씨 설명: {weatherData.weather[0].description} 
+              날씨 설명: {weatherData.weather[0].description}
             </Text>
           </View>
         )}
@@ -161,7 +194,7 @@ const styles = StyleSheet.create({
   },
   weatherContainer: {
     width: windowWidth * 0.9,
-    height: 90,
+    height: 300,
     marginBottom: 0,
     backgroundColor: 'skyblue',
     justifyContent: 'center', 
@@ -171,6 +204,12 @@ const styles = StyleSheet.create({
   weatherText: {
     textAlign: 'center', 
     fontSize: 18, 
+  },
+  weatherIcon: {
+    color: 'white',
+    
+
+
   },
 
 });
