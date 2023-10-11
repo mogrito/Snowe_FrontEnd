@@ -73,6 +73,7 @@ const RegisterScreen = () => {
     }
   };
 
+    //닉네임 중복 변수 
   const handleCheckNickname = async () => {
     try {
       const response = await fetch('http://localhost:8080/member-nickname', {
@@ -90,10 +91,10 @@ const RegisterScreen = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.exists) {
-          alert('이미 존재하는 아이디입니다.');
+          alert('이미 존재하는 닉네임입니다.');
           setIsNicknameValid(false);
         } else {
-          alert('사용 가능한 아이디입니다.');
+          alert('사용 가능한 닉네임입니다.');
           setIsNicknameValid(true);
         }
       } else {
@@ -102,7 +103,7 @@ const RegisterScreen = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('아이디를 입력해주세요');
+      alert('닉네임을 입력해주세요');
       setIsNicknameValid(false);
     }
   };
