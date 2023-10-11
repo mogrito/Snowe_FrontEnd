@@ -173,7 +173,6 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="이메일"
-        secureTextEntry={true}
         value={email}
         onChangeText={(text) => setEmail(text)}
       />
