@@ -7,7 +7,8 @@ import { SafeAreaView } from 'react-native';
 function PostView({ route }) {
   const { title, content, writer } = route.params;
   const navigation = useNavigation();
-  const [comments, setComments] = useState([]); // 댓글 데이터를 관리하는 상태
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState('');
 
   const onGoBack = () => {
     navigation.pop();
@@ -21,56 +22,56 @@ function PostView({ route }) {
     });
   };
 
-  // 댓글 추가 함수
   const addComment = (comment) => {
     setComments([...comments, comment]);
   };
 
   return (
     <SafeAreaView>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: '#009688' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TransparentCircleButton
             onPress={onGoBack}
             name="arrow-back"
-            color="#424242"
+            color="#fff"
           />
         </View>
         <View>
-            <Text style={{ marginLeft: 8, fontSize: 20, textAlign: 'center' }}>{title}</Text>
+          <Text style={{ fontSize: 20, textAlign: 'center', color: '#fff' }}>{title}</Text>
         </View>
         <TransparentCircleButton
           onPress={handleEditPress}
           name="edit"
-          color="#009688"
+          color="#fff"
         />
       </View>
-      <Text style={{ textAlign: 'center' }}>{content}</Text>
-      <Text>{writer}</Text>
+      <Text style={{ textAlign: 'center', fontSize: 18, padding: 16 }}>{content}</Text>
+      <Text style={{ textAlign: 'center', fontSize: 14, color: '#555' }}>{writer}</Text>
 
-      {/* 댓글 입력란 */}
-      <TextInput
-        placeholder="댓글을 입력하세요"
-        onChangeText={(text) => setCommentText(text)}
-      />
-      <Button
-        title="댓글 남기기"
-        onPress={() => {
-          addComment(commentText);
-          setCommentText(''); // 입력란 초기화
-        }}
-      />
-
-      {/* 댓글 목록 */}
       <FlatList
         data={comments}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <View>
+          <View style={{ backgroundColor: '#f9f9f9', padding: 16, margin: 4, borderWidth: 1, borderColor: '#ddd', borderRadius: 5 }}>
             <Text>{item}</Text>
           </View>
         )}
       />
+
+      <View style={{ padding: 16, borderTopWidth: 1, borderTopColor: '#ddd' }}>
+        <TextInput
+          placeholder="댓글을 입력하세요"
+          onChangeText={(text) => setCommentText(text)}
+          style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 8, marginBottom: 8 }}
+        />
+        <Button
+          title="댓글 남기기"
+          onPress={() => {
+            addComment(commentText);
+            setCommentText('');
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 }

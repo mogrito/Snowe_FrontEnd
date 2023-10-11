@@ -25,7 +25,7 @@ function WriteScreen({ route }) {
   const { onCreate, onModify, onRemove } = useContext(LogContext);
 
   const onSave = async () => {
-    const url = 'http://192.168.25.212:8080/board/list'; // 스프링 부트 API 엔드포인트 URL
+    const url = 'http://localhost:8080/board/list'; // 스프링 부트 API 엔드포인트 URL
   
     // 요청할 데이터 객체 생성 (여기에 원하는 데이터를 추가하세요)
     const data = {
