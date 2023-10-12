@@ -10,11 +10,26 @@ const TeacherReserveTestScreen = () => {
   const [isTimeModalVisible, setTimeModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [teacherData, setTeacherData] = useState([
-    { id: '1', name: '원빈', subject: '스키', image: require('../Images/face.jpg'), count: 0, edudate: '2023-12-01 ~ 2024-01-31'},
-    { id: '2', name: '주성', subject: '보드', image: require('../Images/face1.jpg'), count: 0, edudate: '2023-12-01 ~ 2024-01-31'},
-    { id: '3', name: '정훈', subject: '스키', image: require('../Images/face2.jpg'), count: 0, edudate: '2023-0r2-01 ~ 2024-02-29'},
+    { id: '1', name: '원빈', subject: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00'},
+    { id: '2', name: '주성', subject: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00'},
+    { id: '3', name: '정훈', subject: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00'},
   ]);
   const [availableTimes, setAvailableTimes] = useState([]);
+
+
+  //강습시작 시간별로 강사 리스트
+  const sortTeacherDataByTime = () => {
+    const sortedTeacherData = [...teacherData];
+    sortedTeacherData.sort((a, b) => {
+      // 여기에서 시간을 파싱하고 비교합니다.
+      const timeA = parseInt(a.edudate.replace(':', ''));
+      const timeB = parseInt(b.edudate.replace(':', ''));
+      return timeA - timeB;
+    });
+  
+    return sortedTeacherData;
+  };
+
 
   const handleTeacherPress = (teacher) => {
     setSelectedTeacher(teacher);
@@ -72,31 +87,34 @@ const TeacherReserveTestScreen = () => {
     return times;
   };
 
+  const sortedTeacherData = sortTeacherDataByTime();
+
   return (
     <View style={styles.container}>
       <View style={styles.teacherWrapper}>
         <Text style={styles.title}>강사 예약</Text>
+        <Calendar style={styles.calender}
+        />
         <FlatList
-            data={teacherData}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={[
-                  styles.teacherItem,
-                  index === teacherData.length - 1 ? lastTeacherItemStyle : null
-                ]}
-                onPress={() => handleTeacherPress(item)}
-              >
+          data={sortedTeacherData}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              style={[
+                styles.teacherItem,
+                index === teacherData.length - 1 ? lastTeacherItemStyle : null
+              ]}
+              onPress={() => handleTeacherPress(item)}
+            >
               <View style={styles.teacherInfo}>
                 <Image source={item.image} style={styles.teacherImage} />
                 <View>
                   <Text style={styles.teacherName}>{item.name}</Text>
-                  <Text style={styles.teacherSubject}>{item.subject}</Text>
+                  <Text style={styles.eduTime}>{item.edudate}</Text>
                 </View>
                 <Text style={styles.teacherCount}>{`(${item.count} / 50)`}</Text>
-                <Text style={styles.eduTime}>{item.edudate}</Text>
+                <Text style={styles.teacherSubject}>{item.subject}</Text>
               </View>
-
             </TouchableOpacity>
           )}
           style={styles.teacherList}
@@ -175,10 +193,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   teacherSubject: {
-    fontSize: 16,
-    color: 'gray',
-    marginLeft: 1,
-    marginTop: 5,
+    fontSize: 20,
+    color: 'black',
+    
   },
   teacherList: {
     marginTop: 20,
@@ -222,8 +239,13 @@ const styles = StyleSheet.create({
     left:210,
   },
   eduTime: {
-    right:30,
+    right:0,
+    marginTop:5,
 
+  },
+  calender: {
+    marginTop:10,
+    borderRadius: 10,
   },
 });
 

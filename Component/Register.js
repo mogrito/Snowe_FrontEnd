@@ -127,13 +127,14 @@ const RegisterScreen = () => {
           birthday: birthday,
           email: email,
           nickname: nickname,
-          gender: gender, // 성별 변수 사용
+          gender: gender, 
         }),
       });
 
       if (response.ok) {
         // 회원가입 성공
         alert('회원가입을 축하드립니다.');
+        navigation.navigate('MainView');
       } else {
         // 회원가입 실패
         alert('회원가입을 실패했습니다.');
