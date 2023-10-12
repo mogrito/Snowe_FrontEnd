@@ -41,41 +41,36 @@ const RegisterScreen = () => {
   // 아이디 중복 변수
   const handleCheckUsername = async () => {
     try {
-      const response = await fetch('http://localhost:8080/member-count', {
-        method: 'GET',
-        dataType: 'json', 
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded', //
-        },
-        body: JSON.stringify({
-          username: username,
-        }),
-      });
+        const response = await fetch('http://localhost:8080/member-count?loginId=' + username, {
+            method: 'GET',
+            headers: {
+                'Accept': 'text/plain', // 텍스트 형식을 받도록 설정
+            },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.exists) {
-          alert('이미 존재하는 아이디입니다.');
-          setIsUsernameValid(false);
+        if (response.ok) {
+            const result = await response.text(); // 문자열로 파싱
+            if (result === "duplicate") {
+                alert('이미 존재하는 아이디입니다.');
+                setIsUsernameValid(false);
+            } else {
+                alert('사용 가능한 아이디입니다.');
+                setIsUsernameValid(true);
+            }
         } else {
-          alert('사용 가능한 아이디입니다.');
-          setIsUsernameValid(true);
+            alert('중복 확인에 실패했습니다.');
+            setIsUsernameValid(false);
         }
-      } else {
-        alert('중복 확인에 실패했습니다.');
-        setIsUsernameValid(false);
-      }
     } catch (error) {
-      console.error('Error:', error);
-      alert('아이디를 입력해주세요');
-      setIsUsernameValid(false);
+        console.error('Error:', error);
+        alert('아이디를 입력해주세요');
+        setIsUsernameValid(false);
     }
-  };
+};
 
   const handleCheckNickname = async () => {
     try {
-      const response = await fetch('http://localhost:8080/member-nickname', {
+      const response = await fetch('http://localhost:8080/member-nickname?nickname=' + nickname, {
         method: 'GET',
         dataType: 'json', 
         headers: {
@@ -90,10 +85,10 @@ const RegisterScreen = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.exists) {
-          alert('이미 존재하는 아이디입니다.');
+          alert('이미 존재하는 닉네임입니다.');
           setIsNicknameValid(false);
         } else {
-          alert('사용 가능한 아이디입니다.');
+          alert('사용 가능한 닉네임입니다.');
           setIsNicknameValid(true);
         }
       } else {
@@ -102,7 +97,7 @@ const RegisterScreen = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('아이디를 입력해주세요');
+      alert('닉네임을 입력해주세요');
       setIsNicknameValid(false);
     }
   };
