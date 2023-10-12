@@ -73,34 +73,29 @@ const RegisterScreen = () => {
     try {
       const response = await fetch('http://localhost:8080/member-nickname?nickname=' + nickname, {
         method: 'GET',
-        dataType: 'json', 
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded', //
+            'Accept': 'text/plain', // 텍스트 형식을 받도록 설정
         },
-        body: JSON.stringify({
-          nickname: nickname,
-        }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.exists) {
-          alert('이미 존재하는 닉네임입니다.');
-          setIsNicknameValid(false);
-        } else {
-          alert('사용 가능한 닉네임입니다.');
-          setIsNicknameValid(true);
-        }
+        if (response.ok) {
+          const result = await response.text(); // 문자열로 파싱
+          if (result === "duplicate") {
+              alert('이미 존재하는 닉네임입니다.');
+              setIsNicknameValid(false);
+          } else {
+              alert('사용 가능한 닉네임입니다.');
+              setIsNicknameValid(true);
+          }
       } else {
-        alert('중복 확인에 실패했습니다.');
-        setIsNicknameValid(false);
+          alert('중복 확인에 실패했습니다.');
+          setIsNicknameValid(false);
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error:', error);
-      alert('닉네임을 입력해주세요');
+      alert('닉네임를 입력해주세요');
       setIsNicknameValid(false);
-    }
+  }
   };
 
 
@@ -115,8 +110,6 @@ const RegisterScreen = () => {
         alert('닉네임 중복 확인을 해주세요.');
         return;
       }
-
-
       if (!gender) {
         alert('성별을 선택해주세요.');
         return;
