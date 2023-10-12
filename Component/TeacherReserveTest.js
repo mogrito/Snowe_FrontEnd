@@ -1,170 +1,95 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Button, Image, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import { useIsFocused } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
 const TeacherReserveTestScreen = () => {
+  const isFocused = useIsFocused();
   const [selectedTeacher, setSelectedTeacher] = useState(null);
-  const [isCalendarModalVisible, setCalendarModalVisible] = useState(false);
-  const [isTimeModalVisible, setTimeModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [teacherData, setTeacherData] = useState([
-    { id: '1', name: '원빈', subject: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00'},
-    { id: '2', name: '주성', subject: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00'},
-    { id: '3', name: '정훈', subject: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00'},
+    { id: '1', name: '원빈', subject: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00' },
+    { id: '2', name: '주성', subject: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00' },
+    { id: '3', name: '정훈', subject: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00' },
   ]);
-  const [availableTimes, setAvailableTimes] = useState([]);
 
+  const [filteredTeachers, setFilteredTeachers] = useState([]);
 
-  //강습시작 시간별로 강사 리스트
-  const sortTeacherDataByTime = () => {
-    const sortedTeacherData = [...teacherData];
-    sortedTeacherData.sort((a, b) => {
-      // 여기에서 시간을 파싱하고 비교합니다.
-      const timeA = parseInt(a.edudate.replace(':', ''));
-      const timeB = parseInt(b.edudate.replace(':', ''));
-      return timeA - timeB;
-    });
-  
-    return sortedTeacherData;
-  };
-
-
-  const handleTeacherPress = (teacher) => {
-    setSelectedTeacher(teacher);
-    setCalendarModalVisible(true);
-  };
-
-  const handleDatePress = (date) => {
+  const handleDateSelect = (date) => {
     setSelectedDate(date.dateString);
-    setAvailableTimes(generateAvailableTimes());
-    setCalendarModalVisible(false);
-    setTimeModalVisible(true);
+    // 선택한 날짜에 해당하는 강사를 필터링합니다.
+    const filteredTeachers = teacherData.filter((teacher) => teacher.edudate === date.dateString);
+    setFilteredTeachers(filteredTeachers);
   };
+
+  const resetTeacherList = () => {
+    setFilteredTeachers([]);
+    setSelectedTeacher(null);
+    setSelectedDate(null);
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      // 화면이 활성화되면 강사 리스트를 초기화
+      resetTeacherList();
+    }
+  }, [isFocused]);
+
+  const sortedTeacherData = teacherData.slice().sort((a, b) => {
+    const timeA = parseInt(a.edudate.replace(':', ''));
+    const timeB = parseInt(b.edudate.replace(':', ''));
+    return timeA - timeB;
+  });
 
   const lastTeacherItemStyle = {
-    teacherCount: {
-      left: 100, // 또는 다른 값을 적용
+    teacherItem: {
+      marginBottom: 0, // 마지막 항목의 marginBottom을 0으로 설정
     },
   };
 
-  const handleTimeConfirm = (time) => {
-    // 선택한 강사의 카운트를 업데이트합니다.
-    if (selectedTeacher) {
-      const updatedTeacherData = teacherData.map((teacher) => {
-        if (teacher.id === selectedTeacher.id) {
-          return { ...teacher, count: teacher.count + 1 };
-        }
-        return teacher;
-      });
-
-      setTeacherData(updatedTeacherData);
-    }
-
-    // 시간 모달을 닫습니다.
-    setTimeModalVisible(false);
+  const handleTeacherPress = (teacher) => {
+    setSelectedTeacher(teacher);
+    // 여기에 선택한 강사에 대한 추가 동작을 수행할 수 있습니다.
   };
-
-  const closeModal = () => {
-    setCalendarModalVisible(false);
-    setTimeModalVisible(false);
-    setSelectedTeacher(null);
-    setSelectedDate(null);
-    setAvailableTimes([]);
-  };
-
-  // 가상의 시간 목록 생성 (9:00부터 20:30까지 1시간 간격)
-  const generateAvailableTimes = () => {
-    const times = [];
-    let hour = 9;
-
-    while (hour < 21) {
-      times.push(`${hour.toString().padStart(2, '0')}:00`);
-      hour += 1;
-    }
-
-    return times;
-  };
-
-  const sortedTeacherData = sortTeacherDataByTime();
 
   return (
     <View style={styles.container}>
       <View style={styles.teacherWrapper}>
         <Text style={styles.title}>강사 예약</Text>
-        <Calendar style={styles.calender}
+        <Calendar
+          style={styles.calender}
+          onDayPress={handleDateSelect}
         />
-        <FlatList
-          data={sortedTeacherData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              style={[
-                styles.teacherItem,
-                index === teacherData.length - 1 ? lastTeacherItemStyle : null
-              ]}
-              onPress={() => handleTeacherPress(item)}
-            >
-              <View style={styles.teacherInfo}>
-                <Image source={item.image} style={styles.teacherImage} />
-                <View>
-                  <Text style={styles.teacherName}>{item.name}</Text>
-                  <Text style={styles.eduTime}>{item.edudate}</Text>
+        {selectedDate && (
+          <FlatList
+            data={sortedTeacherData}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                style={[
+                  styles.teacherItem,
+                  index === filteredTeachers.length - 1 ? lastTeacherItemStyle.teacherItem : null
+                ]}
+                onPress={() => handleTeacherPress(item)}
+              >
+                <View style={styles.teacherInfo}>
+                  <Image source={item.image} style={styles.teacherImage} />
+                  <View>
+                    <Text style={styles.teacherName}>{item.name}</Text>
+                    <Text style={styles.eduTime}>{item.edudate}</Text>
+                  </View>
+                  <Text style={styles.teacherCount}>{`(${item.count} / 50)`}</Text>
+                  <Text style={styles.teacherSubject}>{item.subject}</Text>
                 </View>
-                <Text style={styles.teacherCount}>{`(${item.count} / 50)`}</Text>
-                <Text style={styles.teacherSubject}>{item.subject}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          style={styles.teacherList}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-
-      <Modal
-        visible={isCalendarModalVisible}
-        animationType="slide"
-        transparent={false}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.modalContainer}>
-          <Text style={styles.title}>{selectedTeacher?.name} 강사님</Text>
-          <Calendar
-            onDayPress={(day) => handleDatePress(day)}
-            style={{
-              width: windowWidth * 0.9,
-              marginTop: 20,
-            }}
+              </TouchableOpacity>
+            )}
+            style={styles.teacherList}
+            showsVerticalScrollIndicator={false}
           />
-          <Button title="닫기" onPress={closeModal} />
-        </View>
-      </Modal>
-
-      <Modal
-        visible={isTimeModalVisible}
-        animationType="slide"
-        transparent={false}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.modalContainer}>
-          <Text style={styles.title}>{selectedTeacher?.name} 강사님</Text>
-          {selectedDate && (
-            <View style={styles.timeButtonsContainer}>
-              {availableTimes.map((time, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.timeButton}
-                  onPress={() => handleTimeConfirm(time)}
-                >
-                  <Text style={styles.timeButtonText}>{time}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-          <Button title="닫기" onPress={closeModal} />
-        </View>
-      </Modal>
+        )}
+      </View>
     </View>
   );
 };
@@ -195,7 +120,6 @@ const styles = StyleSheet.create({
   teacherSubject: {
     fontSize: 20,
     color: 'black',
-    
   },
   teacherList: {
     marginTop: 20,
@@ -216,10 +140,10 @@ const styles = StyleSheet.create({
   timeButton: {
     backgroundColor: 'skyblue',
     padding: 10,
-    margin: 5, // 간격 조절
+    margin: 5,
     borderRadius: 5,
-    width: 100, // 버튼 너비 조절
-    alignItems: 'center', // 수평 정렬
+    width: 100,
+    alignItems: 'center',
   },
   timeButtonText: {
     color: 'white',
@@ -230,26 +154,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   teacherImage: {
-    width: 50, 
-    height: 50, 
-    borderRadius: 25, 
-    marginRight: 10, 
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
   },
   teacherCount: {
-    left:210,
+    left: 210,
   },
   eduTime: {
-    right:0,
-    marginTop:5,
-
+    right: 0,
+    marginTop: 5,
   },
   calender: {
-    marginTop:10,
+    marginTop: 20,
     borderRadius: 10,
   },
 });
 
 export default TeacherReserveTestScreen;
+
+
 
 
 
