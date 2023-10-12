@@ -4,18 +4,16 @@ import { Calendar } from 'react-native-calendars';
 
 const windowWidth = Dimensions.get('window').width;
 
-const teacherData = [
-  { id: '1', name: '원빈', subject: '스키', image: require('../Images/face.jpg') },
-  { id: '2', name: '주성', subject: '보드', image: require('../Images/face1.jpg') },
-  { id: '3', name: '정훈', subject: '스키+보드', image: require('../Images/face2.jpg') },
-  // Add image paths for other teachers as needed
-];
-
-function TeacherReserveTestScreen() {
+const TeacherReserveTestScreen = () => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [isCalendarModalVisible, setCalendarModalVisible] = useState(false);
   const [isTimeModalVisible, setTimeModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [teacherData, setTeacherData] = useState([
+    { id: '1', name: '원빈', subject: '스키', image: require('../Images/face.jpg'), count: 0, edudate: '2023-12-01 ~ 2024-01-31'},
+    { id: '2', name: '주성', subject: '보드', image: require('../Images/face1.jpg'), count: 0, edudate: '2023-12-01 ~ 2024-01-31'},
+    { id: '3', name: '정훈', subject: '스키', image: require('../Images/face2.jpg'), count: 0, edudate: '2023-0r2-01 ~ 2024-02-29'},
+  ]);
   const [availableTimes, setAvailableTimes] = useState([]);
 
   const handleTeacherPress = (teacher) => {
@@ -26,19 +24,36 @@ function TeacherReserveTestScreen() {
   const handleDatePress = (date) => {
     setSelectedDate(date.dateString);
     setAvailableTimes(generateAvailableTimes());
-    setCalendarModalVisible(false); // 달력 모달 닫기
-    setTimeModalVisible(true); // 시간 모달 열기
+    setCalendarModalVisible(false);
+    setTimeModalVisible(true);
+  };
+
+  const lastTeacherItemStyle = {
+    teacherCount: {
+      left: 100, // 또는 다른 값을 적용
+    },
   };
 
   const handleTimeConfirm = (time) => {
-    // 선택한 시간을 처리하는 로직을 추가하세요.
-    // 예: 예약을 저장하거나 다른 작업을 수행합니다.
-    setTimeModalVisible(false); // 시간 모달 닫기
+    // 선택한 강사의 카운트를 업데이트합니다.
+    if (selectedTeacher) {
+      const updatedTeacherData = teacherData.map((teacher) => {
+        if (teacher.id === selectedTeacher.id) {
+          return { ...teacher, count: teacher.count + 1 };
+        }
+        return teacher;
+      });
+
+      setTeacherData(updatedTeacherData);
+    }
+
+    // 시간 모달을 닫습니다.
+    setTimeModalVisible(false);
   };
 
   const closeModal = () => {
-    setCalendarModalVisible(false); // 달력 모달 닫기
-    setTimeModalVisible(false); // 시간 모달 닫기
+    setCalendarModalVisible(false);
+    setTimeModalVisible(false);
     setSelectedTeacher(null);
     setSelectedDate(null);
     setAvailableTimes([]);
@@ -62,20 +77,26 @@ function TeacherReserveTestScreen() {
       <View style={styles.teacherWrapper}>
         <Text style={styles.title}>강사 예약</Text>
         <FlatList
-          data={teacherData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.teacherItem}
-              onPress={() => handleTeacherPress(item)}
-            >
+            data={teacherData}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                style={[
+                  styles.teacherItem,
+                  index === teacherData.length - 1 ? lastTeacherItemStyle : null
+                ]}
+                onPress={() => handleTeacherPress(item)}
+              >
               <View style={styles.teacherInfo}>
                 <Image source={item.image} style={styles.teacherImage} />
                 <View>
                   <Text style={styles.teacherName}>{item.name}</Text>
                   <Text style={styles.teacherSubject}>{item.subject}</Text>
                 </View>
+                <Text style={styles.teacherCount}>{`(${item.count} / 50)`}</Text>
+                <Text style={styles.eduTime}>{item.edudate}</Text>
               </View>
+
             </TouchableOpacity>
           )}
           style={styles.teacherList}
@@ -128,7 +149,7 @@ function TeacherReserveTestScreen() {
       </Modal>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -192,10 +213,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   teacherImage: {
-    width: 50, // Adjust the width as needed
-    height: 50, // Adjust the height as needed
-    borderRadius: 25, // Make it circular by setting borderRadius to half of width/height
-    marginRight: 10, // Add some space between the image and text
+    width: 50, 
+    height: 50, 
+    borderRadius: 25, 
+    marginRight: 10, 
+  },
+  teacherCount: {
+    left:210,
+  },
+  eduTime: {
+    right:30,
+
   },
 });
 

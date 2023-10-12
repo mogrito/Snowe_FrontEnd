@@ -68,6 +68,7 @@ const RegisterScreen = () => {
     }
 };
 
+    //닉네임 중복 변수 
   const handleCheckNickname = async () => {
     try {
       const response = await fetch('http://localhost:8080/member-nickname?nickname=' + nickname, {
