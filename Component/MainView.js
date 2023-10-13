@@ -22,9 +22,23 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import * as Location from 'expo-location';
+import axios from 'axios';
+import WeeklyCalendar from 'react-native-weekly-calendar';
+
 
 
 const windowWidth = Dimensions.get('window').width;
+
+//날씨 이름 한글로 바꿔요
+const weatherConditionTranslations = {
+  Clear: '맑음',
+  Clouds: '흐림',
+  Rain: '비',
+  Snow: '눈',
+  Haze: '안개',
+  Mist: '짙은 안개'
+};
+
 
 function getWeatherIconName(weatherCondition) {
   switch (weatherCondition) {
@@ -38,9 +52,15 @@ function getWeatherIconName(weatherCondition) {
       return 'weather-snowy';
     case 'Haze':
       return 'weather-hazy';
+    case 'Mist':
+      return 'weather-fog';
     default:
       return 'question';
   }
+}
+
+function getKoreanWeatherCondition(weatherCondition) {
+  return weatherConditionTranslations[weatherCondition] || '알 수 없음';
 }
 
 function MainScreen() {
@@ -65,6 +85,25 @@ function MainScreen() {
     loadCustomFont();
   }, []);
 
+//도시명 불러오는 로직 
+const openCageApiKey = 'f20a98f45d3d44a3912d0a6eeb337492';
+
+async function fetchCityName(lat, lon) {
+  try {
+    const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?key=${openCageApiKey}&q=${lat}+${lon}&language=ko`);
+
+    if (response.data.results.length > 0) {
+      const cityName = response.data.results[0].components.city || '알 수 없음';
+      return cityName;
+    } else {
+      return '알 수 없음';
+    }
+  } catch (error) {
+    console.error(error);
+    return '알 수 없음';
+  }
+}
+
   // 날씨 불러오는 로직 
 
   useEffect(() => {
@@ -81,10 +120,12 @@ function MainScreen() {
         }
   
         // 2. 현재 위치 정보 가져오기
-        const location = await Location.getCurrentPositionAsync({});
+        const location = await Location.getCurrentPositionAsync();
   
         const lon = location.coords.longitude.toString();
         const lat = location.coords.latitude.toString();
+  
+        const cityName = await fetchCityName(lat, lon);
   
         // 3. 날씨 정보를 가져오는 API 호출에 현재 위치 좌표를 사용합니다.
         const response = await fetch(
@@ -92,10 +133,11 @@ function MainScreen() {
         );
   
         if (!response.ok) {
-          throw new Error('날씨 데이터를 가져올 수 없습니다');
+          throw Error('날씨 데이터를 가져올 수 없습니다');
         }
   
         const data = await response.json();
+        data.cityName = cityName; // 도시 이름을 날씨 데이터에 추가합니다.
         setWeatherData(data); // 날씨 데이터 상태 업데이트
         setIsLoading(false); // 로딩 완료
         console.log(data); // 날씨 데이터 콘솔에 출력
@@ -110,42 +152,38 @@ function MainScreen() {
 
   return (
     <View style={styles.background}>
-      {/* 헤더 */}
-      <View style={styles.header}>
-        <Text style={fontLoaded ? styles.title : {}}>Snowe</Text>
-        <TouchableOpacity style={styles.userIcon} onPress={handleUserIconPress}>
-          <MaterialIcons name="menu" size={30} color="black" />
-        </TouchableOpacity>
-      </View>
+    {/* 헤더 */}
+    <View style={styles.header}>
+      <Text style={fontLoaded ? styles.title : {}}>Snowe</Text>
+      <TouchableOpacity style={styles.userIcon} onPress={handleUserIconPress}>
+        <MaterialIcons name="menu" size={30} color="black" />
+      </TouchableOpacity>
+    </View>
 
-      {/* 콘텐츠 */}
-      <ScrollView contentContainerStyle={styles.body}>
-        
-        {/* 로딩 중인 경우 */}
-        {isLoading && <Text>Loading...</Text>}
+    {/* 콘텐츠 */}
+    <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
+      {/* 로딩 중인 경우 */}
+      {isLoading && <Text>Loading...</Text>}
 
-        {/* 날씨 컴포넌트 */}
-        {!isLoading && weatherData && weatherData.main && (
-          <View style={styles.weatherContainer}>
-            <Text style={styles.weatherCity}>
-              {weatherData.name}
-            </Text>
-            <MaterialCommunityIcons style={styles.weatherIcon}
-              name={getWeatherIconName(weatherData.weather[0].main)}
-              size={150}
-              color="black"
-            />
-            <Text style={styles.weatherexp}>
-              {weatherData.weather[0].description}
-            </Text>
-
-            <Text style={styles.weatherTemp}>
-              {(weatherData.main.temp - 273.15).toFixed(0)}°C
-            </Text>
-          </View>
-        )}
+      {/* 날씨 컴포넌트 */}
+      {!isLoading && weatherData && weatherData.main && (
+        <View style={styles.weatherContainer}>
+          <Text style={styles.weatherCity}>{weatherData.cityName}</Text>
+          <MaterialCommunityIcons
+            style={styles.weatherIcon}
+            name={getWeatherIconName(weatherData.weather[0].main)}
+            size={150}
+            color="black"
+          />
+          <Text style={styles.weatherexp}>
+            {getKoreanWeatherCondition(weatherData.weather[0].main)}
+          </Text>
+          <Text style={styles.weatherTemp}>
+            {(weatherData.main.temp - 273.15).toFixed(0)}°C
+          </Text>
+        </View>
+      )}
         {/* 달력 컴포넌트 */}    
-        <Calendar style={styles.calendar} />
         <Calendar style={styles.calendar} />
         <Calendar style={styles.calendar} />
         <Calendar style={styles.calendar} />

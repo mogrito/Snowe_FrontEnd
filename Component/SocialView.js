@@ -15,7 +15,7 @@ function SocialView() {
   }, []);
 
   async function fetchBoardData() {
-    fetch('http://localhost:8080/board/list')
+    fetch('http://192.168.25.204:8080/board/list')
   .then(response => response.json())
   .then(boardData => {
     console.log(boardData);

@@ -19,7 +19,6 @@ const TeacherReserveTestScreen = () => {
 
   const handleDateSelect = (date) => {
     setSelectedDate(date.dateString);
-    // 선택한 날짜에 해당하는 강사를 필터링합니다.
     const filteredTeachers = teacherData.filter((teacher) => teacher.edudate === date.dateString);
     setFilteredTeachers(filteredTeachers);
   };
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   calender: {
-    marginTop: 20,
+    marginTop: 30,
     borderRadius: 10,
   },
 });

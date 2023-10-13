@@ -40,7 +40,8 @@
     "react-native-screens": "~3.22.0",
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-vector-icons": "^10.0.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "react-native-weekly-calendar": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Image,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
@@ -41,7 +43,7 @@ const RegisterScreen = () => {
   // 아이디 중복 변수
   const handleCheckUsername = async () => {
     try {
-        const response = await fetch('http://localhost:8080/member-count?loginId=' + username, {
+        const response = await fetch('http://192.168.25.204:8080/member-count?loginId=' + username, {
             method: 'GET',
             headers: {
                 'Accept': 'text/plain', // 텍스트 형식을 받도록 설정
@@ -71,7 +73,7 @@ const RegisterScreen = () => {
     //닉네임 중복 변수 
   const handleCheckNickname = async () => {
     try {
-      const response = await fetch('http://localhost:8080/member-nickname?nickname=' + nickname, {
+      const response = await fetch('http://192.168.25.204:8080/member-nickname?nickname=' + nickname, {
         method: 'GET',
         headers: {
             'Accept': 'text/plain', // 텍스트 형식을 받도록 설정
@@ -154,7 +156,11 @@ const RegisterScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      style={{ flex: 1 }}
+    >
+    <ScrollView contentContainerStyle={styles.container}>
       {/* 배경 이미지 설정 */}
       <Image source={backgroundImage} style={styles.backgroundImage} />
 
@@ -237,7 +243,8 @@ const RegisterScreen = () => {
       >
         <Text style={styles.areadysignup}>이미 가입된 회원이신가요?</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -252,8 +259,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '134%',
-    height: '120%',
+    width: '150%',
+    height: '200%',
     resizeMode: 'cover',
     zIndex: -1,
   },
