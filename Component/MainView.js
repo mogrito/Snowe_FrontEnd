@@ -23,7 +23,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import * as Location from 'expo-location';
 import axios from 'axios';
-import WeeklyCalendar from 'react-native-weekly-calendar';
+
 
 
 
