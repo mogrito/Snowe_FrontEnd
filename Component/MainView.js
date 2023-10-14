@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   },
   weatherexp: {
     fontSize: 30,
-    marginBottom:10,
+    marginBottom:20,
     fontWeight: '600'
 
   },

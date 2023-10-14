@@ -160,10 +160,9 @@ const RegisterScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : null}
       style={{ flex: 1 }}
     >
+     <Image source={backgroundImage} style={styles.backgroundImage} />
     <ScrollView contentContainerStyle={styles.container}>
       {/* 배경 이미지 설정 */}
-      <Image source={backgroundImage} style={styles.backgroundImage} />
-
       <Text style={fontLoaded ? styles.title : {}}>Sign Up</Text>
 
       <TextInput
@@ -259,8 +258,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '150%',
-    height: '200%',
+    width: '103%',
+    height: '100%',
     resizeMode: 'cover',
     zIndex: -1,
   },

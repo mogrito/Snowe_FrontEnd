@@ -81,15 +81,17 @@ const LoginScreen = () => {
         placeholder="아이디"
         value={username}
         onChangeText={(text) => setUsername(text)}
+  
       />
-      
-      {/* Password Input */}
+
       <TextInput
         style={styles.input}
         placeholder="비밀번호"
         secureTextEntry={true}
         value={password}
         onChangeText={(text) => setPassword(text)}
+        keyboardType="default" 
+        autoCapitalize="none" 
       />
       
       {/* Login Button */}
