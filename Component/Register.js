@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
 
 // 이미지를 import 합니다.
-import backgroundImage from '../Images/snowe.png'; // 이미지 경로를 실제 이미지 파일 경로로 바꾸세요.
+import backgroundImage from '../Images/snowe.png'; 
 
 const RegisterScreen = () => {
   const [username, setUsername] = useState('');
@@ -23,7 +23,7 @@ const RegisterScreen = () => {
   const [birthday, setBirthday] = useState('');
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
-  const [gender, setGender] = useState(''); // 성별을 저장하는 변수
+  const [gender, setGender] = useState(''); 
   const [fontLoaded, setFontLoaded] = useState(false);
   const [isUsernameValid, setIsUsernameValid] = useState(false); // 아이디 중복 확인 상태
   const [isNicknameValid, setIsNicknameValid] = useState(false);  // 닉네임 중복 확인 상태
@@ -51,7 +51,7 @@ const RegisterScreen = () => {
         });
 
         if (response.ok) {
-            const result = await response.text(); // 문자열로 파싱
+            const result = await response.text(); 
             if (result === "duplicate") {
                 alert('이미 존재하는 아이디입니다.');
                 setIsUsernameValid(false);

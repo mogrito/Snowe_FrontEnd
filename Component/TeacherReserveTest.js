@@ -44,13 +44,13 @@ const TeacherReserveTestScreen = () => {
 
   const lastTeacherItemStyle = {
     teacherItem: {
-      marginBottom: 0, // 마지막 항목의 marginBottom을 0으로 설정
+      marginBottom: 0, 
     },
   };
 
   const handleTeacherPress = (teacher) => {
     setSelectedTeacher(teacher);
-    // 여기에 선택한 강사에 대한 추가 동작을 수행할 수 있습니다.
+    // 여기에 선택한 강사에 대한 추가 동작
   };
 
   return (

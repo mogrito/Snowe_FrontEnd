@@ -137,13 +137,13 @@ async function fetchCityName(lat, lon) {
         }
   
         const data = await response.json();
-        data.cityName = cityName; // 도시 이름을 날씨 데이터에 추가합니다.
-        setWeatherData(data); // 날씨 데이터 상태 업데이트
-        setIsLoading(false); // 로딩 완료
-        console.log(data); // 날씨 데이터 콘솔에 출력
+        data.cityName = cityName; 
+        setWeatherData(data); 
+        setIsLoading(false); 
+        console.log(data); 
       } catch (error) {
         console.error(error);
-        setIsLoading(false); // 로딩 완료
+        setIsLoading(false); 
       }
     }
   

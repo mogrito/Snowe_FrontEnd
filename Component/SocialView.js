@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 16, // 헤더 아래 간격 조정
+    marginBottom: 16, 
   },
   boardItem: {
     marginTop: 2,
@@ -78,10 +78,10 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   textContainer: {
-    borderWidth: 1, // 테두리 두께
-    borderColor: 'black', // 테두리 색상
-    padding: 25, // 텍스트 주위의 패딩
-    borderRadius: 5, // 테두리의 모서리 반경 (원형 테두리를 만들려면 원의 반지름으로 설정)
+    borderWidth: 1, 
+    borderColor: 'black', 
+    padding: 25, 
+    borderRadius: 5, 
   },
   boardBody: {
     fontSize: 16,
