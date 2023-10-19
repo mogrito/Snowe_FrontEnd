@@ -185,9 +185,6 @@ async function fetchCityName(lat, lon) {
       )}
         {/* 달력 컴포넌트 */}    
         <Calendar style={styles.calendar} />
-        <Calendar style={styles.calendar} />
-        <Calendar style={styles.calendar} />
-        <Calendar style={styles.calendar} />
       </ScrollView>
     </View>
   );
@@ -212,6 +209,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'DMSerifText1',
     left: 11,
+    
   },
   userIcon: {
     marginTop: 5,
