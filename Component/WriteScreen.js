@@ -1,9 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
-import { Alert, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useContext, useState, useRef } from 'react';
+import { Alert, StyleSheet, KeyboardAvoidingView, View, Platform, TextInput} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios'; // axios를 임포트
-
 import WriteEditor from './WriteEditor';
 import WriteHeader from './WriteHeader';
 import LogContext from '../context/LogContext';
@@ -12,54 +11,50 @@ function WriteScreen({ route }) {
   const log = route.params?.log;
   const logContext = useContext(LogContext);
 
-  if (!logContext || !logContext.onCreate) {
-    console.error('LogContext 또는 onCreate 메서드를 찾을 수 없습니다.');
-    return null;
-  }
+  // if (!logContext || !logContext.onCreate) {
+  //   console.error('LogContext 또는 onCreate 메서드를 찾을 수 없습니다.');
+  //   return null;
+  // }
 
-  const [title, setTitle] = useState(log?.title ?? '');
-  const [body, setBody] = useState(log?.body ?? '');
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const navigation = useNavigation();
+  const bodyRef = useRef();
   const [date, setDate] = useState(log ? new Date(log.date) : new Date());
+  const loginId = 'test';
+
+  const handleTitleChange = (text) => {
+    setTitle(text);
+  };
+
+  const handleContentChange = (text) => {
+    setContent(text);
+  };
 
   const { onCreate, onModify, onRemove } = useContext(LogContext);
 
-  const onSave = async () => {
-    const url = 'http://localhost:8080/board/list'; // 스프링 부트 API 엔드포인트 URL
-  
-    // 요청할 데이터 객체 생성 (여기에 원하는 데이터를 추가하세요)
-    const data = {
-      title: 'title',
-      content: 'content',
-    };
-  
-    try {
-      const response = await fetch(url, {
-        method: 'POST', // POST 요청
-        headers: {
-          'Content-Type': 'application/json', // JSON 데이터를 보낼 경우 Content-Type 설정
-        },
-        body: JSON.stringify(data), // 데이터 객체를 JSON 문자열로 변환하여 보냄
+  const onSave = () => {
+    // 여기서 서버로 데이터를 전송합니다.
+    const postData = { title, content, loginId };
+
+    // POST 요청을 보내는 논리를 구현합니다.
+    fetch('http://192.168.25.204:8080/board/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('새글작성완료:', data);
+        // 글 작성이 성공하면 원하는 작업을 수행하거나 화면을 전환합니다.
+        navigation.goBack(); // 예를 들어 글 작성 후 뒤로 돌아가기
+      })
+      .catch((error) => {
+        console.error('글작성중오류발생:', error);
+        // 오류 처리 또는 사용자에게 알림을 표시하는 등의 작업을 수행합니다.
       });
-  
-      if (response.ok) {
-        // 서버로부터 응답이 성공인 경우
-        const responseData = await response.json(); // 서버 응답 데이터를 JSON으로 파싱
-        console.log('서버 응답 데이터:', responseData);
-        alert(responseData);
-        // 필요한 작업을 수행하거나 응답 데이터를 처리하세요.
-      } else {
-        // 서버로부터 응답이 실패인 경우
-        console.error('서버 응답 오류:', response.status, response.statusText);
-        alert('실패');
-        // 오류 처리 또는 사용자에게 알림을 표시하는 등의 작업을 수행하세요.
-      }
-    } catch (error) {
-      // 네트워크 오류 또는 기타 오류 처리
-      console.error('오류:', error);
-      alert('오류');
-      // 오류 처리 또는 사용자에게 알림을 표시하는 등의 작업을 수행하세요.
-    }
   };
 
   // const onSave = () => {
@@ -108,16 +103,28 @@ function WriteScreen({ route }) {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <WriteHeader
           onSave={onSave}
-          onAskRemove={onAskRemove}
-          isEditing={!!log}
           date={date}
           onChangeDate={setDate}
         />
-        <WriteEditor
-          title={title}
-          body={body}
-          onChangeTitle={setTitle}
-          onChangeBody={setBody}
+        <TextInput
+          placeholder="제목을 입력하세요"
+          style={styles.titleInput}
+          returnKeyType="next"
+          onChangeText={handleTitleChange}
+          value={title}
+          onSubmitEditing={() => {
+            bodyRef.current.focus();
+          }}
+        />
+        <TextInput
+          placeholder="내용을 입력하세요"
+          style={styles.bodyInput}
+          multiline={true}
+          textAlignVertical="top"
+          onChangeText={handleContentChange}
+          returnKeyType="next"
+          value={content}
+          ref={bodyRef}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -127,10 +134,24 @@ function WriteScreen({ route }) {
 const styles = StyleSheet.create({
   block: {
     flex: 1,
-    backgroundColor: 'white',
+    paddingHorizontal: 16,
   },
   avoidingView: {
     flex: 1,
+  },  
+  titleInput: {
+    paddingVertical: 0,
+    fontSize: 18,
+    marginBottom: 16,
+    color: '#263238',
+    fontWeight: 'bold',
+  },
+  bodyInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 0,
+    marginBottom:16,
+    color: '#263238',
   },
 });
 

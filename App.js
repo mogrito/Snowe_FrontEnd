@@ -16,6 +16,8 @@ import { CustomDrawerContent } from './Component/Drawer';
 import SocialView from './Component/SocialView';
 import TeacherReserveTestScreen from './Component/TeacherReserveTest';
 import { LogContextProvider } from './context/LogContext';
+import EditScreen from './Component/EditScreen';
+import SearchScreen from './Component/SearchScreen';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -75,8 +77,23 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <RootStack.Screen
+          name="게시판으로 가기"
+          component={SocialView}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
           name="PostView"
           component={PostView}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+            name="게시글 수정"
+            component={EditScreen}
+            options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="SearchScreen"
+          component={SearchScreen}
           options={{ headerShown: false }}
         />
       </RootStack.Navigator>
