@@ -16,6 +16,7 @@ const TeacherReserveTestScreen = () => {
   ]);
 
   const [filteredTeachers, setFilteredTeachers] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleDateSelect = (date) => {
     setSelectedDate(date.dateString);
@@ -50,8 +51,29 @@ const TeacherReserveTestScreen = () => {
 
   const handleTeacherPress = (teacher) => {
     setSelectedTeacher(teacher);
+    setModalVisible(true);
     // 여기에 선택한 강사에 대한 추가 동작
   };
+
+  const handleModalButtonPress = () => {
+    // 선택한 선생님의 count를 증가시킵니다.
+    if (selectedTeacher) {
+      const updatedTeacherData = teacherData.map((teacher) =>
+        teacher.id === selectedTeacher.id
+          ? { ...teacher, count: teacher.count + 1 }
+          : teacher
+      );
+      setTeacherData(updatedTeacherData);
+    }
+    setModalVisible(false); // 모달을 닫습니다.
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      resetTeacherList();
+    }
+  }, [isFocused]);
+
 
   return (
     <View style={styles.container}>
@@ -89,6 +111,12 @@ const TeacherReserveTestScreen = () => {
           />
         )}
       </View>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <View style={styles.modalContainer}>
+          <Text>선생님 선택: {selectedTeacher?.name}</Text>
+          <Button title="신청하기" onPress={handleModalButtonPress} />
+        </View>
+      </Modal>
     </View>
   );
 };
