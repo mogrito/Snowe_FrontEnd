@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -111,7 +111,7 @@ const TeacherReserveTestScreen = () => {
           />
         )}
       </View>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+      <Modal animationType="slide" visible={modalVisible} presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
           <Text>선생님 선택: {selectedTeacher?.name}</Text>
           <Button title="신청하기" onPress={handleModalButtonPress} />
