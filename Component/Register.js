@@ -11,9 +11,10 @@ import {
   ScrollView,
   Platform  
 } from 'react-native';
-import { useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
 import TransparentCircleButton from './TransparentCircleButton';
+import { TextInputMask } from 'react-native-masked-text'
 
 // 이미지를 import 합니다.
 import backgroundImage from '../Images/snowe.png'; 
@@ -239,9 +240,13 @@ const RegisterScreen = () => {
         onChangeText={(text) => setPassword(text)}
       />
 
-      <TextInput
+      <TextInputMask
         style={styles.input}
+        type={'datetime'}
         placeholder="생년월일 (YYYY-MM-DD)"
+        options={{
+          format: 'YYYY-MM-DD'
+        }}
         value={birthday}
         onChangeText={(text) => setBirthday(text)}
       />
