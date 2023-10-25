@@ -8,9 +8,10 @@ import {
   Image,
   Alert,
   KeyboardAvoidingView,
-  ScrollView 
+  ScrollView,
+  Platform  
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
 
 // 이미지를 import 합니다.
