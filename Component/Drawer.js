@@ -14,25 +14,25 @@ export function CustomDrawerContent({ navigation }) {
         <Text style={{ fontSize: 26, fontWeight: 'bold', marginLeft: 10 }}>원빈님</Text>
       </View>
       <DrawerItem
-        label="홈"
-        icon={({ color, size }) => (
-          <MaterialCommunityIcons name="home" color={color} size={size} />
-        )}
-        onPress={() => navigation.navigate('MainView')}
-      />
-      <DrawerItem
-        label="게시글"
-        icon={({ color, size }) => (
-          <MaterialCommunityIcons name="account-group" color={color} size={size} />
-        )}
-        onPress={() => navigation.navigate('SocialView')}
-      />
-      <DrawerItem
         label="마이페이지"
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
         onPress={() => navigation.navigate('Login')}
+      />
+      <DrawerItem
+        label="스키장 리스트"
+        icon={({ color, size }) => (
+          <MaterialCommunityIcons name="ski" color={color} size={size} />
+        )}
+        onPress={() => navigation.navigate('SkiResortList')}
+      />
+      <DrawerItem
+        label="예약 목록"
+        icon={({ color, size }) => (
+          <MaterialCommunityIcons name="account-clock" color={color} size={size} />
+        )}
+        onPress={() => navigation.navigate('ReservationList')}
       />
     </DrawerContentScrollView>
   );

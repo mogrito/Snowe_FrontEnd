@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
+import { TextInputMask } from 'react-native-masked-text';
 
 // 이미지를 import 합니다.
 import backgroundImage from '../Images/snowe.png'; 
@@ -28,6 +29,7 @@ const RegisterScreen = () => {
   const [isUsernameValid, setIsUsernameValid] = useState(false); // 아이디 중복 확인 상태
   const [isNicknameValid, setIsNicknameValid] = useState(false);  // 닉네임 중복 확인 상태
   const navigation = useNavigation();
+  
 
   useEffect(() => {
     async function loadCustomFont() {
@@ -155,6 +157,8 @@ const RegisterScreen = () => {
     setGender('');
   };
 
+
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -225,12 +229,16 @@ const RegisterScreen = () => {
         onChangeText={(text) => setPassword(text)}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="생년월일 (YYYY-MM-DD)"
-        value={birthday}
-        onChangeText={(text) => setBirthday(text)}
-      />
+        <TextInputMask
+         type={'datetime'}
+          style={styles.input}
+          placeholder="생년월일 (YYYY-MM-DD)"
+          options={{
+            format: 'YYYY-MM-DD'
+          }}
+          value={birthday}
+          onChangeText={(text) => setBirthday(text)}
+        />
 
       <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
         <Text style={styles.registerButtonText}>가입하기</Text>

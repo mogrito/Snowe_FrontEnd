@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button} from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button, Alert} from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused,useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -17,6 +17,7 @@ const TeacherReserveTestScreen = () => {
 
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const navigation =useNavigation();
 
   const handleDateSelect = (date) => {
     setSelectedDate(date.dateString);
@@ -50,9 +51,22 @@ const TeacherReserveTestScreen = () => {
   };
 
   const handleTeacherPress = (teacher) => {
-    setSelectedTeacher(teacher);
-    setModalVisible(true);
-    // 여기에 선택한 강사에 대한 추가 동작
+    if (teacher.count >= 50) {
+      // 선택된 강사의 인원수가 50명 이상인 경우 알림창을 표시.
+      Alert.alert(
+        "수강인원이 꽉찼습니다",
+        "더 이상 신청이 불가능합니다.",
+        [
+          {
+            text: "확인",
+          }
+        ]
+      );
+    } else {
+      setSelectedTeacher(teacher);
+      setModalVisible(true);
+      
+    }
   };
 
   const handleModalButtonPress = () => {
@@ -67,6 +81,22 @@ const TeacherReserveTestScreen = () => {
     }
     setModalVisible(false); // 모달을 닫습니다.
   };
+
+  const goAlert = () => {
+    Alert.alert(
+      "신청완료",
+      "신청이 완료되었습니다",
+      [
+        {
+          text: "OK",
+
+        }
+       
+      ]
+      
+    );
+  }
+  
 
   useEffect(() => {
     if (isFocused) {
@@ -113,10 +143,28 @@ const TeacherReserveTestScreen = () => {
       </View>
       <Modal animationType="slide" visible={modalVisible} presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
-          <Text>선생님 선택: {selectedTeacher?.name}</Text>
-          <Button title="신청하기" onPress={handleModalButtonPress} />
+          <Text style={styles.reservationTitle}>예약 확인</Text>
+          <Image source={selectedTeacher?.image} style={styles.teacherModalImage} />
+          <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
+          <Text style={styles.selectedDate}>{`강습 시작일: ${selectedDate}`}</Text>
+          <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.edudate}`}</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.checkReserveButton} onPress={() => {
+              handleModalButtonPress();
+              goAlert();
+            }}>
+              <Text style={styles.buttonText}>신청</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.cancelButton} onPress={() => {
+              setModalVisible(false); // Close the modal
+            }}>
+              <Text style={styles.buttonText}>취소</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
+
     </View>
   );
 };
@@ -124,7 +172,7 @@ const TeacherReserveTestScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EFF5FB',
+    backgroundColor: '#DBEBF9',
   },
   teacherWrapper: {
     paddingTop: 60,
@@ -150,13 +198,6 @@ const styles = StyleSheet.create({
   },
   teacherList: {
     marginTop: 20,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 20,
   },
   timeButtonsContainer: {
     marginTop: 20,
@@ -197,6 +238,70 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 10,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 20,
+  },
+  
+  teacherModalImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 200,
+    marginTop: 10,
+    marginBottom: 20, 
+  },
+  teacherModalName: {
+    fontSize: 30,
+    marginBottom: 40, 
+    fontWeight: 'bold',
+  },
+  selectedDate: {
+    marginBottom: 10, 
+    fontSize: 20
+  },
+  selectedTime: {
+    marginBottom: 20,
+    fontSize: 20 
+  },
+  reservationTitle: {
+    position: 'absolute',
+    top: 30, 
+    left: 10, 
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginTop: 10,
+  },
+  cancelButton: {
+    width: '30%',
+    height: 40,
+    left:10,
+    backgroundColor: 'skyblue',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20, 
+
+  },
+  checkReserveButton: {
+    width: '30%',
+    height: 40,
+    right:10,
+    backgroundColor: 'skyblue',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20, 
+  },
+  buttonText: {
+    fontWeight:'bold'
+  }
 });
 
 export default TeacherReserveTestScreen;

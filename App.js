@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons,FontAwesome5 } from '@expo/vector-icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import LoginScreen from './Component/Login';
 import MainScreen from './Component/MainView';
@@ -18,6 +18,8 @@ import TeacherReserveTestScreen from './Component/TeacherReserveTest';
 import { LogContextProvider } from './context/LogContext';
 import EditScreen from './Component/EditScreen';
 import SearchScreen from './Component/SearchScreen';
+import SkiResortListScreen from './Component/SkiResortList';
+import ReservationListScreen from './Component/ReservationList';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -96,6 +98,17 @@ export default function App() {
           component={SearchScreen}
           options={{ headerShown: false }}
         />
+          <RootStack.Screen
+          name="SkiResortList"
+          component={SkiResortListScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="ReservationList"
+          component={ReservationListScreen}
+          options={{ headerShown: false }}
+        />
+
       </RootStack.Navigator>
       </LogContextProvider>
     </NavigationContainer>
@@ -150,8 +163,8 @@ function TabNavigator() {
         options={{
           tabBarLabel: '강사 예약',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
-              name="clock"
+            <FontAwesome5
+              name="chalkboard-teacher"
               color={color}
               size={26}
             />
@@ -162,7 +175,7 @@ function TabNavigator() {
         name="SocialView"
         component={SocialView}
         options={{
-          tabBarLabel: '게시글',
+          tabBarLabel: '자유게시판',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
               name="account-group"

@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     position: 'sticky',
     top: 40, 
-    backgroundColor: '#EFF5FB',
+    backgroundColor: '#DBEBF9',
     paddingVertical: 10,
     paddingHorizontal: 10,
     zIndex: 1, 
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    backgroundColor: '#EFF5FB',
+    backgroundColor: '#DBEBF9',
   },
   body: {
     alignItems: 'center',
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
 
   },
   weatherTemp: {
-    fontSize: 20,
+    fontSize: 25,
    
 
   },
