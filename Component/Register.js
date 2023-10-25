@@ -13,9 +13,11 @@ import {
 } from 'react-native';
 import { useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
+import TransparentCircleButton from './TransparentCircleButton';
 
 // 이미지를 import 합니다.
 import backgroundImage from '../Images/snowe.png'; 
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RegisterScreen = () => {
   const [username, setUsername] = useState('');
@@ -29,6 +31,10 @@ const RegisterScreen = () => {
   const [isUsernameValid, setIsUsernameValid] = useState(false); // 아이디 중복 확인 상태
   const [isNicknameValid, setIsNicknameValid] = useState(false);  // 닉네임 중복 확인 상태
   const navigation = useNavigation();
+
+  const onGoBack = () => {
+    navigation.pop();
+  };
 
   useEffect(() => {
     async function loadCustomFont() {
@@ -162,6 +168,13 @@ const RegisterScreen = () => {
       style={{ flex: 1 }}
     >
      <Image source={backgroundImage} style={styles.backgroundImage} />
+     <SafeAreaView>
+      <TransparentCircleButton
+          onPress={onGoBack}
+          name="arrow-back"
+          color="#424242"
+      />    
+      </SafeAreaView>
     <ScrollView contentContainerStyle={styles.container}>
       {/* 배경 이미지 설정 */}
       <Text style={fontLoaded ? styles.title : {}}>Sign Up</Text>
@@ -253,7 +266,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 50,
+    padding: 40,
   },
   backgroundImage: {
     position: 'absolute',
@@ -391,6 +404,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+  },
+  backButton: {
+    position: 'absolute',
+    top: 100, // 원하는 위치로 조정하세요
+    left: 100, // 원하는 위치로 조정하세요
   },
   
 
