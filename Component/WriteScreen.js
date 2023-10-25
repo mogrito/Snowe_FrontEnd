@@ -11,11 +11,6 @@ function WriteScreen({ route }) {
   const log = route.params?.log;
   const logContext = useContext(LogContext);
 
-  // if (!logContext || !logContext.onCreate) {
-  //   console.error('LogContext 또는 onCreate 메서드를 찾을 수 없습니다.');
-  //   return null;
-  // }
-
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const navigation = useNavigation();

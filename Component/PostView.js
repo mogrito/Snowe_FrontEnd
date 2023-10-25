@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput,FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput,FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { TouchableWithoutFeedback } from 'react-native';
@@ -38,6 +38,81 @@ function PostView({ route }) {
       content,
       writer,
     });
+  };
+
+  const handleDeletePost = async () => {
+    if (Platform.OS === 'web') {
+      const userConfirmed = window.confirm('게시글을 삭제하시겠습니까?');
+      if (userConfirmed) {
+        // 게시글 삭제 로직
+        try {
+          const response = await fetch(`http://192.168.25.204:8080/board/del/${boardId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+    
+          if (response.ok) {
+            // 게시글 삭제 요청이 성공한 경우 로컬 상태에서도 해당 게시글을 제거
+            // 이를 위해 게시글 목록을 가져오는 API를 다시 호출하거나
+            // 로컬 상태에서 해당 게시글을 제거하는 방법을 사용할 수 있습니다.
+    
+            // 게시글 삭제 후, 이전 화면으로 돌아가기
+            alert('게시글 삭제 성공');
+            navigation.pop();
+          } else {
+            console.error('게시글 삭제 실패:', response.status);
+            alert('게시글 삭제 실패');
+          }
+        } catch (error) {
+          console.error('게시글 삭제 중 오류 발생:', error);
+          alert('게시글 삭제 중 오류 발생');
+        }
+      } 
+    } else {
+      Alert.alert(
+        '삭제 확인',
+        '게시글을 삭제하시겠습니까?',
+        [
+          {
+            text: '취소',
+            style: 'cancel',
+          },
+          {
+            text: '확인',
+            onPress: async () => {
+              // 이하 모바일 앱에서의 삭제 로직
+              try {
+                const response = await fetch(`http://192.168.25.204:8080/board/del/${boardId}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                });
+  
+                if (response.ok) {
+                  // 게시글 삭제 요청이 성공한 경우 로컬 상태에서도 해당 게시글을 제거
+                  // 이를 위해 게시글 목록을 가져오는 API를 다시 호출하거나
+                  // 로컬 상태에서 해당 게시글을 제거하는 방법을 사용할 수 있습니다.
+  
+                  // 게시글 삭제 후, 이전 화면으로 돌아가기
+                  alert('게시글 삭제 성공');
+                  navigation.pop();
+                } else {
+                  console.error('게시글 삭제 실패:', response.status);
+                  alert('게시글 삭제 실패');
+                }
+              } catch (error) {
+                console.error('게시글 삭제 중 오류 발생:', error);
+                alert('게시글 삭제 중 오류 발생');
+              }
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    }
   };
 
   const addComment = async (comment) => {
@@ -81,7 +156,7 @@ function PostView({ route }) {
           <TransparentCircleButton
             onPress={onGoBack}
             name="arrow-back"
-            color="#fff"
+            color="#424242"
           />
         </View>
         <View>
@@ -89,9 +164,14 @@ function PostView({ route }) {
         </View>
         <View style={styles.headerButton}>
           <TransparentCircleButton
+            onPress={handleDeletePost}
+            name="delete-forever"
+            color="#ef5350"             
+          />
+          <TransparentCircleButton
             onPress={handleEditPress}
             name="edit"
-            color="#fff"
+            color="#424242"
           />
         </View>
       </View>
@@ -109,8 +189,10 @@ function PostView({ route }) {
           </View>
         )}
       />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}>
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+      >
+        {/* <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> */}
           <View>
             <TextInput
               placeholder="댓글을 입력하세요"
@@ -128,7 +210,7 @@ function PostView({ route }) {
               <Text style={styles.commentButtonText}>댓글 남기기</Text>
             </TouchableOpacity>
           </View>
-        </TouchableWithoutFeedback>
+        {/* </TouchableWithoutFeedback> */}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -143,7 +225,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#009688',
   },
   headerButton: {
     flexDirection: 'row',
@@ -152,7 +233,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     textAlign: 'center',
-    color: '#fff',
+    color: '#424242',
+    left:20,
   },
   contentContainer: {
     flex: 1,

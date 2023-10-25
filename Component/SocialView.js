@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // 네비게이션 기능 사용
+import { StyleSheet, View, Text, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
+import { useNavigation, useIsFocused } from '@react-navigation/native'; // 네비게이션 기능 사용
 import FloatingWriteButton from './FloatingWriteButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -10,7 +10,9 @@ function SocialView() {
   const [boardList, setBoardList] = useState([]);
   const [selectedBoard, setSelectedBoard] = useState(null); // 선택한 게시글 저장
   const [searchText, setSearchText] = useState(''); // 검색어 상태
+  const [refreshing, setRefreshing] = useState(false); // 새로고침 상태
   const navigation = useNavigation(); // 네비게이션 객체 생성
+  const isFocused = useIsFocused(); // 화면이 포커스되는지 여부를 확인
   
 
   const onSearchButtonPress = () => {
@@ -18,12 +20,22 @@ function SocialView() {
     navigation.navigate('SearchScreen'); // 'SearchScreen'은 검색 화면의 이름입니다.
   };
 
+  const refreshBoardData = () => {
+    // 게시글 데이터를 새로고침하는 함수
+    setRefreshing(true); // 새로고침 시작
+    fetchBoardData()
+      .then(() => setRefreshing(false)); // 새로고침 완료
+  };
+
 
   useEffect(() => {
-    fetchBoardData();
-  }, []);
+    if (isFocused) {
+      // 화면이 포커스되면 게시글 데이터를 새로고침
+      refreshBoardData();
+    }
+  }, [isFocused]);
 
-  async function fetchBoardData() {
+  const fetchBoardData = async () => {
     try {
       const response = await fetch('http://192.168.25.204:8080/board/list');
       const boardData = await response.json();
@@ -45,6 +57,7 @@ function SocialView() {
       content: board.content, 
       writer: board.writer, 
       comment: board.comment,
+      refreshData: refreshBoardData, // 삭제 후 새로고침 함수를 전달
     }); // 댓글 내용을 전달 });
   };
 
@@ -71,6 +84,12 @@ function SocialView() {
               <Text>{item.body}</Text>
             </TouchableOpacity>
           )}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={refreshBoardData}
+            />
+          }
         />
       <FloatingWriteButton hidden={hidden} />
     </SafeAreaView>
