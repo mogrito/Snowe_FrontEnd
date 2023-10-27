@@ -17,7 +17,7 @@ const TeacherReserveTestScreen = () => {
 
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const navigation =useNavigation();
+  const navigation = useNavigation();
 
   const handleDateSelect = (date) => {
     setSelectedDate(date.dateString);
@@ -157,7 +157,7 @@ const TeacherReserveTestScreen = () => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.cancelButton} onPress={() => {
-              setModalVisible(false); // Close the modal
+              setModalVisible(false); 
             }}>
               <Text style={styles.buttonText}>취소</Text>
             </TouchableOpacity>

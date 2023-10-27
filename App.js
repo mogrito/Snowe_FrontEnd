@@ -108,8 +108,7 @@ export default function App() {
           component={ReservationListScreen}
           options={{ headerShown: false }}
         />
-
-      </RootStack.Navigator>
+        </RootStack.Navigator>
       </LogContextProvider>
     </NavigationContainer>
   );
@@ -203,7 +202,3 @@ function TabNavigator() {
     </Tab.Navigator>
   );
 }
-
-
-
-
