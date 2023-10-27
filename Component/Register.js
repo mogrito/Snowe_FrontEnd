@@ -176,92 +176,93 @@ const RegisterScreen = () => {
           color="#424242"
       />    
       </SafeAreaView>
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* 배경 이미지 설정 */}
-      <Text style={fontLoaded ? styles.title : {}}>Sign Up</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+  {/* 배경 이미지 설정 */}
+  <Text style={fontLoaded ? styles.title : {}}>Sign Up</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="이메일"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      />
+  <TextInput
+    style={styles.input}
+    placeholder="이메일"
+    value={email}
+    onChangeText={(text) => setEmail(text)}
+  />
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input1}
-          placeholder="아이디"
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-        />
-        <TouchableOpacity style={styles.registerCheckButton} onPress={handleCheckUsername}>
-          <Text style={styles.registerButtonText}>중복체크</Text>
-        </TouchableOpacity>
-      </View>
+  <View style={styles.inputContainer}>
+    <TextInput
+      style={styles.input1}
+      placeholder="아이디"
+      value={username}
+      onChangeText={(text) => setUsername(text)}
+    />
+    <TouchableOpacity style={styles.registerCheckButton} onPress={handleCheckUsername}>
+      <Text style={styles.registerButtonText}>중복체크</Text>
+    </TouchableOpacity>
+  </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input1}
-          placeholder="닉네임"
-          value={nickname}
-          onChangeText={(text) => setNickname(text)}
-        />
-        <TouchableOpacity style={styles.registerCheckButton} onPress={handleCheckNickname}>
-          <Text style={styles.registerButtonText}>중복체크</Text>
-        </TouchableOpacity>
-      </View>
+  <View style={styles.inputContainer}>
+    <TextInput
+      style={styles.input1}
+      placeholder="닉네임"
+      value={nickname}
+      onChangeText={(text) => setNickname(text)}
+    />
+    <TouchableOpacity style={styles.registerCheckButton} onPress={handleCheckNickname}>
+      <Text style={styles.registerButtonText}>중복체크</Text>
+    </TouchableOpacity>
+  </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input2}
-          placeholder="이름"
-          value={name}
-          onChangeText={(text) => setName(text)}
-        />
-        <TouchableOpacity
-          style={gender === '남자' ? styles.genderButtonSelected : styles.genderButton}
-          onPress={() => setGender('남자')}
-        >
-          <Text style={styles.genderButtonText}>남</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={gender === '여자' ? styles.genderButtonSelected1 : styles.genderButton}
-          onPress={() => setGender('여자')}
-        >
-          <Text style={styles.genderButtonText}>여</Text>
-        </TouchableOpacity>
-      </View>
+  <View style={styles.inputContainer}>
+    <TextInput
+      style={styles.input2}
+      placeholder="이름"
+      value={name}
+      onChangeText={(text) => setName(text)}
+    />
+    <TouchableOpacity
+      style={gender === '남자' ? styles.genderButtonSelected : styles.genderButton}
+      onPress={() => setGender('남자')}
+    >
+      <Text style={styles.genderButtonText}>남</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={gender === '여자' ? styles.genderButtonSelected1 : styles.genderButton}
+      onPress={() => setGender('여자')}
+    >
+      <Text style={styles.genderButtonText}>여</Text>
+    </TouchableOpacity>
+  </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="비밀번호"
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
+  <TextInput
+    style={styles.input}
+    placeholder="비밀번호"
+    secureTextEntry={true}
+    value={password}
+    onChangeText={(text) => setPassword(text)}
+  />
 
-      <TextInputMask
-        style={styles.input}
-        type={'datetime'}
-        placeholder="생년월일 (YYYY-MM-DD)"
-        options={{
-          format: 'YYYY-MM-DD'
-        }}
-        value={birthday}
-        onChangeText={(text) => setBirthday(text)}
-      />
+  <TextInputMask
+    style={styles.input}
+    type={'datetime'}
+    placeholder="생년월일 (YYYY-MM-DD)"
+    options={{
+      format: 'YYYY-MM-DD'
+    }}
+    value={birthday}
+    onChangeText={(text) => setBirthday(text)}
+  />
 
-      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-        <Text style={styles.registerButtonText}>가입하기</Text>
-      </TouchableOpacity>
+  <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+    <Text style={styles.registerButtonText}>가입하기</Text>
+  </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.button, { marginLeft: 'auto' }]}
-        onPress={() => navigation.navigate('Login')}
-      >
-        <Text style={styles.areadysignup}>이미 가입된 회원이신가요?</Text>
-      </TouchableOpacity>
-    </ScrollView>
+  <TouchableOpacity
+    style={[styles.button, { marginLeft: 'auto' }]}
+    onPress={() => navigation.navigate('Login')}
+  >
+    <Text style={styles.areadysignup}>이미 가입된 회원이신가요?</Text>
+  </TouchableOpacity>
+</ScrollView>
+
     </KeyboardAvoidingView>
   );
 };
@@ -401,7 +402,7 @@ const styles = StyleSheet.create({
   },
 
   input2: {
-    width: '66%',
+    width: '68%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,

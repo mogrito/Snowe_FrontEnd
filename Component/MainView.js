@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   weatherCity: {
-    fontSize: 30,
+    fontSize: 23,
     fontWeight: '600',
   },
   weatherTemp: {
