@@ -18,6 +18,9 @@ const data = [
   { id: '12', name: '비발디파크 스키장', location: { latitude: 37.6452535, longitude: 127.6818841 } },
 ];
 
+const sortedData = [...data];
+sortedData.sort((a, b) => a.name.localeCompare(b.name));
+
 
 const SkiResortListScreen = () => {
   const navigation = useNavigation();
@@ -37,7 +40,7 @@ const SkiResortListScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>방문하게 될 스키장을 선택해주세요</Text>
       <FlatList
-        data={data}
+        data={sortedData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleResortPress(item)}>
