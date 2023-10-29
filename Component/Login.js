@@ -34,7 +34,7 @@ const LoginScreen = () => {
 
   const handleLogin = async() => {
     try {
-      const response = await fetch('http://192.168.25.204:8080/login', {
+      const response = await fetch('http://192.168.25.202:8080/login', {
         method: 'POST',
         dataType: 'json', 
         headers: {
