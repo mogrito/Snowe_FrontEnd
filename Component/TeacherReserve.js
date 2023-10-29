@@ -9,7 +9,7 @@ const TeacherReserveScreen = () => {
   const isFocused = useIsFocused();
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [teacherData, setTeacherData] = useState([]); //선생님 데이터 가져오기
+  const [teacherData, setTeacherData] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
@@ -18,7 +18,7 @@ const TeacherReserveScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('여기에 API  입력');
+        const response = await fetch('YOUR_API'); // 실제 API 
         const data = await response.json();
         setTeacherData(data);
       } catch (error) {
@@ -31,6 +31,42 @@ const TeacherReserveScreen = () => {
     }
   }, [isFocused]);
 
+  // 예약 신청을 서버에 업데이트하는 함수
+  const reserveLesson = async () => {
+    if (selectedTeacher) {
+      try {
+        // 서버로 예약 데이터 전송
+        const response = await fetch('YOUR_RESERVATION_API_ENDPOINT', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            teacherId: selectedTeacher.id,
+            date: selectedDate,
+          }),
+        });
+
+        if (response.ok) {
+          // 서버에서 응답이 성공적으로 오면 로컬 상태 업데이트
+          const updatedTeacherData = teacherData.map((teacher) =>
+            teacher.id === selectedTeacher.id
+              ? { ...teacher, count: teacher.count + 1 }
+              : teacher
+          );
+          setTeacherData(updatedTeacherData);
+          setModalVisible(false); // 모달 닫기
+        } else {
+          // 서버 응답이 실패하면 에러 처리
+          console.error('예약 실패');
+          Alert.alert('예약 실패', '서버 오류로 예약을 완료할 수 없습니다.');
+        }
+      } catch (error) {
+        console.error('예약 실패: ', error);
+        Alert.alert('예약 실패', '오류로 인해 예약을 완료할 수 없습니다.');
+      }
+    }
+  };
 
   const handleDateSelect = (date) => {
     setSelectedDate(date.dateString);
@@ -46,7 +82,6 @@ const TeacherReserveScreen = () => {
 
   useEffect(() => {
     if (isFocused) {
-      // 화면이 활성화되면 강사 리스트를 초기화
       resetTeacherList();
     }
   }, [isFocused]);
@@ -59,87 +94,50 @@ const TeacherReserveScreen = () => {
 
   const lastTeacherItemStyle = {
     teacherItem: {
-      marginBottom: 0, 
+      marginBottom: 0,
     },
   };
 
   const handleTeacherPress = (teacher) => {
     if (teacher.count >= 50) {
-      // 선택된 강사의 인원수가 50명 이상인 경우 알림창을 표시.
       Alert.alert(
-        "수강인원이 꽉찼습니다",
-        "더 이상 신청이 불가능합니다.",
+        '수강인원이 꽉찼습니다',
+        '더 이상 신청이 불가능합니다.',
         [
           {
-            text: "확인",
-          }
+            text: '확인',
+          },
         ]
       );
     } else {
       setSelectedTeacher(teacher);
       setModalVisible(true);
-      
     }
   };
 
-  const handleModalButtonPress = () => {
-    // 선택한 선생님의 count를 증가시킵니다.
-    if (selectedTeacher) {
-      const updatedTeacherData = teacherData.map((teacher) =>
-        teacher.id === selectedTeacher.id
-          ? { ...teacher, count: teacher.count + 1 }
-          : teacher
-      );
-      setTeacherData(updatedTeacherData);
-    }
+  const handleModalCancelPress = () => {
     setModalVisible(false); // 모달을 닫습니다.
   };
-
-  const goAlert = () => {
-    Alert.alert(
-      "신청완료",
-      "신청이 완료되었습니다",
-      [
-        {
-          text: "OK",
-
-        }
-       
-      ]
-      
-    );
-  }
-  
-
-  useEffect(() => {
-    if (isFocused) {
-      resetTeacherList();
-    }
-  }, [isFocused]);
-
 
   return (
     <View style={styles.container}>
       <View style={styles.teacherWrapper}>
         <Text style={styles.title}>강사 예약</Text>
-        <Calendar
-          style={styles.calender}
-          onDayPress={handleDateSelect}
-        />
+        <Calendar style={styles.calender} onDayPress={handleDateSelect} />
         {selectedDate && (
           <FlatList
             data={sortedTeacherData}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()} // id를 문자열로 변환
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={[
                   styles.teacherItem,
-                  index === filteredTeachers.length - 1 ? lastTeacherItemStyle.teacherItem : null
+                  index === filteredTeachers.length - 1 ? lastTeacherItemStyle.teacherItem : null,
                 ]}
                 onPress={() => handleTeacherPress(item)}
               >
                 <View style={styles.teacherInfo}>
-                  <Image source={item.image} style={styles.teacherImage} />
+                  <Image source={{ uri: item.image }} style={styles.teacherImage} />
                   <View>
                     <Text style={styles.teacherName}>{item.name}</Text>
                     <Text style={styles.eduTime}>{item.edudate}</Text>
@@ -157,27 +155,20 @@ const TeacherReserveScreen = () => {
       <Modal animationType="slide" visible={modalVisible} presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
           <Text style={styles.reservationTitle}>예약 확인</Text>
-          <Image source={selectedTeacher?.image} style={styles.teacherModalImage} />
+          <Image source={{ uri: selectedTeacher?.image }} style={styles.teacherModalImage} />
           <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
           <Text style={styles.selectedDate}>{`강습 시작일: ${selectedDate}`}</Text>
           <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.edudate}`}</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.checkReserveButton} onPress={() => {
-              handleModalButtonPress();
-              goAlert();
-            }}>
+            <TouchableOpacity style={styles.checkReserveButton} onPress={reserveLesson}>
               <Text style={styles.buttonText}>신청</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.cancelButton} onPress={() => {
-              setModalVisible(false); 
-            }}>
+            <TouchableOpacity style={styles.cancelButton} onPress={handleModalCancelPress}>
               <Text style={styles.buttonText}>취소</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
     </View>
   );
 };
