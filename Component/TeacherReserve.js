@@ -36,7 +36,7 @@ const TeacherReserveScreen = () => {
     if (selectedTeacher) {
       try {
         // 서버로 예약 데이터 전송
-        const response = await fetch('YOUR_RESERVATION_API_ENDPOINT', {
+        const response = await fetch('API 적어주시공', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -44,6 +44,7 @@ const TeacherReserveScreen = () => {
           body: JSON.stringify({
             teacherId: selectedTeacher.id,
             date: selectedDate,
+            //필요한 DB컬럼 추가해용  
           }),
         });
 
