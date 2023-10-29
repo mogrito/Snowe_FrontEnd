@@ -14,7 +14,7 @@ import WriteScreen from './Component/WriteScreen';
 import PostView from './Component/PostView';
 import { CustomDrawerContent } from './Component/Drawer';
 import SocialView from './Component/SocialView';
-import TeacherReserveTestScreen from './Component/TeacherReserveTest';
+import TeacherReserveScreen from './Component/TeacherReserve';
 import { LogContextProvider } from './context/LogContext';
 import EditScreen from './Component/EditScreen';
 import SearchScreen from './Component/SearchScreen';
@@ -161,8 +161,8 @@ function TabNavigator() {
         }}
       />
        <Tab.Screen
-        name="TeacherReserveTest"
-        component={TeacherReserveTestScreen}
+        name="TeacherReserve"
+        component={TeacherReserveScreen}
         options={{
           tabBarLabel: '강사 예약',
           tabBarIcon: ({ color }) => (
