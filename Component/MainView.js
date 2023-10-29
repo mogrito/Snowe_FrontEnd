@@ -70,7 +70,7 @@ function MainScreen() {
   const selectedResort = route.params?.selectedResort;
   const location = selectedResort?.location;
   const selectedResortName = route.params?.selectedResortName;
-
+ 
   const handleUserIconPress = () => {
     navigation.openDrawer();
   };
