@@ -1,4 +1,5 @@
 import React, { useState , useEffect } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -14,7 +15,7 @@ import backgroundImage from '../Images/snowe.png';
 
 
 const LoginScreen = () => {
-  const [username, setUsername] = useState('');
+  const [loginId, setLoginid] = useState('');
   const [password, setPassword] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
   const navigation = useNavigation();
@@ -31,41 +32,53 @@ const LoginScreen = () => {
     loadCustomFont();
   }, []);
   
+  
+const showToast = (text) =>{
+  Toast.show({
+      type: 'error',
+      position: 'bottom',
+      text1: text,
+    });
+};
 
-  const handleLogin = async() => {
-    try {
-      const response = await fetch('http://192.168.25.202:8080/login', {
-        method: 'POST',
-        dataType: 'json', 
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded', //
-        },
-        body: `loginId=${username}&password=${password}`, //
-      })
-
-      // // 응답데이터 json 처리
-      // .then((res)=>res.json())
-      // // json -> 스트링으로 처리 후 불러올 시 다시 JSON 처리 
-      // .then((data) => {
-      //   sessionStorage.setItem("session",JSON.stringify(data));
-      //   console.log(JSON.parse(sessionStorage.getItem("session")));
-      // });
-
-
-      if (response.ok) {
-        // 로그인 성공
-        alert('Login successful!');
-        navigation.navigate('MainView')
-      } else {
-        // 로그인 실패
-        alert('Invalid username or password');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while logging in.');
-    }
+const handleLogin = async() => {
+  const userData = {
+    loginId: loginId,
+    password: password,
   };
+
+  try {
+    const response = await fetch('http://192.168.25.202:8080/member/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (response.status === 200) {
+      const accessToken = response.headers.get('Authorization');
+
+      // accessToken 로컬에 저장
+      await AsyncStorage.setItem('Tokens', JSON.stringify({
+        'accessToken': accessToken,
+        'loginId': loginId,
+        
+      }));
+      console.log(AsyncStorage.getItem(accessToken))
+      navigation.navigate('MainView');
+    } else {
+      // 다른 오류 발생시 작성할 예정
+    }
+  } catch (error) {
+    if(error.response.status === 401){
+      showToast("아이디 또는 비밀번호가 존재하지 않습니다.")
+    }
+    else{
+        showToast("알수없는 오류")
+    } 
+    }
+};
 
   return (
     <View style={styles.container}>
@@ -75,12 +88,12 @@ const LoginScreen = () => {
       {/* Title */}
       <Text style={fontLoaded ? styles.title : {}}>Snowe</Text>
       
-      {/* Username Input */}
+      {/* LoginId Input */}
       <TextInput
         style={styles.input}
         placeholder="아이디"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
+        value={loginId}
+        onChangeText={(text) => setLoginid(text)}
   
       />
 
