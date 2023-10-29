@@ -65,7 +65,7 @@ function MainScreen() {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
   const location = selectedResort?.location;
@@ -86,34 +86,30 @@ function MainScreen() {
     loadCustomFont();
   }, []);
 
-
   useEffect(() => {
     async function fetchWeather() {
       try {
         const apiKey = '28664d08fe65159df42d4ee6b227bacd';
 
         if (location) {
-
           const lon = location.longitude;
           const lat = location.latitude;
 
-
-          const response = await fetch(
+          const response = await axios.get(
             `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`
           );
 
-          if (!response.ok) {
-            throw Error('날씨 데이터를 가져올 수 없습니다');
+          if (response.status === 200) {
+            const data = response.data;
+            setWeatherData(data);
+          } else {
+            console.error('날씨 데이터를 가져올 수 없습니다');
           }
-
-          const data = await response.json();
-          setWeatherData(data);
-          setIsLoading(false);
-          console.log(data);
         }
       } catch (error) {
         console.error(error);
-        setIsLoading(false);
+      } finally {
+        setIsLoading(false); // 로딩 상태 업데이트
       }
     }
 
@@ -129,7 +125,6 @@ function MainScreen() {
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        {isLoading && <Text>Loading...</Text>}
         {!isLoading && weatherData && weatherData.main && (
           <View style={styles.weatherContainer}>
             <Text style={styles.weatherCity}>{selectedResortName}</Text>
@@ -219,11 +214,6 @@ const styles = StyleSheet.create({
 });
 
 export default MainScreen;
-
-
-
-
-
 
 
 

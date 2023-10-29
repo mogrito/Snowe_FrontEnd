@@ -14,7 +14,7 @@ import WriteScreen from './Component/WriteScreen';
 import PostView from './Component/PostView';
 import { CustomDrawerContent } from './Component/Drawer';
 import SocialView from './Component/SocialView';
-import TeacherReserveTestScreen from './Component/TeacherReserveTest';
+import TeacherReserveScreen from './Component/TeacherReserve';
 import { LogContextProvider } from './context/LogContext';
 import EditScreen from './Component/EditScreen';
 import SearchScreen from './Component/SearchScreen';
@@ -25,6 +25,7 @@ import ReservationListScreen from './Component/ReservationList';
 const Tab = createMaterialBottomTabNavigator();
 const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator;
 
 export default function App() {
   const [showFirstScreen, setShowFirstScreen] = useState(true);
@@ -43,12 +44,12 @@ export default function App() {
           <RootStack.Screen
             name="FirstView"
             component={FirstScreen}
-            options={{ headerShown: false }}r
+            options={{ headerShown: false }}
           />
         ) : (
           <RootStack.Screen
-            name="MainApp"
-            component={MainAppNavigator}
+            name="Drawer"
+            component={DrawerNavigator}
             options={{ headerShown: false }}
           />
         )}
@@ -114,7 +115,7 @@ export default function App() {
   );
 }
 
-function MainAppNavigator() {
+function DrawerNavigator() {
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -122,7 +123,10 @@ function MainAppNavigator() {
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
-      <Drawer.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
+
+      <Drawer.Screen name="SkiResortList" component={SkiResortListScreen} options={{ headerShown: false }} />
+      <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
+      <Drawer.Screen name="MainView" component={MainScreen} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
 }
@@ -157,8 +161,8 @@ function TabNavigator() {
         }}
       />
        <Tab.Screen
-        name="TeacherReserveTest"
-        component={TeacherReserveTestScreen}
+        name="TeacherReserve"
+        component={TeacherReserveScreen}
         options={{
           tabBarLabel: '강사 예약',
           tabBarIcon: ({ color }) => (
