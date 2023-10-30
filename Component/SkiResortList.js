@@ -27,7 +27,7 @@ const SkiResortListScreen = () => {
 
   const handleResortPress = (item) => {
     navigation.navigate('TabNavigator', {
-      screen: 'MainView', 
+      screen: 'MainView1', 
       params: {
         selectedResort: item,
         selectedResortName: item.name,
