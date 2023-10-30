@@ -51,7 +51,7 @@ const RegisterScreen = () => {
   // 아이디 중복 변수
   const handleCheckUsername = async () => {
     try {
-        const response = await fetch('http://192.168.25.202:8080/member/member-count?loginId=' + username, {
+        const response = await fetch('http://192.168.25.204:8080/member/member-count?loginId=' + username, {
             method: 'GET',
             headers: {
                 'Accept': 'text/plain', // 텍스트 형식을 받도록 설정
@@ -81,7 +81,7 @@ const RegisterScreen = () => {
     //닉네임 중복 변수 
   const handleCheckNickname = async () => {
     try {
-      const response = await fetch('http://192.168.25.202:8080/member/member-nickname?nickname=' + nickname, {
+      const response = await fetch('http://192.168.25.204:8080/member/member-nickname?nickname=' + nickname, {
         method: 'GET',
         headers: {
             'Accept': 'text/plain', // 텍스트 형식을 받도록 설정
@@ -125,7 +125,7 @@ const RegisterScreen = () => {
         return;
       }
 
-      const response = await fetch('http://192.168.25.202:8080/member/members', {
+      const response = await fetch('http://192.168.25.204:8080/member/members', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ const RegisterScreen = () => {
       if (response.ok) {
         // 회원가입 성공
         alert('회원가입을 축하드립니다.');
-        navigation.navigate('MainView');
+        navigation.navigate('MainView1');
       } else {
         // 회원가입 실패
         alert('회원가입을 실패했습니다.');

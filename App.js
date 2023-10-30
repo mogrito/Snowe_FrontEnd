@@ -147,7 +147,7 @@ function TabNavigator() {
       }}
     >
       <Tab.Screen
-        name="MainView"
+        name="MainView1"
         component={MainScreen}
         options={{
           tabBarLabel: '홈',
