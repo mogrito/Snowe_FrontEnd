@@ -4,6 +4,7 @@ import { useNavigation, useIsFocused } from '@react-navigation/native'; // 네�
 import FloatingWriteButton from './FloatingWriteButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { MaterialIcons} from '@expo/vector-icons';
 
 function SocialView() {
   const [hidden, setHidden] = useState(false);
@@ -56,22 +57,19 @@ function SocialView() {
       title: board.title, 
       content: board.content, 
       writer: board.writer, 
-      comment: board.comment,
       refreshData: refreshBoardData, // 삭제 후 새로고침 함수를 전달
     }); // 댓글 내용을 전달 });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>게시판</Text>
-      <TouchableOpacity
-        style={styles.searchButton}
-        onPress={onSearchButtonPress}
-      >
-        <Text>
-          <Icon name="search" size={24} color="black" /> {/* 검색 아이콘 */}
-        </Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text></Text>
+        <Text style={styles.title}>Board</Text>
+        <TouchableOpacity style={styles.userIcon} onPress={onSearchButtonPress}>
+          <MaterialIcons name="search" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
       <FlatList
           data={boardList}
           keyExtractor={(item) => item.boardId.toString()}
@@ -92,31 +90,38 @@ function SocialView() {
           }
         />
       <FloatingWriteButton hidden={hidden} />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    backgroundColor: 'white',
+    backgroundColor: '#DBEBF9'
   },
   header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 16, // 헤더 아래 간격 조정
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'sticky',
+    top:40,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    zIndex: 1,
+    marginBottom:30,
+  },
+  title: {
+    fontSize: 40,
+    fontStyle: 'italic',
+    color: 'black',
+    fontFamily: 'DMSerifText1',
+    left: 11,    
   },
   boardItem: {
     marginTop: 2,
     marginBottom: 1,
-    padding: 3,
-    backgroundColor: '#f0f0f0',
+    padding: 10,
     borderRadius: 2,
   },
   textContainer: {
@@ -124,9 +129,6 @@ const styles = StyleSheet.create({
     borderColor: 'black', // 테두리 색상
     padding: 25, // 텍스트 주위의 패딩
     borderRadius: 5, // 테두리의 모서리 반경 (원형 테두리를 만들려면 원의 반지름으로 설정)
-  },
-  boardBody: {
-    fontSize: 16,
   },
   selectedBoard: {
     marginTop: 16,
@@ -141,14 +143,10 @@ const styles = StyleSheet.create({
   selectedBoardBody: {
     fontSize: 16,
   },
-  searchButton: {
-    position: 'absolute',
-    top: 60, // 원하는 위치로 조절
-    right: 20, // 원하는 위치로 조절
-  },
+  searchButton : {
+    marginTop: 5,
+    right: 10,
+  }
 });
 
 export default SocialView;
-
-
-

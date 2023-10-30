@@ -16,7 +16,7 @@ function WriteScreen({ route }) {
   const navigation = useNavigation();
   const bodyRef = useRef();
   const [date, setDate] = useState(log ? new Date(log.date) : new Date());
-  const loginId = 'test';
+  const loginId = '정훈';
 
   const handleTitleChange = (text) => {
     setTitle(text);
@@ -25,8 +25,6 @@ function WriteScreen({ route }) {
   const handleContentChange = (text) => {
     setContent(text);
   };
-
-  const { onCreate, onModify, onRemove } = useContext(LogContext);
 
   const onSave = () => {
     // 여기서 서버로 데이터를 전송합니다.
@@ -40,55 +38,16 @@ function WriteScreen({ route }) {
       },
       body: JSON.stringify(postData),
     })
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((data) => {
-        console.log('새글작성완료:', data);
+        console.log('새 글 작성완료:', data);
         // 글 작성이 성공하면 원하는 작업을 수행하거나 화면을 전환합니다.
         navigation.goBack(); // 예를 들어 글 작성 후 뒤로 돌아가기
       })
       .catch((error) => {
-        console.error('글작성중오류발생:', error);
+        console.error('글 작성 중 오류발생:', error);
         // 오류 처리 또는 사용자에게 알림을 표시하는 등의 작업을 수행합니다.
       });
-  };
-
-  // const onSave = () => {
-  //   if (log) {
-  //     onModify({
-  //       id: log.id,
-  //       date: date.toISOString(),
-  //       title,
-  //       body,
-  //     });
-  //   } else {
-  //     onCreate({
-  //       title,
-  //       body,
-  //       date: date.toISOString(),
-  //     });
-  //   }
-  //   navigation.pop();
-  // };
-
-  const onAskRemove = () => {
-    Alert.alert(
-      '삭제',
-      '정말로 삭제하시겠어요?',
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '삭제',
-          onPress: () => {
-            onRemove(log?.id);
-            navigation.pop();
-          },
-          style: 'destructive',
-        },
-      ],
-      {
-        cancelable: true,
-      }
-    );
   };
 
   return (
