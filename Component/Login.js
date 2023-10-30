@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image
+  ,showToast
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import * as Font from 'expo-font';
@@ -40,7 +41,7 @@ const LoginScreen = () => {
     };
   
     try {
-      const response = await fetch('http://192.168.25.202:8080/member/login', {
+      const response = await fetch('http://192.168.25.204:8080/member/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

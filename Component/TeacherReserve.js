@@ -14,23 +14,6 @@ const TeacherReserveScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
-  // API에서 선생님 데이터 가져오기
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('YOUR_API'); // 실제 API 
-        const data = await response.json();
-        setTeacherData(data);
-      } catch (error) {
-        console.error('선생님 데이터 가져오기 오류: ', error);
-      }
-    };
-
-    if (isFocused) {
-      fetchData();
-    }
-  }, [isFocused]);
-
   // 예약 신청을 서버에 업데이트하는 함수
   const reserveLesson = async () => {
     if (selectedTeacher) {
@@ -69,11 +52,25 @@ const TeacherReserveScreen = () => {
     }
   };
 
-  const handleDateSelect = (date) => {
+  const handleDateSelect = async (date) => {
     setSelectedDate(date.dateString);
-    const filteredTeachers = teacherData.filter((teacher) => teacher.edudate === date.dateString);
-    setFilteredTeachers(filteredTeachers);
+    
+    try {
+      const response = await fetch(`http://192.168.25.204:8080/lesson?lessonDate=${date.dateString}`, {
+        method: 'GET', // GET 요청으로 변경
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setFilteredTeachers(data);
+    } catch (error) {
+      console.error('선생님 데이터 가져오기 오류:', error);
+    }
   };
+  
+  
 
   const resetTeacherList = () => {
     setFilteredTeachers([]);
@@ -87,11 +84,11 @@ const TeacherReserveScreen = () => {
     }
   }, [isFocused]);
 
-  const sortedTeacherData = teacherData.slice().sort((a, b) => {
-    const timeA = parseInt(a.edudate.replace(':', ''));
-    const timeB = parseInt(b.edudate.replace(':', ''));
-    return timeA - timeB;
-  });
+  // const sortedTeacherData = filteredTeachers.slice().sort((a, b) => {
+  //   const timeA = parseInt(a.edudate.replace(':', ''));
+  //   const timeB = parseInt(b.edudate.replace(':', ''));
+  //   return timeA - timeB;
+  // });
 
   const lastTeacherItemStyle = {
     teacherItem: {
@@ -124,12 +121,14 @@ const TeacherReserveScreen = () => {
     <View style={styles.container}>
       <View style={styles.teacherWrapper}>
         <Text style={styles.title}>강사 예약</Text>
-        <Calendar style={styles.calender} onDayPress={handleDateSelect} />
+        <Calendar style={styles.calender} onDayPress={handleDateSelect} markedDates={{
+          [selectedDate]: { selected: true, selectedColor: 'skyblue' }, // Highlight the selected date
+        }} />
         {selectedDate && (
           <FlatList
-            data={sortedTeacherData}
-            keyExtractor={(item) => item.id.toString()} // id를 문자열로 변환
-            renderItem={({ item, index }) => (
+          data={filteredTeachers}
+          keyExtractor={(item) => item?.id?.toString()}
+          renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={[
                   styles.teacherItem,
@@ -141,10 +140,10 @@ const TeacherReserveScreen = () => {
                   <Image source={{ uri: item.image }} style={styles.teacherImage} />
                   <View>
                     <Text style={styles.teacherName}>{item.name}</Text>
-                    <Text style={styles.eduTime}>{item.edudate}</Text>
+                    <Text style={styles.eduTime}>{item.div}</Text>
                   </View>
-                  <Text style={styles.teacherCount}>{`(${item.count} / 50)`}</Text>
-                  <Text style={styles.teacherSubject}>{item.subject}</Text>
+                  <Text style={styles.teacherCount}>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
+                  <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}반`}</Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -158,6 +157,7 @@ const TeacherReserveScreen = () => {
           <Text style={styles.reservationTitle}>예약 확인</Text>
           <Image source={{ uri: selectedTeacher?.image }} style={styles.teacherModalImage} />
           <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
+          <Text style={styles.selectedDate}>{`강습 제목: ${selectedTeacher?.title}`}</Text>
           <Text style={styles.selectedDate}>{`강습 시작일: ${selectedDate}`}</Text>
           <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.edudate}`}</Text>
           <View style={styles.buttonContainer}>
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   teacherCount: {
-    left: 210,
+    left: 200,
   },
   eduTime: {
     right: 0,
