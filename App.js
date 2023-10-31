@@ -124,10 +124,10 @@ function DrawerNavigator() {
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
-
       <Drawer.Screen name="SkiResortList" component={SkiResortListScreen} options={{ headerShown: false }} />
       <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
       <Drawer.Screen name="MainView" component={MainScreen} options={{ headerShown: false }} />
+      
     </Drawer.Navigator>
   );
 }
