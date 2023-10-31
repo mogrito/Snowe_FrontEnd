@@ -6,6 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import {
@@ -19,6 +20,7 @@ import {
   Octicons,
   Zocial,
   MaterialCommunityIcons,
+  FontAwesome6,
 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
@@ -125,7 +127,13 @@ function MainScreen() {
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        {!isLoading && weatherData && weatherData.main && (
+        {isLoading ? ( // 로딩 중일 때
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="black" />
+            <Text>Loading...</Text>
+          </View>
+        ) : (
+          // 데이터 로딩 후 표시할 내용
           <View style={styles.weatherContainer}>
             <Text style={styles.weatherCity}>{selectedResortName}</Text>
             <MaterialCommunityIcons
@@ -140,6 +148,26 @@ function MainScreen() {
             <Text style={styles.weatherTemp}>{(weatherData.main.temp - 273.15).toFixed(0)}°C</Text>
           </View>
         )}
+        <View style={styles.SkiInfo}>
+          <TouchableOpacity style={styles.SkiInfoIcon}>
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name="webcam" size={24} color="black" />
+              <Text style={styles.iconText}>실시간 웹캠</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.SkiResortBusIcon}>
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name="bus-clock" size={24} color="black" />
+              <Text style={styles.iconText}>셔틀버스 정보</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.SkiResortIcon}>
+            <View style={styles.iconContainer}>
+              <FontAwesome name="building-o" size={24} color="black" />
+              <Text style={styles.iconText}>스키장 콘도 예약</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
         <Calendar style={styles.calendar} />
       </ScrollView>
     </View>
@@ -211,6 +239,42 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: '600',
   },
+
+  SkiInfo: {
+    flexDirection: 'row', 
+    justifyContent: 'space-evenly', 
+    backgroundColor: 'white',
+    width: '90%',
+    height: 110,
+    marginTop: 20,
+    borderRadius: 10,
+  },
+  SkiInfoIcon: {
+    marginTop: 30,
+    marginLeft: 14,
+  },
+  SkiResortBusIcon: {
+    marginTop: 30,
+    marginLeft: 14,
+
+  },
+  SkiResortIcon: {
+    marginTop: 30,
+    marginLeft: 3,
+
+
+
+  },
+  iconContainer: {
+    alignItems: 'center',
+    
+    
+  },
+  iconText: {
+    marginTop: 10, // 원하는 값으로 조정
+  },
+
+
 });
 
 export default MainScreen;

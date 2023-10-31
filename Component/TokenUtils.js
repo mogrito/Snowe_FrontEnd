@@ -79,3 +79,5 @@ export const verifyTokens = async (navigation) => {
         navigation.reset({ routes: [{ name: "AuthPage" }] });
     }
 };
+
+
