@@ -49,7 +49,7 @@ const ForgotIdScreen = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('이메일을 입력해주세요');
+      alert('이메일을 입력해주세요!');
   
       
     }
