@@ -163,7 +163,7 @@ function TabNavigator() {
       />
        <Tab.Screen
         name="TeacherReserve"
-        component={TeacherReserveTestScreen}
+        component={TeacherReserveScreen}
         options={{
           tabBarLabel: '강사 예약',
           tabBarIcon: ({ color }) => (
