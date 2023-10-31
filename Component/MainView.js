@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import {
@@ -148,26 +149,34 @@ function MainScreen() {
             <Text style={styles.weatherTemp}>{(weatherData.main.temp - 273.15).toFixed(0)}°C</Text>
           </View>
         )}
+
         <View style={styles.SkiInfo}>
-          <TouchableOpacity style={styles.SkiInfoIcon}>
-            <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name="webcam" size={24} color="black" />
-              <Text style={styles.iconText}>실시간 웹캠</Text>
+          <TouchableOpacity onPress={() => Linking.openURL(selectedResort.webcam)}>
+            <View style={styles.SkiInfoIcon}>
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons name="webcam" size={24} color="black" />
+                <Text style={styles.iconText}>실시간 웹캠</Text>
+              </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.SkiResortBusIcon}>
-            <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name="bus-clock" size={24} color="black" />
-              <Text style={styles.iconText}>셔틀버스 정보</Text>
+          <TouchableOpacity onPress={() => Linking.openURL(selectedResort.bus)}>
+            <View style={styles.SkiResortBusIcon}>
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons name="bus-clock" size={24} color="black" />
+                <Text style={styles.iconText}>셔틀버스 정보</Text>
+              </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.SkiResortIcon}>
-            <View style={styles.iconContainer}>
-              <FontAwesome name="building-o" size={24} color="black" />
-              <Text style={styles.iconText}>스키장 콘도 예약</Text>
+          <TouchableOpacity onPress={() => Linking.openURL(selectedResort.condo)}>
+            <View style={styles.SkiResortIcon}>
+              <View style={styles.iconContainer}>
+                <FontAwesome name="building-o" size={24} color="black" />
+                <Text style={styles.iconText}>스키장 콘도 예약</Text>
+              </View>
             </View>
           </TouchableOpacity>
         </View>
+
         <Calendar style={styles.calendar} />
       </ScrollView>
     </View>

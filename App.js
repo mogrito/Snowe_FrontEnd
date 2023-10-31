@@ -20,6 +20,7 @@ import EditScreen from './Component/EditScreen';
 import SearchScreen from './Component/SearchScreen';
 import SkiResortListScreen from './Component/SkiResortList';
 import ReservationListScreen from './Component/ReservationList';
+import TeacherReserveTestScreen from './Component/TeacherReserveTest';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -162,7 +163,7 @@ function TabNavigator() {
       />
        <Tab.Screen
         name="TeacherReserve"
-        component={TeacherReserveScreen}
+        component={TeacherReserveTestScreen}
         options={{
           tabBarLabel: '강사 예약',
           tabBarIcon: ({ color }) => (
