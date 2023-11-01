@@ -1,13 +1,12 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 
 const data = [
-  { id: '1', name: '강사 1' },
-  { id: '2', name: '강사 2' },
-  { id: '3', name: '강사 3' },
-  // 나머지 데이터...
+  { id: '1', name: '원빈', subject: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00' },
+  { id: '2', name: '주성', subject: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00' },
+  { id: '3', name: '정훈', subject: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00' },
 ];
 
 const ReservationListScreen = () => {
@@ -17,10 +16,15 @@ const ReservationListScreen = () => {
     navigation.pop();
   };
 
+  const onCancel = (reservationId) => {
+    // Handle cancellation logic here
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>예약 목록</Text>
+
         <View style={styles.buttonContainer}>
           <TransparentCircleButton
             onPress={onGoBack}
@@ -28,13 +32,31 @@ const ReservationListScreen = () => {
             color="#424242"
           />
         </View>
+
       </View>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text style={styles.itemText}>{item.name}</Text>
+            <View style={styles.itemContent}>
+              <View style={styles.imageContainer}>
+                <Image source={item.image} style={styles.teacherImage} />
+              </View>
+              <View style={styles.textContainer}>
+                <Text style={styles.itemText}>{item.name}</Text>
+                <View style={styles.subjectContainer}>
+                  <Text style={styles.subjectText}>{item.subject}</Text>
+                </View>
+                <Text style={styles.itemText}>{item.edudate}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => onCancel(item.id)}
+                style={styles.cancelButton}
+              >
+                <Text style={styles.cancelButtonText}>취소</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         showsVerticalScrollIndicator={false}
@@ -61,7 +83,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonContainer: {
-    marginRight: 1, // 오른쪽 여백 조정
+    marginRight: 1, 
   },
   item: {
     backgroundColor: 'white',
@@ -69,8 +91,46 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 8,
   },
+  itemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  imageContainer: {
+    borderRadius: 50, 
+    overflow: 'hidden', 
+  },
+  teacherImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  textContainer: {
+    flex: 1, 
+    marginLeft: 10,
+  },
   itemText: {
     fontSize: 16,
+    marginBottom: -5, 
+    marginTop: -5, 
+  },
+  subjectContainer: {
+    alignItems: 'center', 
+    marginBottom: 0, 
+  },
+  subjectText: {
+    fontSize: 16,
+  },
+  cancelButton: {
+    width: '15%',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center', 
+    alignItems: 'center', 
+  },
+  cancelButtonText: {
+    textAlign: 'center', 
   },
 });
 

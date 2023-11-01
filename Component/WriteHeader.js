@@ -25,11 +25,6 @@ function reducer(state, action) {
   }
 }
 
-
-
-
-
-
 function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
   const navigation = useNavigation();
   const onGoBack = () => {
