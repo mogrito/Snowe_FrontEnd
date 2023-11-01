@@ -6,6 +6,7 @@ import axios from 'axios'; // axios를 임포트
 import WriteEditor from './WriteEditor';
 import WriteHeader from './WriteHeader';
 import LogContext from '../context/LogContext';
+import { verifyTokens } from './TokenUtils';
 
 function WriteScreen({ route }) {
   const log = route.params?.log;
@@ -17,6 +18,8 @@ function WriteScreen({ route }) {
   const bodyRef = useRef();
   const [date, setDate] = useState(log ? new Date(log.date) : new Date());
   const loginId = '정훈';
+
+  verifyTokens(navigation)
 
   const handleTitleChange = (text) => {
     setTitle(text);

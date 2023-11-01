@@ -19,6 +19,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
   const navigation = useNavigation();
+  const URL = 'http://192.168.25.204:8080';
 
   useEffect(() => {
     
@@ -32,15 +33,16 @@ const LoginScreen = () => {
     loadCustomFont();
   }, []);
   
-  
+  // password body 에서 안보이게 해야함
   const handleLogin = async () => {
     const userData = {
       loginId: loginId,
       password: password,
     };
-  
+    
+    // URL 변수 지정해서 최상위에서 바꾸면 다른 API 다 적용되게
     try {
-      const response = await fetch('http://192.168.25.204:8080/member/login', {
+      const response = await fetch(`${URL}/member/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,6 +58,8 @@ const LoginScreen = () => {
         await AsyncStorage.setItem('Tokens', JSON.stringify({
           'accessToken': accessToken,
           'loginId': loginId,
+          'name':장원빈, 
+          
         }));
         const storedTokens = await AsyncStorage.getItem('Tokens');
         console.log(storedTokens);

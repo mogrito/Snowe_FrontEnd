@@ -68,16 +68,24 @@ export const getAccessToken = async () => {
     }
 };
 
-export const verifyTokens = async (navigation) => {
-    const accessToken = await getAccessToken();
+// fetch(`${URL}/user
 
-    if (accessToken) {
-        // 토큰이 있으면 자동 로그인
-        navigation.navigate('HomeTab');
+export const verifyTokens = async () => {
+    const token = await getAccessToken();
+    const response = await fetch(`${URL}/user`, {
+      method: 'get',
+      headers: {
+        'Authorization' : token,
+        'Content-Type': 'application/json',
+      },
+    })
+    // user api 에 요청 -> 토큰을 검증
+    if (response.status === 200) {
+        console.log('유효') // 이게 안먹으면 navigate 로 mainview 쏴.
     } else {
         // 토큰이 없거나 만료된 경우 로그인 페이지로 이동
-        navigation.reset({ routes: [{ name: "AuthPage" }] });
+        navigation.reset({ routes: [{ name: "login" }] });
     }
-};
+  };
 
 

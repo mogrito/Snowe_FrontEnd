@@ -3,6 +3,8 @@ import { Text, View, Image } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+
+// Token 검증 / 
 export function CustomDrawerContent({ navigation }) {
   return (
     <DrawerContentScrollView>
