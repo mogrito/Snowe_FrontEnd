@@ -3,7 +3,7 @@ import React, { useState, useRef,useEffect } from 'react';
 import { Alert, StyleSheet, KeyboardAvoidingView, View, Platform, TextInput} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WriteHeader from './WriteHeader';
-import { verifyTokens } from './TokenUtils';
+import LogContext from '../context/LogContext';
 
 function WriteScreen({ route }) {
   const log = route.params?.log;
@@ -13,7 +13,6 @@ function WriteScreen({ route }) {
   const bodyRef = useRef();
   const [date, setDate] = useState(log ? new Date(log.date) : new Date());
   const loginId = '정훈';
-
 
   const handleTitleChange = (text) => {
     setTitle(text);

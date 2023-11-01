@@ -46,24 +46,22 @@ try {
 };
 
 
-export const verifyTokens = async (navigation) => {
-const Token = await getTokenFromLocal();
 
-// 최초 접속
-if (Token === null){
-  navigation.reset({routes: [{name: "Login"}]});
-}
-else{
-  // 토큰을 헤더에 추가하여 요청을 보냅니다.
-  const headers = {
-    Authorization: `Bearer ${Token}`,
+
+export const verifyTokens = async () => {
+    const token = await getTokenFromLocal();
+    const response = await fetch(`${URL}/user`, {
+      method: 'get',
+      headers: {
+        'Authorization' : token,
+        'Content-Type': 'application/json',
+      },
+    })
+    // user api 에 요청 -> 토큰을 검증
+    if (response.status === 200) {
+        console.log('유효') // 이게 안먹으면 navigate 로 mainview 쏴.
+    } else {
+        // 토큰이 없거나 만료된 경우 로그인 페이지로 이동
+        navigation.reset({ routes: [{ name: "login" }] });
+    }
   };
-
-  const response = await axios.get('http://192.168.219.103:8080/member/login', { headers });
-
-  // 서버 응답을 처리합니다.
-  console.log(response.data);
-
-  };
-}
-

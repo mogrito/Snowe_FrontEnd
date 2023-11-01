@@ -31,7 +31,7 @@ const RegisterScreen = () => {
   const [isUsernameValid, setIsUsernameValid] = useState(false); // 아이디 중복 확인 상태
   const [isNicknameValid, setIsNicknameValid] = useState(false);  // 닉네임 중복 확인 상태
   const navigation = useNavigation();
-
+  const URL = 'http://192.168.25.204:8080';
   const onGoBack = () => {
     navigation.pop();
   };
@@ -50,7 +50,7 @@ const RegisterScreen = () => {
   // 아이디 중복 변수
   const handleCheckUsername = async () => {
     try {
-        const response = await fetch('http://192.168.219.103:8080/member/member-count?loginId=' + username, {
+        const response = await fetch(`${URL}/member/member-count?loginId=` + username, {
             method: 'GET',
             headers: {
                 'Accept': 'text/plain', // 텍스트 형식을 받도록 설정
@@ -80,7 +80,7 @@ const RegisterScreen = () => {
     //닉네임 중복 변수 
   const handleCheckNickname = async () => {
     try {
-      const response = await fetch('http://192.168.219.103:8080/member/member-nickname?nickname=' + nickname, {
+      const response = await fetch(`${URL}/member/member-nickname?nickname=` + nickname, {
         method: 'GET',
         headers: {
             'Accept': 'text/plain', // 텍스트 형식을 받도록 설정
@@ -124,7 +124,8 @@ const RegisterScreen = () => {
         return;
       }
 
-      const response = await fetch('http://192.168.219.103:8080/member/signup', {
+
+      const response = await fetch(`${URL}/member/members`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

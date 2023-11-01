@@ -20,6 +20,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
   const navigation = useNavigation();
+  // const URL = 'http://192.168.25.204:8080';
 
   useEffect(() => {
     
@@ -33,45 +34,15 @@ const LoginScreen = () => {
     loadCustomFont();
   }, []);
   
-  
+  // getTokens 함수 호출후 로그인, 디바이스에 토큰정보 저장
   const handleLogin = async () => {
-    getTokens(loginId, password, navigation);
-    // const userData = {
-    //   loginId: loginId,
-    //   password: password,
-    // };
-  
-    // try {
-    //   const response = await fetch('http://192.168.219.103:8080/member/login', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(userData),
-    //   });
-  
-    //   if (response.status === 200) {
-    //     const accessToken = response.headers.get('Authorization');
-    //     console.log(accessToken);
-  
-    //     // AccessToken을 로컬 스토리지에 저장
-    //     await AsyncStorage.setItem('Tokens', JSON.stringify({
-    //       'accessToken': accessToken,
-    //       'loginId': loginId,
-    //     }));
-    //     const storedTokens = await AsyncStorage.getItem('Tokens');
-    //     console.log(storedTokens);
-  
-    //     navigation.navigate('MainView');
-    //   } else if (response.status === 401) {
-    //     alert("아이디 또는 비밀번호가 존재하지 않습니다.");
-    //   } else {
-    //     alert("알 수 없는 오류");
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("알 수 없는 오류");
-    // }
+    getTokens(loginId, password, navigation)
+      .then(() => {
+        console.log(loginId , " 로그인");
+      })
+      .catch((error) => {
+          console.log( error.message);
+      });
   };
 
   return (
