@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 
+//웹에서 실행 시 FirstView 화면 실행 안함
+
 const FirstScreen = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [fontLoaded, setFontLoaded] = useState(false);

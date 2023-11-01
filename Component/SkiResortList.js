@@ -96,7 +96,7 @@ const data = [
     location: { latitude: 37.331614, longitude: 127.2837987 }, 
     webcam: 'https://www.konjiamresort.co.kr/ski/liveCam.dev',
     bus: 'https://m.konjiamresort.co.kr/ski/pickupService.dev',
-    condo: 'https://www.konjiamresort.co.kr/condo/condoInfo.dev#',
+    condo: 'https://reservation.konjiamresort.co.kr/view/main.do#Business',
   },
   { 
     id: '13', 

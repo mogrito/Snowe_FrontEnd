@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput,FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, Alert, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
-import { TouchableWithoutFeedback } from 'react-native';
 
 function PostView({ route }) {
   const { boardId, title, content, writer, refreshData } = route.params;

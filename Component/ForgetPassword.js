@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Alert,
+
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import backgroundImage from '../Images/snowe.png';
+import TransparentCircleButton from './TransparentCircleButton';
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState('');  // 이메일 변수 
@@ -55,14 +56,26 @@ const ForgotPasswordScreen = () => {
     }
   };
 
+  const onGoBack = () => {
+    navigation.pop();
+  };
+
   return (
     <View style={styles.container}>
       {/* Background Image */}
       <Image source={backgroundImage} style={styles.backgroundImage} />
-
+  
+      <View style={styles.topBar}>
+        <TransparentCircleButton
+          onPress={onGoBack}
+          name="arrow-back"
+          color="#424242"
+        />
+      </View>
+  
       {/* Title */}
       <Text style={fontLoaded ? styles.title : {}}>Find Password</Text>
-
+  
       {/* Email Input */}
       <TextInput
         style={styles.input}
@@ -70,12 +83,12 @@ const ForgotPasswordScreen = () => {
         value={email}
         onChangeText={(text) => setEmail(text)}
       />
-
+  
       {/* Reset Password Button */}
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
         <Text style={styles.resetText}>이메일 전송</Text>
       </TouchableOpacity>
-
+  
       {/* Links */}
       <View style={styles.linkContainer}>
         <TouchableOpacity
@@ -146,6 +159,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
+  topBar: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+  },
+  
+  
 });
 
 export default ForgotPasswordScreen;

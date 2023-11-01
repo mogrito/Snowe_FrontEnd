@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Button, TextInput} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { SafeAreaView } from 'react-native-safe-area-context';

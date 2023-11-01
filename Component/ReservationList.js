@@ -1,42 +1,62 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import TransparentCircleButton from './TransparentCircleButton';
+import { useNavigation } from '@react-navigation/native';
 
-
-//예약 하드코딩 데이터들 
 const data = [
-  { id: '1', name: '강사 1'},
-  { id: '2', name: '강사 2'},
-  { id: '3', name: '강사 3'},
-  { id: '4', name: '강사 4'},
-  { id: '5', name: '강사 5'},
-  { id: '6', name: '강사 6'},
-  { id: '7', name: '강사 7'},
-  { id: '8', name: '강사 8'},
-  { id: '9', name: '강사 9'},
-  { id: '10', name: '강사 10'},
-  { id: '11', name: '강사 11'} ,
-  { id: '12', name: '강사 12'},
-  { id: '13', name: '강사 13'}
+  { id: '1', name: '원빈', subject: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00' },
+  { id: '2', name: '주성', subject: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00' },
+  { id: '3', name: '정훈', subject: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00' },
 ];
 
-const SkiResortPress = () => {
-
-
-
-};
-
-
-
 const ReservationListScreen = () => {
+  const navigation = useNavigation();
+
+  const onGoBack = () => {
+    navigation.pop();
+  };
+
+  const onCancel = (reservationId) => {
+    // Handle cancellation logic here
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>예약 목록</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>예약 목록</Text>
+
+        <View style={styles.buttonContainer}>
+          <TransparentCircleButton
+            onPress={onGoBack}
+            name="arrow-back"
+            color="#424242"
+          />
+        </View>
+
+      </View>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text style={styles.itemText}>{item.name}</Text>
+            <View style={styles.itemContent}>
+              <View style={styles.imageContainer}>
+                <Image source={item.image} style={styles.teacherImage} />
+              </View>
+              <View style={styles.textContainer}>
+                <Text style={styles.itemText}>{item.name}</Text>
+                <View style={styles.subjectContainer}>
+                  <Text style={styles.subjectText}>{item.subject}</Text>
+                </View>
+                <Text style={styles.itemText}>{item.edudate}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => onCancel(item.id)}
+                style={styles.cancelButton}
+              >
+                <Text style={styles.cancelButtonText}>취소</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         showsVerticalScrollIndicator={false}
@@ -45,7 +65,6 @@ const ReservationListScreen = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -53,10 +72,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 60,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 20,
+  },
+  buttonContainer: {
+    marginRight: 1, 
   },
   item: {
     backgroundColor: 'white',
@@ -64,8 +91,46 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 8,
   },
+  itemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  imageContainer: {
+    borderRadius: 50, 
+    overflow: 'hidden', 
+  },
+  teacherImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  textContainer: {
+    flex: 1, 
+    marginLeft: 10,
+  },
   itemText: {
     fontSize: 16,
+    marginBottom: -5, 
+    marginTop: -5, 
+  },
+  subjectContainer: {
+    alignItems: 'center', 
+    marginBottom: 0, 
+  },
+  subjectText: {
+    fontSize: 16,
+  },
+  cancelButton: {
+    width: '15%',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center', 
+    alignItems: 'center', 
+  },
+  cancelButtonText: {
+    textAlign: 'center', 
   },
 });
 

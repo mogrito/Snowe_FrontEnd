@@ -124,10 +124,10 @@ function DrawerNavigator() {
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
-
       <Drawer.Screen name="SkiResortList" component={SkiResortListScreen} options={{ headerShown: false }} />
       <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
       <Drawer.Screen name="MainView" component={MainScreen} options={{ headerShown: false }} />
+      
     </Drawer.Navigator>
   );
 }
@@ -163,7 +163,7 @@ function TabNavigator() {
       />
        <Tab.Screen
         name="TeacherReserve"
-        component={TeacherReserveTestScreen}
+        component={TeacherReserveScreen}
         options={{
           tabBarLabel: '강사 예약',
           tabBarIcon: ({ color }) => (

@@ -13,15 +13,7 @@ import { Calendar } from 'react-native-calendars';
 import {
   FontAwesome,
   MaterialIcons,
-  Ionicons,
-  Entypo,
-  AntDesign,
-  Feather,
-  Fontisto,
-  Octicons,
-  Zocial,
   MaterialCommunityIcons,
-  FontAwesome6,
 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
