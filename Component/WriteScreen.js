@@ -1,22 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState, useRef } from 'react';
+import React, { useState, useRef,useEffect } from 'react';
 import { Alert, StyleSheet, KeyboardAvoidingView, View, Platform, TextInput} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import axios from 'axios'; // axios를 임포트
-import WriteEditor from './WriteEditor';
 import WriteHeader from './WriteHeader';
-import LogContext from '../context/LogContext';
+import { verifyTokens } from './TokenUtils';
 
 function WriteScreen({ route }) {
   const log = route.params?.log;
-  const logContext = useContext(LogContext);
-
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const navigation = useNavigation();
   const bodyRef = useRef();
   const [date, setDate] = useState(log ? new Date(log.date) : new Date());
   const loginId = '정훈';
+
 
   const handleTitleChange = (text) => {
     setTitle(text);

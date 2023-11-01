@@ -2,10 +2,12 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useRef} from 'react';
 import {Animated, Platform, Pressable, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { verifyTokens } from './TokenUtils';
 
 function FloatingWriteButton({hidden}) {
   const navigation = useNavigation();
   const onPress = () => {
+    verifyTokens(navigation);
     navigation.navigate('Write');
   };
 

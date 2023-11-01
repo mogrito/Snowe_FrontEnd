@@ -191,7 +191,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Login"
-        component={LoginScreen}
+        component={LoginScreen} // mypage  - mypage 안에다가 그 토큰검증 함수를 써야된다고
         options={{
           tabBarLabel: '마이페이지',
           tabBarIcon: ({ color }) => (

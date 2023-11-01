@@ -38,7 +38,7 @@ function SocialView() {
 
   const fetchBoardData = async () => {
     try {
-      const response = await fetch('http://192.168.25.204:8080/board/list');
+      const response = await fetch('http://192.168.219.103:8080/board/list');
       const boardData = await response.json();
       console.log(boardData);
       // alert(boardData[0].title);

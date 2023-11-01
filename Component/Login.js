@@ -13,6 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native'; 
 import * as Font from 'expo-font';
 import backgroundImage from '../Images/snowe.png';
+import { getTokens } from './TokenUtils';
 
 
 const LoginScreen = () => {
@@ -35,42 +36,43 @@ const LoginScreen = () => {
   
   
   const handleLogin = async () => {
-    const userData = {
-      loginId: loginId,
-      password: password,
-    };
+    getTokens(loginId, password, navigation);
+    // const userData = {
+    //   loginId: loginId,
+    //   password: password,
+    // };
   
-    try {
-      const response = await fetch('http://192.168.25.204:8080/member/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
+    // try {
+    //   const response = await fetch('http://192.168.219.103:8080/member/login', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(userData),
+    //   });
   
-      if (response.status === 200) {
-        const accessToken = response.headers.get('Authorization');
-        console.log(accessToken);
+    //   if (response.status === 200) {
+    //     const accessToken = response.headers.get('Authorization');
+    //     console.log(accessToken);
   
-        // AccessToken을 로컬 스토리지에 저장
-        await AsyncStorage.setItem('Tokens', JSON.stringify({
-          'accessToken': accessToken,
-          'loginId': loginId,
-        }));
-        const storedTokens = await AsyncStorage.getItem('Tokens');
-        console.log(storedTokens);
+    //     // AccessToken을 로컬 스토리지에 저장
+    //     await AsyncStorage.setItem('Tokens', JSON.stringify({
+    //       'accessToken': accessToken,
+    //       'loginId': loginId,
+    //     }));
+    //     const storedTokens = await AsyncStorage.getItem('Tokens');
+    //     console.log(storedTokens);
   
-        navigation.navigate('MainView');
-      } else if (response.status === 401) {
-        showToast("아이디 또는 비밀번호가 존재하지 않습니다.");
-      } else {
-        showToast("알 수 없는 오류");
-      }
-    } catch (error) {
-      console.error(error);
-      showToast("알 수 없는 오류");
-    }
+    //     navigation.navigate('MainView');
+    //   } else if (response.status === 401) {
+    //     alert("아이디 또는 비밀번호가 존재하지 않습니다.");
+    //   } else {
+    //     alert("알 수 없는 오류");
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   alert("알 수 없는 오류");
+    // }
   };
 
   return (
