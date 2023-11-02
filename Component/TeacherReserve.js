@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { verifyTokens } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -13,6 +14,10 @@ const TeacherReserveScreen = () => {
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    verifyTokens(navigation);
+  },);
 
   // 예약 신청을 서버에 업데이트하는 함수
   const reserveLesson = async () => {

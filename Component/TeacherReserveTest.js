@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button, Alert} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused,useNavigation } from '@react-navigation/native';
+import { verifyTokens } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -32,6 +33,7 @@ const TeacherReserveTestScreen = () => {
   };
 
   useEffect(() => {
+    verifyTokens();
     if (isFocused) {
       // 화면이 활성화되면 강사 리스트를 초기화
       resetTeacherList();

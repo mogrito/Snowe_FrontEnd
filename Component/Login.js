@@ -37,12 +37,7 @@ const LoginScreen = () => {
   // getTokens 함수 호출후 로그인, 디바이스에 토큰정보 저장
   const handleLogin = async () => {
     getTokens(loginId, password, navigation)
-      .then(() => {
-        console.log(loginId , " 로그인");
-      })
-      .catch((error) => {
-          console.log( error.message);
-      });
+
   };
 
   return (

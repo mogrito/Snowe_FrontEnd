@@ -2,33 +2,29 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native'; 
 import axios from "axios";
 
-export const getTokens = (loginId, password, navigation) => {
-  axios.post(`http://192.168.219.103:8080/member/login`,
-  {
-    "loginId":loginId,
-    "password":password
-  })
-  .then(res =>{{
-        //accessToken, refreshToken 로컬에 저장
-        if (res.status === 200){
-          AsyncStorage.setItem('Tokens', JSON.stringify({
-            'accessToken': res.data.token,
-            'loginId': res.data.loginId
-          }))
-          console.log("응답 데이터:", res.data);
-          navigation.navigate('MainView1');
-        }
+const URL = 'http://192.168.219.103:8080';
 
-  }})
-  .catch(error =>{
-          if(error.response.status === 401){
-              alert(error.response.data)
-          }
-          else{
-              alert("알수없는 오류")
-          } 
-        
+export const getTokens = (loginId, password, navigation) => {
+  axios.post(`${URL}/member/login`, {
+    "loginId": loginId,
+    "password": password
   })
+    .then(res => {
+      // accessToken, refreshToken 로컬에 저장
+      if (res.status === 200) {
+        AsyncStorage.setItem('Tokens', JSON.stringify({
+          'accessToken': res.data.token,
+        }))
+        navigation.navigate('MainView1');
+      }
+    })
+    .catch(error => {
+      if (error.response.status === 401) {
+        alert(error.response.data);
+      } else {
+        alert("사용자정보를 찾을수 없습니다.");
+      }
+    });
 };
 
 const getTokenFromLocal = async () => {
@@ -48,20 +44,28 @@ try {
 
 
 
-export const verifyTokens = async () => {
-    const token = await getTokenFromLocal();
-    const response = await fetch(`${URL}/user`, {
+export const verifyTokens = async (navigation) => {
+  const token = await getTokenFromLocal();
+  // 토큰을 서명형식에 맞게 조합
+
+  const authorizationHeader = `Bearer ${token.accessToken}`;
+    const response = await fetch(`${URL}`, {
       method: 'get',
       headers: {
-        'Authorization' : token,
+        'Authorization' : authorizationHeader,
         'Content-Type': 'application/json',
       },
     })
-    // user api 에 요청 -> 토큰을 검증
+
+   
     if (response.status === 200) {
-        console.log('유효') // 이게 안먹으면 navigate 로 mainview 쏴.
-    } else {
-        // 토큰이 없거나 만료된 경우 로그인 페이지로 이동
-        navigation.reset({ routes: [{ name: "login" }] });
+        console.log('유효')
+    }else if(response.status === 403){
+        alert("권한이 없습니다.");
+        navigation.navigate('MainView1')
+    }else if(response.status === 401){
+      navigation.navigate('Login');
+      console.log('토큰없음');
+      alert("로그인이 필요합니다.");
     }
   };
