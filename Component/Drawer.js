@@ -1,26 +1,28 @@
 import React from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-
-// Token 검증 / 
 export function CustomDrawerContent({ navigation }) {
   return (
     <DrawerContentScrollView>
-      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 19 }}>
         <Image
-         source={require('../Images/face.jpg')}
+          source={require('../Images/UserIcon.jpg')}
           style={{ width: 72, height: 72, borderRadius: 36 }}
         />
-        <Text style={{ fontSize: 26, fontWeight: 'bold', marginLeft: 10 }}>원빈님</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>
+            로그인하기
+          </Text>
+        </TouchableOpacity>
       </View>
       <DrawerItem
         label="마이페이지"
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => navigation.navigate('MyPage')}
       />
       <DrawerItem
         label="스키장 리스트"
