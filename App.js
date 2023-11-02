@@ -21,6 +21,7 @@ import SearchScreen from './Component/SearchScreen';
 import SkiResortListScreen from './Component/SkiResortList';
 import ReservationListScreen from './Component/ReservationList';
 import TeacherReserveTestScreen from './Component/TeacherReserveTest';
+import MyPageScreen from './Component/MyPage';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -108,6 +109,11 @@ export default function App() {
         <RootStack.Screen
           name="ReservationList"
           component={ReservationListScreen}
+          options={{ headerShown: false }}
+        />
+         <RootStack.Screen
+          name="MyPage"
+          component={MyPageScreen}
           options={{ headerShown: false }}
         />
         </RootStack.Navigator>

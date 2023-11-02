@@ -20,7 +20,7 @@ export function CustomDrawerContent({ navigation }) {
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => navigation.navigate('MyPage')}
       />
       <DrawerItem
         label="스키장 리스트"

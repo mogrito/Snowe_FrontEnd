@@ -12,6 +12,7 @@ const TeacherReserveScreen = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  
   const navigation = useNavigation();
 
   // 예약 신청을 서버에 업데이트하는 함수
