@@ -32,7 +32,7 @@ const MyPageScreen = ({ navigation }) => {
       />
       <Text style={styles.title}>내 정보</Text>
     </View>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.profileContainer}>
                   <Image source={user.image} style={styles.profileImage}/>
                   <View style={styles.userInfoContainer}>
@@ -42,7 +42,7 @@ const MyPageScreen = ({ navigation }) => {
               </View>
 
               <View style={styles.accountContainer}>
-                  <Text>계정</Text>
+                  <Text style={styles.accountheader}>계정</Text>
                   <View style={styles.account}>
                       <Text style={styles.accountName}>닉네임 변경</Text>
                       <Text style={styles.accountId}>아이디 변경</Text>
@@ -50,20 +50,25 @@ const MyPageScreen = ({ navigation }) => {
                   </View>
               </View>
 
-              <View style={styles.otherContainer}>
+              <View style={styles.questionContainer}>
+              <Text style={styles.questionheader}>이용 안내</Text>
+                  <View style={styles.question}>
+                      <Text style={styles.appver}>앱 버전</Text>
+                      <Text style={styles.ask}>문의하기</Text>
+                      <Text style={styles.infor}>공지사항</Text>
+                      <Text style={styles.license}>오픈소스 라이선스</Text>
+                  </View>
                 
                   
               </View>
-              <View style={styles.questionContainer}>
-                  
+              <View style={styles.otherContainer}>
+              <Text style={styles.otherheader}>기타</Text>
+                  <View style={styles.other}>
+                      <Text style={styles.logout}>로그아웃</Text>
+                      <Text style={styles.quit}>회원탈퇴</Text>
+                  </View>
               </View>
               </ScrollView>
-
-              <View style={styles.logoutButtonContainer}>
-                  <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                      <Text style={styles.logoutButtonText}>Log Out</Text>
-                  </TouchableOpacity>
-              </View>
          
   </View>
 
@@ -101,6 +106,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: 5,
   },
   userEmail: {
     fontSize: 16,
@@ -126,8 +132,8 @@ const styles = StyleSheet.create({
     top: 50,
     left: 11,
     flexDirection: 'row',
-    justifyContent: 'center', // 수평 가운데 정렬
-    alignItems: 'center', // 수직 가운데 정렬
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   title:{
   marginLeft: 144,
@@ -135,40 +141,115 @@ const styles = StyleSheet.create({
   fontWeight:'bold'
   },
 
-  accountContainer:{
-    flexDirection: 'row',
-    alignItems: 'center',
+  accountContainer: {
+    flexDirection: 'column', // Change to column
+    alignItems: 'flex-start', // Align text to the left
     marginBottom: 20,
     width: '100%',
-    height: 100,
     borderRadius: 10,
     backgroundColor: 'white',
-
+    paddingHorizontal: 20, // Add horizontal padding
+    paddingVertical: 10, // Add vertical padding
   },
-
-  otherContainer:{
-    flexDirection: 'row',
-    alignItems: 'center',
+  account: {
+    flex: 1, // Expand to fill the available vertical space
+  },
+  accountName: {
+    fontSize: 16, // Adjust font size as needed
+    marginBottom:25,
+  },
+  accountId: {
+    fontSize: 16, // Adjust font size as needed
+    marginBottom:25,
+  },
+  accountPw: {
+    fontSize: 16, // Adjust font size as needed
+    marginBottom:25,
+  },
+  accountheader: {
+    fontSize:18,
+    marginBottom:30,
+    fontWeight:'bold',
+    marginTop:20,
+  },
+  questionContainer: {
+    flexDirection: 'column', // Change to column
+    alignItems: 'flex-start', // Align text to the left
     marginBottom: 20,
     width: '100%',
-    height: 100,
     borderRadius: 10,
     backgroundColor: 'white',
-
+    paddingHorizontal: 20, // Add horizontal padding
+    paddingVertical: 10, // Add vertical padding
   },
   
-  questionContainer:{
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    width: '100%',
-    height: 100,
-    borderRadius: 10,
-    backgroundColor: 'white',
+  question: {
+        flex: 1, // Expand to fill the available vertical space
+    },
 
-  },
+    appver: {
+        fontSize: 16, // Adjust font size as needed
+        marginBottom: 25,
+    },
+    ask: {
+        fontSize: 16, // Adjust font size as needed
+        marginBottom: 25,
+    },
 
-  
+    infor: {
+        fontSize: 16, // Adjust font size as needed
+        marginBottom: 25,
+    },
+
+    info: {
+        fontSize: 16, // Adjust font size as needed
+        marginBottom: 25,
+    },
+
+    license: {
+        fontSize: 16, // Adjust font size as needed
+        marginBottom: 25,
+    },
+
+    questionheader: {
+        fontSize: 18,
+        marginBottom: 30,
+        fontWeight: 'bold',
+        marginTop: 20,
+    },
+
+    otherContainer: {
+        flexDirection: 'column', // Change to column
+        alignItems: 'flex-start', // Align text to the left
+        marginBottom: 20,
+        width: '100%',
+        borderRadius: 10,
+        backgroundColor: 'white',
+        paddingHorizontal: 20, // Add horizontal padding
+        paddingVertical: 10, // Add vertical padding
+      },
+      
+      other: {
+            flex: 1, // Expand to fill the available vertical space
+        },
+    
+        logout: {
+            fontSize: 16, // Adjust font size as needed
+            marginBottom: 25,
+        },
+        quit: {
+            fontSize: 16, // Adjust font size as needed
+            marginBottom: 25,
+        },
+    
+        otherheader: {
+            fontSize: 18,
+            marginBottom: 30,
+            fontWeight: 'bold',
+            marginTop: 20,
+        },
+    
+
 
 });
 
