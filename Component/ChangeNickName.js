@@ -6,15 +6,15 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-
+ 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import backgroundImage from '../Images/snowe.png';
 import TransparentCircleButton from './TransparentCircleButton';
 
-const ForgotPasswordScreen = () => {
-  const [email, setEmail] = useState(''); 
+const ForgotIdScreen = () => {
+  const [email, setEmail] = useState('');  // 이메일 변수 
   const [fontLoaded, setFontLoaded] = useState(false);
   const navigation = useNavigation();
 
@@ -42,7 +42,7 @@ const ForgotPasswordScreen = () => {
 
       if (response.ok) {
         // 이메일 발송완료
-        alert('이메일이 발송되었습니다. 비밀번호를 확인하세요');
+        alert('이메일이 발송되었습니다. 아이디를 확인하세요');
         
       } else {
         // 이메일 발송실패
@@ -50,7 +50,7 @@ const ForgotPasswordScreen = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('이메일을 입력해주세요');
+      alert('이메일을 입력해주세요!');
   
       
     }
@@ -64,7 +64,7 @@ const ForgotPasswordScreen = () => {
     <View style={styles.container}>
       {/* Background Image */}
       <Image source={backgroundImage} style={styles.backgroundImage} />
-  
+
       <View style={styles.topBar}>
         <TransparentCircleButton
           onPress={onGoBack}
@@ -72,10 +72,11 @@ const ForgotPasswordScreen = () => {
           color="#424242"
         />
       </View>
-  
+
+
       {/* Title */}
-      <Text style={fontLoaded ? styles.title : {}}>Find Password</Text>
-  
+      <Text style={fontLoaded ? styles.title : {}}>Change NickName</Text>
+
       {/* Email Input */}
       <TextInput
         style={styles.input}
@@ -83,12 +84,12 @@ const ForgotPasswordScreen = () => {
         value={email}
         onChangeText={(text) => setEmail(text)}
       />
-  
+
       {/* Reset Password Button */}
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
         <Text style={styles.resetText}>이메일 전송</Text>
       </TouchableOpacity>
-  
+
       {/* Links */}
       <View style={styles.linkContainer}>
         <TouchableOpacity
@@ -164,8 +165,7 @@ const styles = StyleSheet.create({
     top: 50,
     left: 20,
   },
-  
-  
+
 });
 
-export default ForgotPasswordScreen;
+export default ForgotIdScreen;
