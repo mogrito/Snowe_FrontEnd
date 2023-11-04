@@ -23,15 +23,41 @@ const ChangePwScreen = ({ navigation }) => {
   const onPasswordChange = (text) => {
     setnewpassword(text);
   
-    // Check if the password contains at least two types of characters (letters and numbers)
-    const hasLetter = /[a-zA-Z]/.test(text);
+   
     const hasNumber = /\d/.test(text);
   
-    // Set the state to indicate whether the password meets the criteria
+
     setShowPasswordHint(text.length > 0 && (!hasLetter || !hasNumber) || text.length < 8);
   };
   const onGoBack = () => {
     navigation.pop();
+  };
+
+  const handleChangePassword = () => {
+
+    fetch('서버의_API', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        currentPassword: password,
+        newPassword: newpassword,
+        confirmPassword: confirmPassword,
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        
+        alert('비밀번호가 성공적으로 변경되었습니다!')
+      } else {
+
+      }
+    })
+    .catch(error => {
+      console.error('에러:', error);
+    });
   };
 
   return (
@@ -87,7 +113,7 @@ const ChangePwScreen = ({ navigation }) => {
             onChangeText={onCurrentPasswordChange}
           />
         </View>
-        <TouchableOpacity style={styles.resetButton}>
+        <TouchableOpacity style={styles.resetButton} onPress={handleChangePassword}>
           <Text style={styles.resetText}>변경하기</Text>
         </TouchableOpacity>
       </View>
