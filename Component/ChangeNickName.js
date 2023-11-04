@@ -7,16 +7,19 @@ const windowWidth = Dimensions.get('window').width;
 const ChangeNickNameScreen = ({ navigation }) => {
   const [nickname, setNickname] = useState('');
   const [isNicknameValid, setIsNicknameValid] = useState(false);
+  const API_URL = 'https://your-api-url.com'; //여기에 닉네임 변경하는 API작성
+
 
   const handleCheckNickname = async () => {
     try {
-      const response = await fetch(`${URL}/member/member-nickname?nickname=` + nickname, {
+      const response = await fetch(`${API_URL}/member/member-nickname?nickname=` + nickname, {
         method: 'GET',
         headers: {
-          'Accept': 'text/plain', 
+          'Accept': 'text/plain',
         },
       });
-
+      
+  
       if (response.ok) {
         const result = await response.text();
         if (result === "duplicate") {
@@ -36,7 +39,31 @@ const ChangeNickNameScreen = ({ navigation }) => {
       setIsNicknameValid(false);
     }
   };
+  
+  //변경하기 버튼의 핸들러 
+  const handleChangeNickname = async () => {
+    try {
+      const response = await fetch(`${API_URL}/member/change-nickname`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nickname }),
+      });
+  
+      if (response.ok) {
+        alert('닉네임이 성공적으로 변경되었습니다.');
+      
+      } else {
+        alert('닉네임 변경에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('닉네임 변경 중 오류가 발생했습니다.');
+    }
+  };
 
+  
   const onGoBack = () => {
     navigation.pop();
   };
@@ -68,7 +95,7 @@ const ChangeNickNameScreen = ({ navigation }) => {
         
         <Text style={styles.middleText}>※ 닉네임을 설정하면 30일간 변경할 수 없습니다.</Text>
         
-        <TouchableOpacity style={styles.resetButton}>
+        <TouchableOpacity style={styles.resetButton} onPress={handleChangeNickname}>
           <Text style={styles.resetText}>변경하기</Text>
         </TouchableOpacity>
       </View>

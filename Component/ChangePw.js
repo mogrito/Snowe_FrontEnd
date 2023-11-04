@@ -68,7 +68,10 @@ const ChangePwScreen = ({ navigation }) => {
       </View>
 
       <View>
+        <View style={styles.text}>
         <Text style={styles.inputLabel}>새 비밀번호</Text>
+        <Text style={styles.rightText}>영문,숫자 2종류 이상 조합된 8~20자</Text>
+        </View>
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -202,6 +205,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 8,
+  },
+  text: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Align items on the left and right
+  },
+  rightText: {
+    fontSize:12,
+    color: 'gray',
+    fontWeight: 'bold',
   },
 });
 
