@@ -15,12 +15,29 @@ const MyPageScreen = ({ navigation }) => {
   const handleLogout = async () => {
     // 로그아웃 로직
     await AsyncStorage.removeItem('userToken');
-    navigation.navigate('Login'); // Navigate to the login screen
+    navigation.navigate('Login'); 
   };
 
   const onGoBack = () => {
     navigation.pop();
   };
+
+
+  const ChangeIdPage = () => {
+    navigation.navigate('ChangeId');
+
+  }
+
+  const ChangeNickNamePage = () => {
+    navigation.navigate('ChangeNickName');
+
+  }
+
+  const ChangePwPage = () => {
+    navigation.navigate('ChangePw');
+
+  }
+
 
   return (
     <View style={styles.container}>
@@ -44,9 +61,15 @@ const MyPageScreen = ({ navigation }) => {
         <View style={styles.accountContainer}>
           <Text style={styles.accountheader}>계정</Text>
           <View style={styles.account}>
+            <TouchableOpacity onPress={ChangeNickNamePage}>
             <Text style={styles.accountName}>닉네임 변경</Text>
-            <Text style={styles.accountId}>아이디 변경</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={ChangeIdPage}>
+            <Text style={styles.accountId}>이메일 변경</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  onPress={ChangePwPage}>
             <Text style={styles.accountPw}>비밀번호 변경</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -62,7 +85,9 @@ const MyPageScreen = ({ navigation }) => {
         <View style={styles.otherContainer}>
           <Text style={styles.otherheader}>기타</Text>
           <View style={styles.other}>
-            <Text style={styles.logout}>로그아웃</Text>
+            <TouchableOpacity onPress={handleLogout}>
+              <Text style={styles.logout}>로그아웃</Text>
+            </TouchableOpacity>
             <Text style={styles.quit}>회원탈퇴</Text>
           </View>
         </View>

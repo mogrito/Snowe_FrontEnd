@@ -1,58 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
- 
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import * as Font from 'expo-font';
-import backgroundImage from '../Images/snowe.png';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 
-const ForgotIdScreen = () => {
-  const [email, setEmail] = useState('');  // 이메일 변수 
-  const [fontLoaded, setFontLoaded] = useState(false);
-  const navigation = useNavigation();
+const windowWidth = Dimensions.get('window').width;
 
-  useEffect(() => {
-    
-    async function loadCustomFont() {
-      await Font.loadAsync({
-        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
-      });
-      setFontLoaded(true);
-    }
+const ChangeNickNameScreen = ({ navigation }) => {
+  const [nickname, setNickname] = useState('');
+  const [isNicknameValid, setIsNicknameValid] = useState(false);
 
-    loadCustomFont();
-  }, []);
-
-  const handleResetPassword = async () => {
+  const handleCheckNickname = async () => {
     try {
-        const response = await fetch('//주소입력', {
-        method: 'POST',
+      const response = await fetch(`${URL}/member/member-nickname?nickname=` + nickname, {
+        method: 'GET',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded', //
+          'Accept': 'text/plain', 
         },
-        body: `email=${email}`, //
       });
 
       if (response.ok) {
-        // 이메일 발송완료
-        alert('이메일이 발송되었습니다. 아이디를 확인하세요');
-        
+        const result = await response.text();
+        if (result === "duplicate") {
+          alert('이미 존재하는 닉네임입니다.');
+          setIsNicknameValid(false);
+        } else {
+          alert('사용 가능한 닉네임입니다.');
+          setIsNicknameValid(true);
+        }
       } else {
-        // 이메일 발송실패
-        alert('유효하지 않은 이메일입니다.');
+        alert('중복 확인에 실패했습니다.');
+        setIsNicknameValid(false);
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('이메일을 입력해주세요!');
-  
-      
+      alert('닉네임를 입력해주세요');
+      setIsNicknameValid(false);
     }
   };
 
@@ -62,41 +43,33 @@ const ForgotIdScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Background Image */}
-      <Image source={backgroundImage} style={styles.backgroundImage} />
-
       <View style={styles.topBar}>
         <TransparentCircleButton
           onPress={onGoBack}
           name="arrow-back"
           color="#424242"
         />
+        <Text style={styles.title}>닉네임 설정</Text>
       </View>
 
-
-      {/* Title */}
-      <Text style={fontLoaded ? styles.title : {}}>Change NickName</Text>
-
-      {/* Email Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="이메일"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      />
-
-      {/* Reset Password Button */}
-      <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
-        <Text style={styles.resetText}>이메일 전송</Text>
-      </TouchableOpacity>
-
-      {/* Links */}
-      <View style={styles.linkContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}
-          style={styles.button}
-        >
-          <Text style={styles.backToLogin}>로그인 화면으로 돌아가기</Text>
+      <View style={styles.fullContainer}>
+        <Text style={styles.inputLabel}>닉네임 변경</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="닉네임"
+            value={nickname}
+            onChangeText={(text) => setNickname(text)}
+          />
+          <TouchableOpacity style={styles.registerCheckButton} onPress={handleCheckNickname}>
+            <Text style={styles.registerButtonText}>중복체크</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <Text style={styles.middleText}>※ 닉네임을 설정하면 30일간 변경할 수 없습니다.</Text>
+        
+        <TouchableOpacity style={styles.resetButton}>
+          <Text style={styles.resetText}>변경하기</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -106,34 +79,51 @@ const ForgotIdScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#DBEBF9',
+    paddingHorizontal: 16,
+    paddingTop: 60,
+  },
+  topBar: {
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: 50,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 50,
-    marginTop: 75,
-    marginBottom: 15,
-    fontStyle: 'normal',
-    color: 'black',
-    fontFamily: 'DMSerifText1',
+    flex: 1,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginRight:30,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: 'left',
+    fontWeight:'bold',
   },
   input: {
-    width: '100%',
+    flex: 1,
     height: 40,
     borderColor: 'white',
     backgroundColor: 'white',
     borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 16,
+    borderRadius: 10,
     paddingHorizontal: 8,
+    marginRight: 10,
+    
   },
   resetButton: {
-    width: '100%',
     height: 40,
     backgroundColor: 'skyblue',
-    borderRadius: 5,
-    marginBottom: 16,
+    borderRadius: 10,
+    marginBottom: 10,
     paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -141,31 +131,29 @@ const styles = StyleSheet.create({
   resetText: {
     color: 'black',
   },
-  backToLogin: {
-    marginTop: 16,
-    marginBottom: 15,
-    color: 'black',
-    textDecorationLine: 'underline',
-  },
-  backgroundImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '134%',
-    height: '120%',
-    resizeMode: 'cover',
-    zIndex: -1,
-  },
   linkContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-  topBar: {
-    position: 'absolute',
-    top: 50,
-    left: 20,
+  fullContainer: {
+    padding: 20,
   },
-
+  registerCheckButton: {
+    width: '20%',
+    height: 40,
+    backgroundColor: 'skyblue',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  registerButtonText: {
+    color: 'black',
+  },
+  middleText: {
+    fontSize: 12,
+    marginBottom: 16,
+    textAlign: 'left',
+  },
 });
 
-export default ForgotIdScreen;
+export default ChangeNickNameScreen;
