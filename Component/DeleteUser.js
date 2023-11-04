@@ -53,7 +53,7 @@ const DeleteUserScreen = ({ navigation }) => {
   
                     if (deleteResponse.ok) {
                       await AsyncStorage.removeItem('userToken');
-                      navigation.navigate('MainView1');
+                      navigation.navigate('MainView');
                     } else {
                       console.error('회원탈퇴가 진행되지 않았습니다.');
                     }

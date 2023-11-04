@@ -143,7 +143,7 @@ const RegisterScreen = () => {
       if (response.ok) {
         // 회원가입 성공
         alert('회원가입을 축하드립니다.');
-        navigation.navigate('MainView1');
+        navigation.navigate('MainView');
       } else {
         // 회원가입 실패
         alert('회원가입을 실패했습니다.');
