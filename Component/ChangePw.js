@@ -4,41 +4,40 @@ import TransparentCircleButton from './TransparentCircleButton';
 
 const windowWidth = Dimensions.get('window').width;
 
-const ChangePwScreen = ({navigation}) => {
-  const [password, setPassword] = useState('');
+const ChangePwScreen = ({ navigation }) => {
+  const [newpassword, setnewpassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [currentPassword, setCurrentPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [isPasswordMatching, setIsPasswordMatching] = useState(true);
   const [showPasswordHint, setShowPasswordHint] = useState(false);
 
-
   const onConfirmPasswordChange = (text) => {
     setConfirmPassword(text);
-    setIsPasswordMatching(password === text);
+    setIsPasswordMatching(newpassword === text);
   };
 
   const onCurrentPasswordChange = (text) => {
-    setCurrentPassword(text);
+    setPassword(text);
   };
 
   const onPasswordChange = (text) => {
-    setPassword(text);
-    setShowPasswordHint(text.length > 0); // Show the hint when the user enters data
+    setnewpassword(text);
+  
+    // Check if the password contains at least two types of characters (letters and numbers)
+    const hasLetter = /[a-zA-Z]/.test(text);
+    const hasNumber = /\d/.test(text);
+  
+    // Set the state to indicate whether the password meets the criteria
+    setShowPasswordHint(text.length > 0 && (!hasLetter || !hasNumber) || text.length < 8);
   };
-
   const onGoBack = () => {
     navigation.pop();
   };
-  
 
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <TransparentCircleButton
-          onPress={onGoBack}
-          name="arrow-back"
-          color="#424242"
-        />
+        <TransparentCircleButton onPress={onGoBack} name="arrow-back" color="#424242" />
         <Text style={styles.title}>비밀번호 설정</Text>
       </View>
 
@@ -49,12 +48,16 @@ const ChangePwScreen = ({navigation}) => {
             style={styles.input}
             placeholder="새 비밀번호"
             secureTextEntry={true}
-            value={password}
+            value={newpassword}
             onChangeText={onPasswordChange}
           />
         </View>
-        {showPasswordHint && password.length < 8 ? (
-          <Text style={styles.checkpw1}>비밀번호 8자 입력 이상 입력해주세요.</Text>
+        {showPasswordHint ? (
+          <Text style={styles.checkpw}>
+            {newpassword.length < 8
+              ? '비밀번호 8자 입력 이상 입력해주세요.'
+              : '영문, 숫자를 2종류 이상 조합해주세요.'}
+          </Text>
         ) : null}
         <View style={styles.inputContainer}>
           <TextInput
@@ -80,7 +83,7 @@ const ChangePwScreen = ({navigation}) => {
             style={styles.input3}
             placeholder="현재 비밀번호"
             secureTextEntry={true}
-            value={currentPassword}
+            value={password}
             onChangeText={onCurrentPasswordChange}
           />
         </View>
@@ -140,16 +143,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 8,
-    marginTop:-20,
+    marginTop: -20,
   },
   resetButton: {
-    height: 40, // 변경된 부분: 높이 40으로 설정
+    height: 40,
     backgroundColor: 'skyblue',
     borderRadius: 10,
     marginBottom: 10,
     paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop:-20,
   },
   resetText: {
     color: 'black',
@@ -160,14 +164,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   checkpw: {
-    fontSize:13,
-    marginBottom:30,
-    marginTop:-25,
-  },
-  checkpw1: {
-    fontSize:13,
-    marginBottom:30,
-    marginTop:-25,
+    fontSize: 13,
+    marginBottom: 30,
+    marginTop: -25,
   },
   input3: {
     flex: 1,
@@ -179,6 +178,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 });
-
 
 export default ChangePwScreen;

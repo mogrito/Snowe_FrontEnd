@@ -64,9 +64,6 @@ const MyPageScreen = ({ navigation }) => {
             <TouchableOpacity onPress={ChangeNickNamePage}>
             <Text style={styles.accountName}>닉네임 변경</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={ChangeIdPage}>
-            <Text style={styles.accountId}>이메일 변경</Text>
-            </TouchableOpacity>
             <TouchableOpacity  onPress={ChangePwPage}>
             <Text style={styles.accountPw}>비밀번호 변경</Text>
             </TouchableOpacity>
