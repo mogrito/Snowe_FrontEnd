@@ -25,6 +25,7 @@ import ChangeNickNameScreen from './Component/ChangeNickName';
 import ChangeIdScreen from './Component/ChangeId';
 import ChangePwScreen from './Component/ChangePw';
 import MyPageScreen from './Component/MyPage';
+import DeleteUserScreen from './Component/DeleteUser';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -132,6 +133,11 @@ export default function App() {
         <RootStack.Screen
           name="ChangeNickName"
           component={ChangeNickNameScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="DeleteUser"
+          component={DeleteUserScreen}
           options={{ headerShown: false }}
         />
         </RootStack.Navigator>
