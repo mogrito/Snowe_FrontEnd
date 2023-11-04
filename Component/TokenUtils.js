@@ -1,91 +1,109 @@
-// import React, { useState , useEffect } from 'react';
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Toast } from "react-native-toast-message/lib/src/Toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 
-// import React, { useState, useEffect } from 'react';
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Toast } from "react-native-toast-message/lib/src/Toast";
-
-// const URL = "http://192.168.25.202:8080/member/"; // API 엔드포인트 URL
-
-// export const getTokens = (loginId, password, navigation) => {
-//   const requestData = {
-//     loginId: loginId,
-//     password: password,
-//   };
-
-//   fetch(`${URL}/login`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(requestData),
-//   })
-//     .then(async (response) => {
-//       if (response.status === 200) {
-//         const responseData = await response.json();
-//         const accessToken = responseData.accessToken;
-//         const userId = responseData.userId;
-
-//         // 토큰 만료 시간 설정 (예: 30분)
-//         const expirationTime = new Date().getTime() + 30 * 60 * 1000;
-
-//         // 로컬 스토리지에 토큰 및 만료 시간 저장
-//         await AsyncStorage.setItem('AccessToken', JSON.stringify({
-//           accessToken,
-//           expirationTime,
-//           userId,
-//         }));
-
-//         navigation.navigate('HomeTab');
-//       }
-//     })
-//     .catch((error) => {
-//       if (error.response.status === 401) {
-//         showToast(error.response.data);
-//       } else {
-//         showToast("x");
-//       }
-//     });
-// };
-
-// export const getAccessToken = async () => {
-//     try {
-//         const value = await AsyncStorage.getItem('AccessToken');
-//         if (value !== null) {
-//             const { accessToken, expirationTime, userId } = JSON.parse(value);
-//             const currentTime = new Date().getTime();
-//             // 토큰이 만료되지 않았으면 반환
-//             if (currentTime < expirationTime) {
-//                 return accessToken;
-//             }
-//         }
-//         return null;
-//     } catch (e) {
-//         console.log(e.message);
-//         return null;
-//     }
-// };
-
-// // fetch(`${URL}/user
-
-// export const verifyTokens = async () => {
-//     const token = await getAccessToken();
-//     const response = await fetch(`${URL}/user`, {
-//       method: 'get',
-//       headers: {
-//         'Authorization' : token,
-//         'Content-Type': 'application/json',
-//       },
-//     })
-//     // user api 에 요청 -> 토큰을 검증
-//     if (response.status === 200) {
-//         console.log('유효') // 이게 안먹으면 navigate 로 mainview 쏴.
-//     } else {
-//         // 토큰이 없거나 만료된 경우 로그인 페이지로 이동
-//         navigation.reset({ routes: [{ name: "login" }] });
-//     }
-//   };
+const URL = "http://192.168.25.202:8080/member"; // API 엔드포인트 URL
 
 
+export const getTokens = async (requestData, navigation) => {
+  try {
+    const response = await fetch(`${URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      await AsyncStorage.setItem('Tokens', JSON.stringify({
+        'accessToken': data.token,
+      }));
+      console.log(await AsyncStorage.getItem('Tokens'));
+      navigation.navigate('MainView');
+    } else if (response.status === 401) {
+      alert("사용자정보가 없습니다");
+    } else {
+      alert("알 수 없는 오류");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("알 수 없는 오류");
+  }
+};
+
+const getTokenFromLocal = async () => {
+  try {
+    const value = await AsyncStorage.getItem('Tokens');
+    if (value !== null) {
+      return JSON.parse(value).accessToken;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log(e.message);
+    return null;
+  }
+};
+
+export const checkTokenAndNavigate = async (navigation) => {
+  const token = await AsyncStorage.getItem('Tokens');
+
+  if (!token) {
+    // 토큰이 없으면 로그인 화면으로 이동
+    navigation.navigate('Login');
+  }
+};
+
+
+
+
+export const verifyTokens = async () => {
+  const token = await getTokenFromLocal();
+  const authorizationHeader = `Bearer ${token}`;
+  axios.get('http://192.168.25.202:8080/member/test', {
+    headers: {
+      'Authorization' : authorizationHeader,
+    },
+    })
+    // user api 에 요청 -> 토큰을 검증
+    if (response.status === 200) {
+        console.log('유효')
+    } else {
+        // 토큰이 없거나 만료된 경우 로그인 페이지로 이동
+        navigation.reset({ routes: [{ name: "login" }] });
+    }
+  };
+
+
+  export const getInfo = async () => {
+    const token = await getTokenFromLocal();
+    const authorizationHeader = `Bearer ${token}`;
+    try {
+      const response = await axios.get('http://192.168.25.202:8080/member/me', {
+        headers: {
+          'Authorization': authorizationHeader,
+        },
+      });
+      
+      const responseData = response.data;
+      const name = responseData.name;
+      const email = responseData.email;
+      const user = {
+        name,
+        email,
+    };
+    return user;
+      
+    } catch (error) {
+      // 오류 처리
+      console.error('API 요청 중 오류 발생:', error);
+    }
+  };
+  
+  
+  
+  
+  
+  

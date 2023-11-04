@@ -31,7 +31,7 @@ import DeleteUserScreen from './Component/DeleteUser';
 const Tab = createMaterialBottomTabNavigator();
 const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator;
+
 
 export default function App() {
   const [showFirstScreen, setShowFirstScreen] = useState(true);

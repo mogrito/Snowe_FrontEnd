@@ -12,6 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native'; 
 import * as Font from 'expo-font';
 import backgroundImage from '../Images/snowe.png';
+import { getTokens } from './TokenUtils';
 
 
 const LoginScreen = () => {
@@ -19,7 +20,11 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
   const navigation = useNavigation();
-  const URL = 'http://192.168.25.204:8080';
+  const URL = 'http://192.168.25.202:8080';
+  const requestData = {
+    loginId: loginId,
+    password: password,
+  };
 
   useEffect(() => {
     
@@ -33,47 +38,9 @@ const LoginScreen = () => {
     loadCustomFont();
   }, []);
   
-  // password body 에서 안보이게 해야함
+
   const handleLogin = async () => {
-    const userData = {
-      loginId: loginId,
-      password: password,
-    };
-    
-    // URL 변수 지정해서 최상위에서 바꾸면 다른 API 다 적용되게
-    try {
-      const response = await fetch(`${URL}/member/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-  
-      if (response.status === 200) {
-        const accessToken = response.headers.get('Authorization');
-        console.log(accessToken);
-  
-        // AccessToken을 로컬 스토리지에 저장
-        await AsyncStorage.setItem('Tokens', JSON.stringify({
-          'accessToken': accessToken,
-          'loginId': loginId,
-          'name':장원빈, 
-          
-        }));
-        const storedTokens = await AsyncStorage.getItem('Tokens');
-        console.log(storedTokens);
-  
-        navigation.navigate('MainView');
-      } else if (response.status === 401) {
-        showToast("아이디 또는 비밀번호가 존재하지 않습니다.");
-      } else {
-        showToast("알 수 없는 오류");
-      }
-    } catch (error) {
-      console.error(error);
-      showToast("알 수 없는 오류");
-    }
+    getTokens(requestData,navigation);
   };
 
   return (
@@ -204,4 +171,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-
