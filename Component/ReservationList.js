@@ -28,7 +28,7 @@ const ReservationListScreen = () => {
         <View style={styles.buttonContainer}>
           <TransparentCircleButton
             onPress={onGoBack}
-            name="arrow-back"
+            name="left"
             color="#424242"
           />
         </View>

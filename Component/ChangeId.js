@@ -44,7 +44,7 @@ const ChangeIdScreen = ({ navigation }) => {
       <View style={styles.topBar}>
         <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
         />
         <Text style={styles.title}>이메일 설정</Text>

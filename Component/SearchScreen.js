@@ -72,7 +72,7 @@ const SearchScreen = () => {
     <View style={styles.container}>
       <View style={styles.searchBar}>
         <TouchableOpacity style={styles.userIcon} onPress={onGoBack}>
-          <MaterialIcons name="arrow-back" size={30} color="black" />
+          <MaterialIcons name="left" size={30} color="black" />
         </TouchableOpacity>
         <View style={styles.searchTypeContainer}>
           <Button

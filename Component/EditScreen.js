@@ -51,7 +51,7 @@ function EditScreen({ route }) {
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TransparentCircleButton
             onPress={onGoBack}
-            name="arrow-back"
+            name="left"
             color="#fff"
           />
         </View>

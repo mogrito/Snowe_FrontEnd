@@ -226,21 +226,6 @@ function TabNavigator() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{
-          tabBarLabel: '마이페이지',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
-              name="account"
-              color={color}
-              size={26}
-            />
-          ),
-        }}
-      />
-      
     </Tab.Navigator>
   );
 }

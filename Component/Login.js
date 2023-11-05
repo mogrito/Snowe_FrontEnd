@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import backgroundImage from '../Images/snowe.png';
 import { getTokens } from './TokenUtils';
+import TransparentCircleButton from './TransparentCircleButton';
 
 
 const LoginScreen = () => {
@@ -43,9 +44,18 @@ const LoginScreen = () => {
     getTokens(requestData,navigation);
   };
 
+
+  const onGoBack = () => {
+    navigation.goBack();
+  };
+
+
   return (
     <View style={styles.container}>
 
+      <View style={styles.topBar}>
+        <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
+      </View>
       <Image source={backgroundImage} style={styles.backgroundImage}/>
       
 
@@ -167,6 +177,14 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: 'black',
+  },
+  topBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    marginTop:60,
+    marginLeft:1,
+    zIndex: 1,
   },
 });
 

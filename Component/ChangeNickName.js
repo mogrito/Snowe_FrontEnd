@@ -73,7 +73,7 @@ const ChangeNickNameScreen = ({ navigation }) => {
       <View style={styles.topBar}>
         <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
         />
         <Text style={styles.title}>닉네임 설정</Text>

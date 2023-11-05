@@ -61,7 +61,7 @@ const ChangePwScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <TransparentCircleButton onPress={onGoBack} name="arrow-back" color="#424242" />
+        <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
         <Text style={styles.title}>비밀번호 설정</Text>
       </View>
 
