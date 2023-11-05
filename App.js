@@ -26,6 +26,7 @@ import ChangeIdScreen from './Component/ChangeId';
 import ChangePwScreen from './Component/ChangePw';
 import MyPageScreen from './Component/MyPage';
 import DeleteUserScreen from './Component/DeleteUser';
+import NoticeScreen from './Component/SocialView'
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -138,6 +139,11 @@ export default function App() {
         <RootStack.Screen
           name="DeleteUser"
           component={DeleteUserScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="NoticeInfo"
+          component={NoticeScreen}
           options={{ headerShown: false }}
         />
         </RootStack.Navigator>

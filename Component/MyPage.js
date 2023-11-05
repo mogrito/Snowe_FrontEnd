@@ -41,7 +41,13 @@ const MyPageScreen = ({ navigation }) => {
 
   const ChangePwPage = () => {
     navigation.navigate('ChangePw');
+
+
   };
+
+  const NoticePage = () => {
+    navigation.navigate('NoticeInfo');
+  }
 
   //사용자 회원탈퇴
   const handleAccountDeletion = async () => {
@@ -120,7 +126,9 @@ const MyPageScreen = ({ navigation }) => {
             <Text style={styles.appvertext}>1.0.0(2023110412)</Text>
           </View>
           <Text style={styles.ask}>문의하기</Text>
+          <TouchableOpacity onPress={NoticePage}>
           <Text style={styles.infor}>공지사항</Text>
+          </TouchableOpacity>
           <Text style={styles.license}>오픈소스 라이선스</Text>
         </View>
 
