@@ -2,7 +2,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 
-const URL = "http://192.168.25.202:8080/member"; // API 엔드포인트 URL
+const URL = "http://192.168.219.103:8080/member"; // API 엔드포인트 URL
+const onGoBack = () => {
+  navigation.goBack();
+};
 
 export const getTokens = async (requestData, navigation) => {
   try {
@@ -20,7 +23,7 @@ export const getTokens = async (requestData, navigation) => {
         'accessToken': data.token,
       }));
       console.log(await AsyncStorage.getItem('Tokens'));
-      navigation.navigate('MainView');
+      onGoBack();
 
     } else if (response.status === 401) {
       alert("사용자정보가 없습니다");

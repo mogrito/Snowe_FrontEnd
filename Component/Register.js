@@ -31,7 +31,7 @@ const RegisterScreen = () => {
   const [isUsernameValid, setIsUsernameValid] = useState(false); // 아이디 중복 확인 상태
   const [isNicknameValid, setIsNicknameValid] = useState(false);  // 닉네임 중복 확인 상태
   const navigation = useNavigation();
-  const URL = 'http://192.168.25.204:8080';
+  const URL = 'http://192.168.219.103:8080';
   const onGoBack = () => {
     navigation.pop();
   };

@@ -20,7 +20,6 @@ import EditScreen from './Component/EditScreen';
 import SearchScreen from './Component/SearchScreen';
 import SkiResortListScreen from './Component/SkiResortList';
 import ReservationListScreen from './Component/ReservationList';
-import TeacherReserveTestScreen from './Component/TeacherReserveTest';
 import ChangeNickNameScreen from './Component/ChangeNickName';
 import ChangeIdScreen from './Component/ChangeId';
 import ChangePwScreen from './Component/ChangePw';
@@ -164,8 +163,6 @@ function DrawerNavigator() {
     >
       <Drawer.Screen name="SkiResortList" component={SkiResortListScreen} options={{ headerShown: false }} />
       <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
-      <Drawer.Screen name="MainView" component={MainScreen} options={{ headerShown: false }} />
-      
     </Drawer.Navigator>
   );
 }
