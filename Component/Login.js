@@ -6,8 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image
-  ,showToast
+  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import * as Font from 'expo-font';
