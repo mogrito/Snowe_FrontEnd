@@ -27,6 +27,7 @@ import ChangePwScreen from './Component/ChangePw';
 import MyPageScreen from './Component/MyPage';
 import DeleteUserScreen from './Component/DeleteUser';
 import NoticeScreen from './Component/SocialView'
+import TeacherInfoScreen from './Component/TeacherInfo';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -215,6 +216,20 @@ function TabNavigator() {
       <Tab.Screen
         name="SocialView"
         component={SocialView}
+        options={{
+          tabBarLabel: '자유게시판',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="account-group"
+              color={color}
+              size={26}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="TeacherInfo"
+        component={TeacherInfoScreen}
         options={{
           tabBarLabel: '자유게시판',
           tabBarIcon: ({ color }) => (
