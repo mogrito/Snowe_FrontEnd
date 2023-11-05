@@ -60,11 +60,12 @@ function MainScreen() {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedResortName, setSelectedResortName] = useState(''); 
 
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
   const location = selectedResort?.location;
-  const selectedResortName = route.params?.selectedResortName;
+
  
   const handleUserIconPress = () => {
     navigation.openDrawer();
@@ -80,6 +81,13 @@ function MainScreen() {
 
     loadCustomFont();
   }, []);
+
+  useEffect(() => {
+    if (route.params?.selectedResortName) {
+      setSelectedResortName(route.params.selectedResortName);
+    }
+  }, [route.params?.selectedResortName]);
+
 
   useEffect(() => {
     async function fetchWeather() {
@@ -169,7 +177,7 @@ function MainScreen() {
           </TouchableOpacity>
         </View>
 
-        <Calendar style={styles.calendar} />
+        <Calendar style={styles.calendar} monthFormat={'yyyy년 MM월'}/>
       </ScrollView>
     </View>
   );

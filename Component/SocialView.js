@@ -5,6 +5,10 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import FloatingWriteButton from './FloatingWriteButton';
 import { MaterialIcons} from '@expo/vector-icons';
 import { PaperProvider } from 'react-native-paper';
+import TransparentCircleButton from './TransparentCircleButton';
+
+
+
 const URL = 'http://192.168.25.204:8080';
 
 
@@ -15,44 +19,6 @@ function FreeBoardScreen() {
   const [selectedBoard, setSelectedBoard] = useState(null); // 선택한 게시글 저장
   const navigation = useNavigation(); 
   const [ boardList, setBoardList ] = useState([]);
-  const sampleData = [
-    {
-      id: '1',
-      title: '내 첫 번째 글',
-      content: '이것은 내 첫 번째 글입니다.',
-      date: '2023-10-03T12:00:00Z',
-      comments: '5',
-      loginId: '정훈',
-      image: require('../Images/face.jpg'),
-    },
-    {
-      id: '2',
-      title: '내 두 번째 글',
-      content: '이것은 내 두 번째 글입니다.',
-      date: '2023-10-03T12:00:00Z',
-      comments: '0',
-      loginId: 'dodasha',
-      image: require('../Images/face1.jpg'),
-    },  
-    {
-      id: '3',
-      title: '내 세 번째 글',
-      content: '이것은 내 세 번째 글입니다.',
-      date: '2023-10-03T12:00:00Z',
-      comments: '1',
-      loginId: 'mogrito',
-      image: require('../Images/face2.jpg'),
-    },
-    {
-      id: '4',
-      title: '내 실력 ㅁㅌㅊ?',
-      content: 'ㅈㄱㄴ',
-      date: '2023-10-03T12:00:00Z',
-      comments: '1',
-      loginId: '주성',
-      image: require('../Images/snowee.jpg'),
-    },
-  ];
 
   const fetchBoardData = async () => {
     try {
@@ -94,12 +60,17 @@ function FreeBoardScreen() {
     }
   }, [isFocused]);
 
+
+
+
   return (
     <View style={styles.container}>
+      
       <FlatList
             data={boardList}
             keyExtractor={(item) => item.boardId.toString()}
             renderItem={({ item }) => (
+              
               <TouchableOpacity
                 style={styles.textContainer}
                 onPress={() => onBoardPress(item)}
@@ -385,11 +356,16 @@ function SocialView() {
 
   const [hidden, setHidden] = useState(false);
 
+  const onGoBack = () => {
+    navigation.goBack();
+  };
+
 
   return (
     <PaperProvider>
       <View style={styles.container}>
         <View style={styles.header}>
+        <TransparentCircleButton onPress={onGoBack} name="arrow-back" color="#424242" />
           <Text style={styles.title}>게시판</Text>
           <TouchableOpacity style={styles.userIcon} onPress={onSearchButtonPress}>
             <MaterialIcons name="search" size={30} color="black" />
@@ -422,15 +398,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     zIndex: 1,
-    marginBottom:30,
+    marginBottom:40,
+    marginTop:10,
   },
   title: {
-    fontSize: 30,
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
-    left: 11,    
-    marginBottom:10,
-    marginTop:12
   },
   boardItem: {
     marginTop: 2,
