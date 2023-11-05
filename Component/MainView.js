@@ -69,7 +69,7 @@ function MainScreen() {
  
   const handleUserIconPress = () => {
     navigation.openDrawer();
-  };
+  }; 
 
   useEffect(() => {
     async function loadCustomFont() {
@@ -145,7 +145,7 @@ function MainScreen() {
               color="black"
             />
             <Text style={styles.weatherexp}>
-              {weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherIconName(weatherData.weather[0].main) : 'question'}
+              {weatherData && weatherData.weather && weatherData.weather.length > 0 ? getKoreanWeatherCondition(weatherData.weather[0].main) : 'question'}
             </Text>
             <Text style={styles.weatherTemp}> {weatherData && weatherData.main
     ? `${(weatherData.main.temp - 273.15).toFixed(0)}°C`

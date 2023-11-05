@@ -49,7 +49,7 @@ const MyPageScreen = () => {
   };
 
   const onGoBack = () => {
-    navigation.pop();
+    navigation.goBack();
   };
 
   const DeleteUserPage = () => {

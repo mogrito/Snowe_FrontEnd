@@ -163,9 +163,7 @@ function DrawerNavigator() {
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="SkiResortList" component={SkiResortListScreen} options={{ headerShown: false }} />
-      <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
-      <Drawer.Screen name="MainView" component={MainScreen} options={{ headerShown: false }} />
-      
+      <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />  
     </Drawer.Navigator>
   );
 }
@@ -231,7 +229,7 @@ function TabNavigator() {
         name="TeacherInfo"
         component={TeacherInfoScreen}
         options={{
-          tabBarLabel: '자유게시판',
+          tabBarLabel: '강사 정보',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
               name="account-group"
