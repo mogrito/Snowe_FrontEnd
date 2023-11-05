@@ -131,7 +131,7 @@ const TeacherReserveScreen = () => {
     <View style={styles.container}>
       <View style={styles.teacherWrapper}>
         <View style={styles.topBar}>
-          <TransparentCircleButton onPress={onGoBack} name="arrow-back" color="#424242" />
+          <TransparentCircleButton onPress={onGoBack} name="left" color="#424242"/>
           <Text style={styles.title}>강사 예약</Text>
         </View>
         <Calendar

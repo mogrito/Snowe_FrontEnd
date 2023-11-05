@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     
   },
   iconText: {
-    marginTop: 10, // 원하는 값으로 조정
+    marginTop: 10, 
   },
 
 

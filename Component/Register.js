@@ -171,7 +171,7 @@ const RegisterScreen = () => {
      <SafeAreaView>
       <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
       />    
       </SafeAreaView>

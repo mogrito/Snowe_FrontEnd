@@ -52,7 +52,7 @@ function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
         {/* 뒤로 가기 버튼 */}
         <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
         />
       </View>

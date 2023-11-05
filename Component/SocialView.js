@@ -365,7 +365,7 @@ function SocialView() {
     <PaperProvider>
       <View style={styles.container}>
         <View style={styles.header}>
-        <TransparentCircleButton onPress={onGoBack} name="arrow-back" color="#424242" />
+        <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
           <Text style={styles.title}>게시판</Text>
           <TouchableOpacity style={styles.userIcon} onPress={onSearchButtonPress}>
             <MaterialIcons name="search" size={30} color="black" />

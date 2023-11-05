@@ -95,7 +95,7 @@ const MyPageScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <TransparentCircleButton onPress={onGoBack} name="arrow-back" color="#424242" />
+        <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
         <Text style={styles.title}>내 정보</Text>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>

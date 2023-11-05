@@ -81,7 +81,7 @@ const DeleteUserScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <TransparentCircleButton onPress={onGoBack} name="arrow-back" color="#424242" />
+        <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
         <Text style={styles.title}>회원 탈퇴</Text>
       </View>
       <Text style={styles.inputLabel}>계정 비밀번호</Text>

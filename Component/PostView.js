@@ -308,7 +308,7 @@ return (
       <View style={styles.headerButton}>
         <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
         />
       </View>
