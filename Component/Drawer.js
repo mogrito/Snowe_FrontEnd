@@ -12,7 +12,7 @@ export function CustomDrawerContent({ navigation }) {
           source={require('../Images/UserIcon.jpg')}
           style={{ width: 72, height: 72, borderRadius: 36 }}
         />
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => navigation.navigate('MyPage')}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>
             로그인하기
           </Text>
@@ -23,7 +23,7 @@ export function CustomDrawerContent({ navigation }) {
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => navigation.navigate('MyPage')}
       />
       <DrawerItem
         label="스키장 리스트"

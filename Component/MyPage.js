@@ -7,8 +7,6 @@ import { getInfo } from './TokenUtils';
 import { useNavigation } from '@react-navigation/native';
 import { Alert } from 'react-native';
 
-// const windowWidth = Dimensions.get('window').width;
-
 
 const MyPageScreen = () => {
   const navigation = useNavigation();
@@ -49,7 +47,7 @@ const MyPageScreen = () => {
   };
 
   const onGoBack = () => {
-    navigation.goBack();
+    navigation.pop();
   };
 
   const DeleteUserPage = () => {
@@ -68,8 +66,6 @@ const MyPageScreen = () => {
     navigation.navigate('NoticeInfo');
   };
 
-  //사용자 회원탈퇴
-  
   const handleAccountDeletion = async () => {
     Alert.alert(
       '회원탈퇴',
@@ -113,8 +109,8 @@ const MyPageScreen = () => {
         <View style={styles.profileContainer}>
           <Image source={user.image} style={styles.profileImage} />
           <View style={styles.userInfoContainer}>
-            <Text style={styles.userName}>{user.name}</Text>
-            <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userName}>{user.name}</Text>
+          <Text style={styles.userEmail}>{user.email}</Text>
           </View>
         </View>
 
