@@ -45,7 +45,7 @@ const MyPageScreen = ({ navigation }) => {
 
   //사용자 회원탈퇴
   const handleAccountDeletion = async () => {
-    // Show an Alert for confirmation
+
     Alert.alert(
       '회원탈퇴',
       '회원탈퇴를 진행하시겠습니까?',
@@ -53,14 +53,14 @@ const MyPageScreen = ({ navigation }) => {
         {
           text: '아니요',
           onPress: () => {
-            // User canceled the deletion
+           
           },
           style: 'cancel',
         },
         {
           text: '예',
           onPress: async () => {
-            // Handle the account deletion logic
+
             try {
               const response = await fetch('API', {
                 method: 'DELETE',

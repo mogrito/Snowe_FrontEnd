@@ -16,8 +16,8 @@ const ReservationListScreen = () => {
     navigation.pop();
   };
 
+  //수강신청 취소 
   const onCancel = (reservationId) => {
-    // Handle cancellation logic here
   };
 
   return (

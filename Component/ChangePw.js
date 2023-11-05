@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 
-const windowWidth = Dimensions.get('window').width;
-
 const ChangePwScreen = ({ navigation }) => {
   const [newpassword, setnewpassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -208,7 +206,7 @@ const styles = StyleSheet.create({
   },
   text: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Align items on the left and right
+    justifyContent: 'space-between', 
   },
   rightText: {
     fontSize:12,

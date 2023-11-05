@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 
-const windowWidth = Dimensions.get('window').width;
-
 const ChangeIdScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [isNicknameValid, setIsNicknameValid] = useState(false);

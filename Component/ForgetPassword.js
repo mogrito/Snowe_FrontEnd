@@ -62,7 +62,7 @@ const ForgotPasswordScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Background Image */}
+      
       <Image source={backgroundImage} style={styles.backgroundImage} />
   
       <View style={styles.topBar}>
@@ -73,10 +73,10 @@ const ForgotPasswordScreen = () => {
         />
       </View>
   
-      {/* Title */}
+ 
       <Text style={fontLoaded ? styles.title : {}}>Find Password</Text>
   
-      {/* Email Input */}
+      
       <TextInput
         style={styles.input}
         placeholder="이메일"
@@ -84,12 +84,12 @@ const ForgotPasswordScreen = () => {
         onChangeText={(text) => setEmail(text)}
       />
   
-      {/* Reset Password Button */}
+
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
         <Text style={styles.resetText}>이메일 전송</Text>
       </TouchableOpacity>
   
-      {/* Links */}
+
       <View style={styles.linkContainer}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Login')}

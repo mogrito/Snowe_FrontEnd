@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions,Alert} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 
-const windowWidth = Dimensions.get('window').width;
-
 const DeleteUserScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
@@ -13,7 +11,7 @@ const DeleteUserScreen = ({ navigation }) => {
 
   const onDeleteUser = async () => {
     try {
-      // API 호출을 사용하여 데이터베이스에서 사용자 정보, 비밀번호를 가져옵니다.
+      // API 호출을 사용하여 데이터베이스에서 사용자 정보, 비밀번호를 가져옴
       const response = await fetch('사용자_정보_API_엔드포인트', {
         method: 'GET',
         headers: {
@@ -24,7 +22,7 @@ const DeleteUserScreen = ({ navigation }) => {
   
       if (response.ok) {
         const userData = await response.json();
-        const userPasswordFromDB = userData.password; // 데이터베이스에서 사용자의 비밀번호 필드라고 가정합니다.
+        const userPasswordFromDB = userData.password; // 데이터베이스에서 사용자의 비밀번호 필드라고 가정
   
         if (password === userPasswordFromDB) {
           Alert.alert(

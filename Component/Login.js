@@ -45,13 +45,13 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Background Image */}
+
       <Image source={backgroundImage} style={styles.backgroundImage}/>
       
-      {/* Title */}
+
       <Text style={fontLoaded ? styles.title : {}}>Snowe</Text>
       
-      {/* LoginId Input */}
+
       <TextInput
         style={styles.input}
         placeholder="아이디"
@@ -70,7 +70,7 @@ const LoginScreen = () => {
         autoCapitalize="none" 
       />
       
-      {/* Login Button */}
+
       <TouchableOpacity
         style={styles.loginButton}
         onPress={handleLogin}
@@ -78,7 +78,7 @@ const LoginScreen = () => {
         <Text style={styles.loginText}>로그인</Text>
       </TouchableOpacity>
 
-      {/* Links */}
+
       <View style={styles.linkContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.button}>
           <Text style={styles.sign}>회원이 아니신가요?</Text>
