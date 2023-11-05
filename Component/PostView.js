@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput,FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, Alert, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Alert, Modal, NativeModules } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 
+const { StatusBarManager } = NativeModules
+
+const URL = 'http://192.168.25.204:8080';
+
+
 function PostView({ route }) {
-  const { boardId, title, content, writer, refreshData } = route.params;
+  const { boardId, refreshData} = route.params;
   const navigation = useNavigation();
   const [comments, setComments] = useState([]);
   const [replyComments, setReplyComments] = useState([]);
@@ -15,7 +20,32 @@ function PostView({ route }) {
   const [editedComment, setEditedComment] = useState('');
   // 댓글 아이디를 저장할 상태 변수
   const [commentId, setCommentId] = useState(null); 
+  const [boardDetails, setBoardDetails] = useState([]);
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
   
+  useEffect(() => {
+  
+    fetchBoardDetails(boardId); 
+  }, [boardId]);
+
+  useEffect(()=>{
+    Platform.OS == 'ios' ? StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height)
+      }) : null
+}, []);
+
+
+  const fetchBoardDetails = async (boardId) => {
+    try {
+      const response = await fetch(`${URL}/board/view/${boardId}`); 
+      const boardData = await response.json();
+      console.log(boardData); // 게시글 정보 확인
+      setBoardDetails(boardData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // 게시글 id를 기반으로 댓글 데이터를 가져옴
   useEffect(() => {
     fetchComments(boardId); // 게시글 id를 전달하여 해당 게시글의 댓글을 가져오는 함수
@@ -24,7 +54,7 @@ function PostView({ route }) {
 // 함수 내에서 댓글 및 답글 분류 및 관리
 const fetchComments = async (boardId) => {
   try {
-    const response = await fetch(`http://192.168.25.204:8080/comment/list/${boardId}`);
+    const response = await fetch(`${URL}/comment/list/${boardId}`);
     const commentData = await response.json();
 
     console.log(commentData);
@@ -48,12 +78,17 @@ const fetchComments = async (boardId) => {
   };
 
   const handleEditPress = () => {
-    navigation.navigate('게시글 수정', {
-      boardId,
-      title,
-      content,
-      writer,
-    });
+    if (loginId === loginId) { // 작성자와 로그인 아이디 비교
+      navigation.navigate('게시글 수정', {
+        boardId,
+        title,
+        content,
+        loginId,
+      });
+    } else {
+      // 작성자와 로그인한 사용자의 아이디가 다른 경우 수정할 수 없음
+      alert('게시글을 수정할 수 있는 권한이 없습니다.');
+    }
   };
 
   const handleDeletePost = async () => {
@@ -62,7 +97,7 @@ const fetchComments = async (boardId) => {
       if (userConfirmed) {
         // 게시글 삭제 로직
         try {
-          const response = await fetch(`http://192.168.25.204:8080/board/del/${boardId}`, {
+          const response = await fetch(`${URL}/board/del/${boardId}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -98,9 +133,8 @@ const fetchComments = async (boardId) => {
           {
             text: '확인',
             onPress: async () => {
-              // 이하 모바일 앱에서의 삭제 로직
               try {
-                const response = await fetch(`http://192.168.25.204:8080/board/del/${boardId}`, {
+                const response = await fetch(`${URL}/board/del/${boardId}`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -109,8 +143,6 @@ const fetchComments = async (boardId) => {
   
                 if (response.ok) {
                   // 게시글 삭제 요청이 성공한 경우 로컬 상태에서도 해당 게시글을 제거
-                  // 이를 위해 게시글 목록을 가져오는 API를 다시 호출하거나
-                  // 로컬 상태에서 해당 게시글을 제거하는 방법을 사용할 수 있습니다.
   
                   // 게시글 삭제 후, 이전 화면으로 돌아가기
                   alert('게시글 삭제 성공');
@@ -140,9 +172,9 @@ const fetchComments = async (boardId) => {
       const response = await fetch(`http://192.168.25.204:8080/board/view/${boardId}/comment`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // 데이터 형식 설정 (JSON)
+          'Content-Type': 'application/json', 
         },
-        body: JSON.stringify(newComment), // 댓글 데이터를 JSON 문자열로 변환하여 보냅니다.
+        body: JSON.stringify(newComment), 
       });
   
       if (response.ok) {
@@ -154,8 +186,6 @@ const fetchComments = async (boardId) => {
         // 키보드 닫기
         Keyboard.dismiss();
   
-        // 서버에서 추가한 댓글을 반환해도 됩니다.
-        // const addedComment = await response.json();
       } else {
         // 서버에서 오류 응답을 받았을 때 처리
         console.error('댓글 추가 실패');
@@ -213,12 +243,13 @@ const fetchComments = async (boardId) => {
     }
   };
 
-  const handleDeleteComment = async (commentId) => {
+  const handleDeleteComment = async (commentId, boardId) => {
     if (Platform.OS === 'web') {
       const userConfirmed = window.confirm('댓글을 삭제하시겠습니까?');
       if (userConfirmed) {
         // 댓글 삭제 로직
-        await deleteComment(commentId); // async 함수로 변경하고 await 사용
+        await deleteComment(commentId, boardId); // async 함수로 변경하고 await 사용
+        alert('댓글이 삭제되었습니다.');
       }
     } else {
       Alert.alert(
@@ -233,7 +264,8 @@ const fetchComments = async (boardId) => {
             text: '확인',
             onPress: async () => {
               // 모바일 앱에서의 삭제 로직
-              await deleteComment(commentId); // async 함수로 변경하고 await 사용
+              await deleteComment(commentId, boardId); // async 함수로 변경하고 await 사용
+              alert('댓글이 삭제되었습니다.');
             },
           },
         ],
@@ -241,30 +273,30 @@ const fetchComments = async (boardId) => {
       );
     }
   };
-  
-  const deleteComment = async (commentId) => {
-    try {
-      const response = await fetch(`http://192.168.25.204:8080/comment/del/${commentId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (response.ok) {
-        // 댓글 삭제 요청이 성공한 경우 로컬 상태에서 해당 댓글을 제거
-        setComments((prevComments) => prevComments.filter((comment) => comment.commentId !== commentId));
-  
-        // 댓글 삭제 후, 화면 갱신 또는 다른 작업 수행
-      } else {
-        console.error('댓글 삭제 실패:', response.status);
-        alert('댓글 삭제 실패');
+    const deleteComment = async (commentId, boardId) => {
+      try {
+        const response = await fetch(`http://192.168.25.204:8080/comment/del/${commentId}/${boardId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ boardId, commentId }), 
+        });
+    
+        if (response.ok) {
+          // 댓글 삭제 요청이 성공한 경우 로컬 상태에서 해당 댓글을 제거
+          setComments((prevComments) => prevComments.filter((comment) => comment.commentId !== commentId));
+    
+          // 댓글 삭제 후, 화면 갱신 또는 다른 작업 수행
+        } else {
+          console.error('댓글 삭제 실패:', response.status);
+          alert('댓글 삭제 실패');
+        }
+      } catch (error) {
+        console.error('댓글 삭제 중 오류 발생:', error);
+        alert('댓글 삭제 중 오류 발생');
       }
-    } catch (error) {
-      console.error('댓글 삭제 중 오류 발생:', error);
-      alert('댓글 삭제 중 오류 발생');
-    }
-  };
+    };
 
   const onReplyButtonPress = () => {
     // "답글" 버튼이 눌렸을 때 수행할 동작 추가
@@ -281,7 +313,7 @@ return (
         />
       </View>
       <View>
-        <Text style={styles.headerTitle}>{title}</Text>
+        <Text style={styles.headerTitle}>{boardDetails.title}</Text>
       </View>
       <View style={styles.headerButton}>
         <TransparentCircleButton
@@ -296,8 +328,8 @@ return (
         />
       </View>
     </View>
-    <Text style={styles.contentText}>{content}</Text>
-    <Text style={styles.writerText}>{writer}</Text>
+    <Text style={styles.contentText}>{boardDetails.content}</Text>     
+    {/* <Text style={styles.writerText}>{writer}</Text> */}
     <View style={styles.borderLine}></View>
     <View style={styles.commentListContainer}>
     <FlatList
@@ -312,7 +344,7 @@ return (
                 <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
                   <Text style={styles.actionButtonText}>수정</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeleteComment(item.commentId)}>
+                <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
                   <Text style={styles.actionButtonText}>삭제</Text>
                 </TouchableOpacity>
               </View>
@@ -322,7 +354,7 @@ return (
             <Text style={styles.commentText}>{item.content}</Text>
             <View>
               <TouchableOpacity onPress={onReplyButtonPress}>
-                <Text style={[styles.replyButton, styles.replyButtonWithBorder]}>답글</Text>
+                <Text style={styles.replyButtonWithBorder}>답글</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -331,52 +363,52 @@ return (
     />
     </View>
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={"padding"}
+      style={{flex : 1}}
+      keyboardVerticalOffset={statusBarHeight+44}
     >
-      <View style={styles.commentView}>
-        <TextInput
-          placeholder="댓글을 입력하세요"
-          onChangeText={(text) => setCommentText(text)}
-          multiline
-          value={commentText}
-          style={styles.commentInput}
-        />
-        <TouchableOpacity
-          style={styles.commentButton}
-          onPress={() => {
-            addComment(commentText);
-          }}
-        >
-          <Text style={styles.commentButtonText}>댓글 남기기</Text>
-        </TouchableOpacity>
-      </View>
+      <TextInput
+        placeholder="댓글을 입력하세요"
+        onChangeText={(text) => setCommentText(text)}
+        multiline
+        value={commentText}
+        style={styles.commentInput}
+      />
+      <TouchableOpacity
+        style={styles.commentButton}
+        onPress={() => {
+          addComment(commentText);
+        }}
+      >
+        <Text style={styles.commentButtonText}>댓글 남기기</Text>
+      </TouchableOpacity>
     </KeyboardAvoidingView>
     <Modal
         animationType="slide"
         transparent={true}
         visible={isEditModalVisible}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.editCommentTitle}>댓글 수정하기</Text>
-            <TextInput
-              multiline
-              placeholder="Edit your comment"
-              value={editedComment}
-              onChangeText={(text) => setEditedComment(text)}
-              style={styles.editCommentInput}
-            />
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={saveEditedComment} style={[styles.editCommentButton, styles.saveButton]}>
-                <Text style={styles.commentButtonText}>저장</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeEditCommentModal} style={[styles.editCommentButton, styles.cancelButton]}>
-                <Text style={styles.commentButtonText}>취소</Text>
-              </TouchableOpacity>
-            </View>
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.editCommentTitle}>댓글 수정하기</Text>
+          <TextInput
+            multiline
+            placeholder="Edit your comment"
+            value={editedComment}
+            onChangeText={(text) => setEditedComment(text)}
+            style={styles.editCommentInput}
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={saveEditedComment} style={[styles.editCommentButton, styles.saveButton]}>
+            <Text style={styles.commentButtonText}>저장</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={closeEditCommentModal} style={[styles.editCommentButton, styles.cancelButton]}>
+              <Text style={styles.commentButtonText}>취소</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </View>
+    </Modal>  
   </SafeAreaView>
 );
 }
@@ -452,23 +484,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
-  // replyButton: {
-  //   backgroundColor: 'transparent',
-  //   borderTopWidth: 1,
-  //   padding: 5,
-  //   width: 37,
-  //   alignItems: 'center',
-  // },
   replyButtonWithBorder: {
     borderWidth: 1,
-    borderColor: 'yourBorderColor', // 원하는 테두리 색상
     borderRadius: 2,
     padding: 5,
   },
   commentAuthor: {
-    fontSize: 12, // 작성자 아이디의 글꼴 크기
-    color: 'gray', // 작성자 아이디의 글꼴 색상
-    marginBottom: 7, // 작성자 아이디와 댓글 텍스트 사이의 간격
+    fontSize: 12, 
+    color: 'gray', 
+    marginBottom: 7, 
   },
   commentListContainer:{
     padding:5,
@@ -496,7 +520,7 @@ const styles = StyleSheet.create({
   },
   editCommentInput: {
     width: 200,
-    height: 100, // 고정된 높이를 설정합니다.
+    height: 100,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
@@ -521,9 +545,9 @@ const styles = StyleSheet.create({
     marginLeft: 10, // "취소" 버튼의 왼쪽 여백
   },
   editCommentTitle: {
-    fontSize: 20, // 글씨 크기를 조절합니다.
-    fontWeight: 'bold', // 굵은 글씨로 설정합니다.
-    marginBottom: 10, // 아래쪽 여백을 추가합니다.
+    fontSize: 20, // 글씨 크기를 조절
+    fontWeight: 'bold', // 굵은 글씨로 설정
+    marginBottom: 10, // 아래쪽 여백을 추가
   },
   actionButtons: {
     flexDirection: 'row', // "수정/삭제" 버튼을 가로로 나란히 배치
