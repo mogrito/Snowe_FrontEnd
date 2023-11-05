@@ -40,7 +40,7 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowFirstScreen(false);
-    }, 2000); 
+    }, 2000);
   }, []);
 
   return (

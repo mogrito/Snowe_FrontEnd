@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import * as Font from 'expo-font';
-import backgroundImage from '../Images/dr1.png';
+import backgroundImage from '../Images/snowe.png';
 import { getTokens } from './TokenUtils';
 
 

@@ -1,30 +1,51 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  AsyncStorage,
-  ScrollView,
-  Dimensions,
-  Alert,
-} from 'react-native';
+import React, { useEffect, useState,} from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity,ScrollView, Dimensions } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
+import { checkTokenAndNavigate } from './TokenUtils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getInfo } from './TokenUtils';
+import { useNavigation } from '@react-navigation/native';
+import { Alert } from 'react-native';
 
-const windowWidth = Dimensions.get('window').width;
+// const windowWidth = Dimensions.get('window').width;
 
-const MyPageScreen = ({ navigation }) => {
-  const user = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
+
+const MyPageScreen = () => {
+  const navigation = useNavigation();
+  const [data, setData] = useState(null);
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
     image: require('../Images/face.jpg'),
-  };
+  });
+
+  useEffect(() => {
+    checkTokenAndNavigate(navigation);
+
+    async function fetchData() {
+      try {
+        const result = await getInfo();
+        setData(result);
+      } catch (error) {
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setUser({
+        name: data.name,
+        email: data.email,
+        image: require('../Images/face.jpg'),
+      });
+    }
+  }, [data]);
 
   const handleLogout = async () => {
-    // 로그아웃 로직
-    await AsyncStorage.removeItem('userToken');
-    navigation.navigate('Login');
+    await AsyncStorage.removeItem('Tokens');
+    navigation.navigate('MainView');
   };
 
   const onGoBack = () => {
@@ -41,17 +62,15 @@ const MyPageScreen = ({ navigation }) => {
 
   const ChangePwPage = () => {
     navigation.navigate('ChangePw');
-
-
   };
 
   const NoticePage = () => {
     navigation.navigate('NoticeInfo');
-  }
+  };
 
   //사용자 회원탈퇴
+  
   const handleAccountDeletion = async () => {
-
     Alert.alert(
       '회원탈퇴',
       '회원탈퇴를 진행하시겠습니까?',
@@ -59,39 +78,31 @@ const MyPageScreen = ({ navigation }) => {
         {
           text: '아니요',
           onPress: () => {
-           
+            // 아무 작업도 수행하지 않음
           },
           style: 'cancel',
         },
         {
           text: '예',
           onPress: async () => {
-
             try {
               const response = await fetch('API', {
                 method: 'DELETE',
                 headers: {
-                  'Authorization': 'Bearer ' + 'YOUR_AUTH_TOKEN', // 사용자 토큰
+                  'Authorization': 'Bearer ' + 'YOUR_AUTH_TOKEN',
                   'Content-Type': 'application/json',
                 },
               });
 
-              if (response.ok) {
-                await AsyncStorage.removeItem('userToken');
-                navigation.navigate('Login');
-              } else {
-                console.error('회원탈퇴가 진행되지 않았습니다.');
-              }
+              // 삭제 후의 작업 수행
             } catch (error) {
-              console.error('Error during account deletion:', error);
+              console.error('회원탈퇴 중 오류 발생:', error);
             }
           },
         },
       ],
-      { cancelable: false }
     );
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -138,6 +149,7 @@ const MyPageScreen = ({ navigation }) => {
             <Text style={styles.logout}>로그아웃</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={DeleteUserPage}>
+
             <Text style={styles.quit}>회원탈퇴</Text>
           </TouchableOpacity>
         </View>

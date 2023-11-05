@@ -4,7 +4,6 @@ import axios from "axios";
 
 const URL = "http://192.168.25.202:8080/member"; // API 엔드포인트 URL
 
-
 export const getTokens = async (requestData, navigation) => {
   try {
     const response = await fetch(`${URL}/login`, {
@@ -22,6 +21,7 @@ export const getTokens = async (requestData, navigation) => {
       }));
       console.log(await AsyncStorage.getItem('Tokens'));
       navigation.navigate('MainView');
+
     } else if (response.status === 401) {
       alert("사용자정보가 없습니다");
     } else {
@@ -101,9 +101,3 @@ export const verifyTokens = async () => {
       console.error('API 요청 중 오류 발생:', error);
     }
   };
-  
-  
-  
-  
-  
-  
