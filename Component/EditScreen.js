@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput} from 'react-native';
+import { View, Text, Button, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
+
+const URL = 'http://192.168.25.204:8080';
 
 function EditScreen({ route }) {
   const { title: FirstTitle, content: FirstContent, boardId: FirstBoardId } = route.params;
@@ -20,7 +22,7 @@ function EditScreen({ route }) {
     const editData = { title, content, boardId };
   
     try {
-      const response = await fetch(`http://192.168.25.204:8080/board/edit/${boardId}`, {
+      const response = await fetch(`${URL}/board/edit/${boardId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +88,6 @@ function EditScreen({ route }) {
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
     backgroundColor: '#009688',
