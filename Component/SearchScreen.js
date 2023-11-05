@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, Modal, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import TransparentCircleButton from './TransparentCircleButton';
 import { MaterialIcons} from '@expo/vector-icons';
 
 const SearchScreen = () => {
@@ -54,18 +53,27 @@ const SearchScreen = () => {
     setIsModalVisible(false);
   };
 
+  useEffect(() => {
+    loadSearchHistory(); // 검색 기록을 불러오기
+  }, []);
+
+  const loadSearchHistory = async () => {
+    try {
+      const history = await AsyncStorage.getItem('searchHistory');
+      if (history !== null) {
+        setSearchHistory(JSON.parse(history));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.userIcon} onPress={onGoBack}>
-          <MaterialIcons name="arrow-back" size={30} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Search</Text>
-        <Text></Text>
-      </View> 
-
-
       <View style={styles.searchBar}>
+        <TouchableOpacity style={styles.userIcon} onPress={onGoBack}>
+          <MaterialIcons name="left" size={30} color="black" />
+        </TouchableOpacity>
         <View style={styles.searchTypeContainer}>
           <Button
             title={selectedSearchTypeText}
@@ -156,7 +164,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 20,
-    paddingTop:20,
+    paddingTop:40,
   },
   searchTypeContainer: {
     flex: 3,

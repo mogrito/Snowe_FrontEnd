@@ -1,6 +1,6 @@
 import React from 'react';
 import {Platform, Pressable, StyleSheet, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 function TransparentCircleButton({name, color, hasMarginRight, onPress}) {
   return (

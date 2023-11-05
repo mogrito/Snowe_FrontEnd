@@ -21,13 +21,19 @@ import SearchScreen from './Component/SearchScreen';
 import SkiResortListScreen from './Component/SkiResortList';
 import ReservationListScreen from './Component/ReservationList';
 import TeacherReserveTestScreen from './Component/TeacherReserveTest';
+import ChangeNickNameScreen from './Component/ChangeNickName';
+import ChangeIdScreen from './Component/ChangeId';
+import ChangePwScreen from './Component/ChangePw';
 import MyPageScreen from './Component/MyPage';
+import DeleteUserScreen from './Component/DeleteUser';
+import NoticeScreen from './Component/SocialView'
+import TeacherInfoScreen from './Component/TeacherInfo';
 
 
 const Tab = createMaterialBottomTabNavigator();
 const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator;
+
 
 export default function App() {
   const [showFirstScreen, setShowFirstScreen] = useState(true);
@@ -35,7 +41,7 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowFirstScreen(false);
-    }, 2000); 
+    }, 2000);
   }, []);
 
   return (
@@ -116,6 +122,32 @@ export default function App() {
           component={MyPageScreen}
           options={{ headerShown: false }}
         />
+        <RootStack.Screen
+          name="ChangeId"
+          component={ChangeIdScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="ChangePw"
+          component={ChangePwScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="ChangeNickName"
+          component={ChangeNickNameScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="DeleteUser"
+          component={DeleteUserScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="NoticeInfo"
+          component={NoticeScreen}
+          options={{ headerShown: false }}
+          
+        />
         </RootStack.Navigator>
       </LogContextProvider>
     </NavigationContainer>
@@ -154,7 +186,7 @@ function TabNavigator() {
       }}
     >
       <Tab.Screen
-        name="MainView1"
+        name="MainView"
         component={MainScreen}
         options={{
           tabBarLabel: '홈',
@@ -196,20 +228,19 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen
-        name="Login"
-        component={LoginScreen} // mypage  - mypage 안에다가 그 토큰검증 함수를 써야된다고
+        name="TeacherInfo"
+        component={TeacherInfoScreen}
         options={{
-          tabBarLabel: '마이페이지',
+          tabBarLabel: '자유게시판',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
-              name="account"
+              name="account-group"
               color={color}
               size={26}
             />
           ),
         }}
       />
-      
     </Tab.Navigator>
   );
 }

@@ -60,11 +60,12 @@ function MainScreen() {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedResortName, setSelectedResortName] = useState(''); 
 
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
   const location = selectedResort?.location;
-  const selectedResortName = route.params?.selectedResortName;
+
  
   const handleUserIconPress = () => {
     navigation.openDrawer();
@@ -80,6 +81,13 @@ function MainScreen() {
 
     loadCustomFont();
   }, []);
+
+  useEffect(() => {
+    if (route.params?.selectedResortName) {
+      setSelectedResortName(route.params.selectedResortName);
+    }
+  }, [route.params?.selectedResortName]);
+
 
   useEffect(() => {
     async function fetchWeather() {
@@ -109,8 +117,9 @@ function MainScreen() {
     }
 
     fetchWeather();
-  }, [location]);
+  }, []);
 
+  
   return (
     <View style={styles.background}>
       <View style={styles.header}>
@@ -131,14 +140,16 @@ function MainScreen() {
             <Text style={styles.weatherCity}>{selectedResortName}</Text>
             <MaterialCommunityIcons
               style={styles.weatherIcon}
-              name={getWeatherIconName(weatherData.weather[0].main)}
+              name={weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherIconName(weatherData.weather[0].main) : 'question'}
               size={150}
               color="black"
             />
             <Text style={styles.weatherexp}>
-              {getKoreanWeatherCondition(weatherData.weather[0].main)}
+              {weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherIconName(weatherData.weather[0].main) : 'question'}
             </Text>
-            <Text style={styles.weatherTemp}>{(weatherData.main.temp - 273.15).toFixed(0)}°C</Text>
+            <Text style={styles.weatherTemp}> {weatherData && weatherData.main
+    ? `${(weatherData.main.temp - 273.15).toFixed(0)}°C`
+    : 'N/A'}</Text>
           </View>
         )}
 
@@ -169,7 +180,7 @@ function MainScreen() {
           </TouchableOpacity>
         </View>
 
-        <Calendar style={styles.calendar} />
+        <Calendar style={styles.calendar} monthFormat={'yyyy년 MM월'}/>
       </ScrollView>
     </View>
   );
@@ -272,7 +283,7 @@ const styles = StyleSheet.create({
     
   },
   iconText: {
-    marginTop: 10, // 원하는 값으로 조정
+    marginTop: 10, 
   },
 
 

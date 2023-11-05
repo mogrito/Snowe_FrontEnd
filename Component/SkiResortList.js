@@ -119,7 +119,7 @@ const SkiResortListScreen = () => {
 
   const handleResortPress = (item) => {
     navigation.navigate('TabNavigator', {
-      screen: 'MainView1', 
+      screen: 'MainView', 
       params: {
         selectedResort: item,
         selectedResortName: item.name,

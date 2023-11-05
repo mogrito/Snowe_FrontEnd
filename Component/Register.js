@@ -16,7 +16,7 @@ import TransparentCircleButton from './TransparentCircleButton';
 import { TextInputMask } from 'react-native-masked-text'
 
 // 이미지를 import 합니다.
-import backgroundImage from '../Images/snowe.png'; 
+import backgroundImage from '../Images/dr1.png'; 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RegisterScreen = () => {
@@ -144,7 +144,7 @@ const RegisterScreen = () => {
       if (response.ok) {
         // 회원가입 성공
         alert('회원가입을 축하드립니다.');
-        navigation.navigate('MainView1');
+        navigation.navigate('MainView');
       } else {
         // 회원가입 실패
         alert('회원가입을 실패했습니다.');
@@ -172,7 +172,7 @@ const RegisterScreen = () => {
      <SafeAreaView>
       <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
       />    
       </SafeAreaView>
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
-    marginBottom:60,
+    marginBottom:100,
   },
   backgroundImage: {
     position: 'absolute',

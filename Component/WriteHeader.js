@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {format} from 'date-fns';
 import {ko} from 'date-fns/locale';
-import React, {useState, useReducer} from 'react';
+import React, {useReducer} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -25,6 +25,11 @@ function reducer(state, action) {
   }
 }
 
+
+
+
+
+
 function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
   const navigation = useNavigation();
   const onGoBack = () => {
@@ -47,14 +52,13 @@ function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
         {/* 뒤로 가기 버튼 */}
         <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
         />
       </View>
       <View style={styles.buttons}>
 
         {/* isEditing: 글 편집 중인지 여부 */}
-        {/* onAskRemove: 삭제 버튼 클릭 시 호출할 함수 */}
         {isEditing && (
           // 글 편집 중일 때 삭제 버튼 나타내기
           <TransparentCircleButton
@@ -68,8 +72,6 @@ function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
         <TransparentCircleButton
           name="check"
           color="#009688"
-          // onSave: 저장 버튼 클릭 시 호출할 함수
-          onPress={onSave}
         />
       </View>
       <View style={styles.center}>

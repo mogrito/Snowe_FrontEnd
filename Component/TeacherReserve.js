@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { verifyTokens } from './TokenUtils';
+import TransparentCircleButton from './TransparentCircleButton';
+
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -123,13 +124,29 @@ const TeacherReserveScreen = () => {
     setModalVisible(false); // 모달을 닫습니다.
   };
 
+  
+  const onGoBack = () => {
+    navigation.goBack();
+  };
+
+
+
   return (
     <View style={styles.container}>
       <View style={styles.teacherWrapper}>
-        <Text style={styles.title}>강사 예약</Text>
-        <Calendar style={styles.calender} onDayPress={handleDateSelect} markedDates={{
-          [selectedDate]: { selected: true, selectedColor: 'skyblue' }, // Highlight the selected date
-        }} />
+        <View style={styles.topBar}>
+          <TransparentCircleButton onPress={onGoBack} name="left" color="#424242"/>
+          <Text style={styles.title}>강사 예약</Text>
+        </View>
+        <Calendar
+          style={styles.calender}
+          onDayPress={handleDateSelect}
+          markedDates={{
+            [selectedDate]: { selected: true, selectedColor: 'skyblue' }, // Highlight the selected date
+          }}
+          monthFormat={'yyyy년 MM월'}
+        
+        />
         {selectedDate && (
           <FlatList
           data={filteredTeachers}
@@ -189,8 +206,16 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
   },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    marginBottom: 20,
+    marginRight:30,
+  },
   title: {
-    fontSize: 30,
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 20,
     fontWeight: 'bold',
   },
   teacherItem: {
@@ -246,7 +271,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   calender: {
-    marginTop: 30,
     borderRadius: 10,
   },
   modalContainer: {
@@ -312,7 +336,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight:'bold'
-  }
+  },
 });
 
 export default TeacherReserveScreen;

@@ -9,7 +9,7 @@ const data = [
   { id: '3', name: '정훈', subject: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00' },
 ];
 
-const ReservationListScreen = () => {
+const TeacherInfoScreen = () => {
   const navigation = useNavigation();
 
   const onGoBack = () => {
@@ -134,4 +134,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReservationListScreen;
+export default TeacherInfoScreen;

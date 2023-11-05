@@ -1,20 +1,35 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useRef,useEffect } from 'react';
-import { Alert, StyleSheet, KeyboardAvoidingView, View, Platform, TextInput} from 'react-native';
+import React, { useContext, useState, useRef, useEffect } from 'react';
+import { StyleSheet, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WriteHeader from './WriteHeader';
+import LogContext from '../context/LogContext';
+import ImagePicker2 from './ImagePicker2';
+import { Picker } from '@react-native-picker/picker';
+import { checkTokenAndNavigate } from './TokenUtils';
+const URL = 'http://192.168.25.204:8080';
 
 
 
 function WriteScreen({ route }) {
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    checkTokenAndNavigate(navigation);
+  }, []);
+  
   const log = route.params?.log;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const navigation = useNavigation();
   const bodyRef = useRef();
   const [date, setDate] = useState(log ? new Date(log.date) : new Date());
   const loginId = '정훈';
+  const [category, setCategory] = useState(''); // 선택한 카테고리 상태
 
+  const handleCategoryChange = (categoryValue) => {
+    setCategory(categoryValue);
+  };
 
   const handleTitleChange = (text) => {
     setTitle(text);
@@ -29,7 +44,7 @@ function WriteScreen({ route }) {
     const postData = { title, content, loginId };
 
     // POST 요청을 보내는 논리를 구현합니다.
-    fetch('http://192.168.25.204:8080/board/add', {
+    fetch(`${URL}/board/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,12 +54,10 @@ function WriteScreen({ route }) {
       .then((response) => response.text())
       .then((data) => {
         console.log('새 글 작성완료:', data);
-        // 글 작성이 성공하면 원하는 작업을 수행하거나 화면을 전환합니다.
-        navigation.goBack(); // 예를 들어 글 작성 후 뒤로 돌아가기
+        navigation.goBack(); 
       })
       .catch((error) => {
         console.error('글 작성 중 오류발생:', error);
-        // 오류 처리 또는 사용자에게 알림을 표시하는 등의 작업을 수행합니다.
       });
   };
 
@@ -58,6 +71,14 @@ function WriteScreen({ route }) {
           date={date}
           onChangeDate={setDate}
         />
+        <Picker
+          selectedValue={category}
+          onValueChange={handleCategoryChange}
+        >
+          <Picker.Item label="Select a category" value="" />
+          <Picker.Item label="Category 1" value="category1" />
+          <Picker.Item label="Category 2" value="category2" />
+        </Picker>
         <TextInput
           placeholder="제목을 입력하세요"
           style={styles.titleInput}
@@ -78,6 +99,7 @@ function WriteScreen({ route }) {
           value={content}
           ref={bodyRef}
         />
+        <ImagePicker2 />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

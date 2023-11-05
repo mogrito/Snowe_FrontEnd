@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useRef} from 'react';
-import {Animated, Platform, Pressable, StyleSheet, View} from 'react-native';
+import {Animated, Platform, Pressable, StyleSheet, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { verifyTokens } from './TokenUtils';
 
@@ -12,13 +12,6 @@ function FloatingWriteButton({hidden}) {
   };
 
   const animation = useRef(new Animated.Value(0)).current;
-
-  // useEffect(() => {
-  //   Animated.timing(animation, {
-  //     toValue: hidden ? 1 : 0,
-  //     useNativeDriver: true,
-  //   }).start();
-  // }, [animation, hidden]);
 
   useEffect(() => {
     Animated.spring(animation, {
@@ -57,7 +50,9 @@ function FloatingWriteButton({hidden}) {
         ]}
         android_ripple={{color: 'white'}}
         onPress={onPress}>
-        <Icon name="add" size={24} style={styles.icon} />
+        <Icon name="add" size={18} style={styles.icon}>
+          <Text style={styles.buttonText}>글쓰기</Text>
+        </Icon>
       </Pressable>
     </Animated.View>
   );
@@ -68,7 +63,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
-    width: 56,
+    width: '20%',
     borderRadius: 28,
     // iOS 전용 그림자 설정
     shadowColor: '#4d4d4d',
@@ -82,14 +77,18 @@ const styles = StyleSheet.create({
     overflow: Platform.select({android: 'hidden'}),
   },
   button: {
-    width: 56,
-    height: 56,
+    width: 95,
+    height: 45,
     borderRadius: 28,
     backgroundColor: '#009688',
     justifyContent: 'center',
     alignItems: 'center',
   },
   icon: {
+    color: 'white',
+  },
+  buttonText: {
+    fontSize: 18, 
     color: 'white',
   },
 });

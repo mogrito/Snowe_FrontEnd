@@ -6,13 +6,13 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image
-  ,showToast
+  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import * as Font from 'expo-font';
 import backgroundImage from '../Images/snowe.png';
 import { getTokens } from './TokenUtils';
+import TransparentCircleButton from './TransparentCircleButton';
 
 
 const LoginScreen = () => {
@@ -20,7 +20,11 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
   const navigation = useNavigation();
-  // const URL = 'http://192.168.25.204:8080';
+  const URL = 'http://192.168.25.202:8080';
+  const requestData = {
+    loginId: loginId,
+    password: password,
+  };
 
   useEffect(() => {
     
@@ -34,21 +38,29 @@ const LoginScreen = () => {
     loadCustomFont();
   }, []);
   
-  // getTokens 함수 호출후 로그인, 디바이스에 토큰정보 저장
-  const handleLogin = async () => {
-    getTokens(loginId, password, navigation)
 
+  const handleLogin = async () => {
+    getTokens(requestData,navigation);
   };
+
+
+  const onGoBack = () => {
+    navigation.goBack();
+  };
+
 
   return (
     <View style={styles.container}>
-      {/* Background Image */}
+
+      <View style={styles.topBar}>
+        <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
+      </View>
       <Image source={backgroundImage} style={styles.backgroundImage}/>
       
-      {/* Title */}
+
       <Text style={fontLoaded ? styles.title : {}}>Snowe</Text>
       
-      {/* LoginId Input */}
+
       <TextInput
         style={styles.input}
         placeholder="아이디"
@@ -67,7 +79,7 @@ const LoginScreen = () => {
         autoCapitalize="none" 
       />
       
-      {/* Login Button */}
+
       <TouchableOpacity
         style={styles.loginButton}
         onPress={handleLogin}
@@ -75,7 +87,7 @@ const LoginScreen = () => {
         <Text style={styles.loginText}>로그인</Text>
       </TouchableOpacity>
 
-      {/* Links */}
+
       <View style={styles.linkContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.button}>
           <Text style={styles.sign}>회원이 아니신가요?</Text>
@@ -165,7 +177,14 @@ const styles = StyleSheet.create({
   loginText: {
     color: 'black',
   },
+  topBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    marginTop:60,
+    marginLeft:1,
+    zIndex: 1,
+  },
 });
 
 export default LoginScreen;
-

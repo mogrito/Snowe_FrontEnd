@@ -10,11 +10,11 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
-import backgroundImage from '../Images/snowe.png';
+import backgroundImage from '../Images/dr1.png';
 import TransparentCircleButton from './TransparentCircleButton';
 
 const ForgotPasswordScreen = () => {
-  const [email, setEmail] = useState('');  // 이메일 변수 
+  const [email, setEmail] = useState(''); 
   const [fontLoaded, setFontLoaded] = useState(false);
   const navigation = useNavigation();
 
@@ -62,21 +62,21 @@ const ForgotPasswordScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Background Image */}
+      
       <Image source={backgroundImage} style={styles.backgroundImage} />
   
       <View style={styles.topBar}>
         <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
         />
       </View>
   
-      {/* Title */}
+ 
       <Text style={fontLoaded ? styles.title : {}}>Find Password</Text>
   
-      {/* Email Input */}
+      
       <TextInput
         style={styles.input}
         placeholder="이메일"
@@ -84,12 +84,12 @@ const ForgotPasswordScreen = () => {
         onChangeText={(text) => setEmail(text)}
       />
   
-      {/* Reset Password Button */}
+
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
         <Text style={styles.resetText}>이메일 전송</Text>
       </TouchableOpacity>
   
-      {/* Links */}
+
       <View style={styles.linkContainer}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Login')}
@@ -107,7 +107,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 50,
+    padding: 20,
+    marginBottom:50,
   },
   title: {
     fontSize: 50,

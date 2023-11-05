@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Font from 'expo-font';
-import backgroundImage from '../Images/snowe.png';
+import backgroundImage from '../Images/dr1.png';
 import TransparentCircleButton from './TransparentCircleButton';
 
 const ForgotIdScreen = () => {
@@ -68,7 +68,7 @@ const ForgotIdScreen = () => {
       <View style={styles.topBar}>
         <TransparentCircleButton
           onPress={onGoBack}
-          name="arrow-back"
+          name="left"
           color="#424242"
         />
       </View>
@@ -108,7 +108,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 50,
+    padding: 20,
+    marginBottom: 50,
   },
   title: {
     fontSize: 50,
