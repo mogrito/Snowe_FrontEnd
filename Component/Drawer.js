@@ -4,6 +4,7 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export function CustomDrawerContent({ navigation }) {
+
   return (
     <DrawerContentScrollView>
       <View style={{ flexDirection: 'row', alignItems: 'center', padding: 19 }}>
