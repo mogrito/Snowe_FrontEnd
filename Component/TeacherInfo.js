@@ -1,25 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
 
 
 const data = [
-  { id: '1', name: '원빈', subject: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00' },
-  { id: '2', name: '주성', subject: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00' },
-  { id: '3', name: '정훈', subject: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00' },
+  { id: '1', name: '원빈', classname: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00',subject:'스키' },
+  { id: '2', name: '주성', classname: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00',subject:'보드'},
+  { id: '3', name: '정훈', classname: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00',subject:'스키' },
 ];
+
+
+  //DB에서 필요한 데이터는 선생님 이름 name 이랑 종목 이름 subject 반 이름 classname id는 선생님 고유 번호
+
 
 const TeacherInfoScreen = () => {
   const navigation = useNavigation();
+  const [teachers, setTeachers] = useState([]);
+
+  useEffect(() => {
+    fetch('선생님 데이터 받아오는 API')
+      .then((response) => response.json())
+      .then((data) => {
+        setTeachers(data); 
+      })
+      .catch((error) => console.error('Error fetching data: ', error));
+  }, []);
+
 
   const onGoBack = () => {
     navigation.goBack();
   };
 
-  //수강신청 취소 
-  const onCancel = (reservationId) => {
-  };
+
+
 
   return (
     <View style={styles.container}>
@@ -31,7 +45,7 @@ const TeacherInfoScreen = () => {
 
       </View>
       <FlatList
-        data={data}
+        data={teachers}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
@@ -42,9 +56,9 @@ const TeacherInfoScreen = () => {
               <View style={styles.textContainer}>
                 <Text style={styles.itemText}>{item.name}</Text>
                 <View style={styles.subjectContainer}>
-                  <Text style={styles.subjectText}>{item.subject}</Text>
+                  <Text style={styles.subjectText}>{item.classname}</Text>
                 </View>
-                <Text style={styles.itemText}>{item.edudate}</Text>
+                <Text style={styles.itemText}>{item.subject}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => onCancel(item.id)}
@@ -119,7 +133,7 @@ const styles = StyleSheet.create({
   },
   subjectText: {
     fontSize: 16,
-    marginLeft:10,
+    marginLeft:15,
   },
   cancelButton: {
     width: '20%',
