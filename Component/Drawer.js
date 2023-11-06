@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons,FontAwesome } from '@expo/vector-icons';
 
 export function CustomDrawerContent({ navigation }) {
 
@@ -38,6 +38,13 @@ export function CustomDrawerContent({ navigation }) {
           <MaterialCommunityIcons name="account-clock" color={color} size={size} />
         )}
         onPress={() => navigation.navigate('ReservationList')}
+      />
+       <DrawerItem
+        label="강사자격 신청"
+        icon={({ color, size }) => (
+          <FontAwesome name="id-card-o" color={color} size={size} />
+        )}
+        onPress={() => navigation.navigate('TeacherSignUp')}
       />
     </DrawerContentScrollView>
   );

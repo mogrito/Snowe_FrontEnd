@@ -8,7 +8,7 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
-  Platform  
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
-    marginBottom:100,
+    marginBottom:120,
   },
   backgroundImage: {
     position: 'absolute',

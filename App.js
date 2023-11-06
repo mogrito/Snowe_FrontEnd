@@ -27,6 +27,7 @@ import MyPageScreen from './Component/MyPage';
 import DeleteUserScreen from './Component/DeleteUser';
 import NoticeScreen from './Component/SocialView'
 import TeacherInfoScreen from './Component/TeacherInfo';
+import TeacherSignUpScreen from './Component/TeacherSignUp';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -147,6 +148,12 @@ export default function App() {
           options={{ headerShown: false }}
           
         />
+         <RootStack.Screen
+          name="TeacherSignUp"
+          component={TeacherSignUpScreen}
+          options={{ headerShown: false }}
+          
+        />
         </RootStack.Navigator>
       </LogContextProvider>
     </NavigationContainer>
@@ -206,6 +213,7 @@ function TabNavigator() {
               name="calendar-clock"
               color={color}
               size={26}
+              
             />
           ),
         }}

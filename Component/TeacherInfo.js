@@ -4,6 +4,17 @@ import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 
 
+const data = [
+  { id: '1', name: '원빈', classname: '재미있는 스키반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00', subject: '스키', level: '초급' },
+  { id: '2', name: '주성', classname: '재미있는 보드반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00', subject: '보드', level: '중급' },
+  { id: '3', name: '정훈', classname: '재미는 있나 스키반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00', subject: '스키', level: '고급' },
+];
+
+
+//가져와야하는 데이터는 강사이름 'name', 강좌제목 'classname' 초급,중급,고급 'level인데 이게 아마 다른 테이블에 있을꺼야' 
+
+
+
 const TeacherInfoScreen = () => {
   const navigation = useNavigation();
   const [teachers, setTeachers] = useState([]);
@@ -24,14 +35,26 @@ const TeacherInfoScreen = () => {
 
   return (
     <View style={styles.container}>
+      
       <View style={styles.header}>
         <View style={styles.topBar}>
           <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
           <Text style={styles.title}>강사 정보</Text>
         </View>
       </View>
+      <View style={styles.categori}>
+      <TouchableOpacity style={styles.all}>
+        <Text style={styles.cancelButtonText}>전체</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.ski}>
+        <Text style={styles.cancelButtonText}>스키</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.board}>
+        <Text style={styles.cancelButtonText}>보드</Text>
+      </TouchableOpacity>
+      </View>
       <FlatList
-        data={teachers}
+        data={data}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
@@ -41,7 +64,7 @@ const TeacherInfoScreen = () => {
                 <Text style={styles.itemText}>{item.name}</Text>
                 <Text style={styles.subjectText}>{item.classname}</Text>
               </View>
-              <Text style={styles.skilevel}>{item.level}</Text>
+              <Text style={styles.skilevel}>{item.level}</Text>  
               <TouchableOpacity
                 // onPress={openModal}
                 style={styles.cancelButton}
@@ -114,6 +137,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  all: {
+    width: '12%',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight:5,
+  },
+  ski: {
+    width: '12%',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight:5,
+  },
+  board: {
+    width: '12%',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight:5,
+  },
   cancelButtonText: {
     textAlign: 'center',
   },
@@ -125,7 +175,12 @@ const styles = StyleSheet.create({
   },
   skilevel:{
     marginRight:50,
+  },
+  categori:{
+    flexDirection: 'row',
+    marginBottom:10,
   }
+
 });
 
 export default TeacherInfoScreen;
