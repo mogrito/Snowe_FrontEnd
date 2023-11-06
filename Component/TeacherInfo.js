@@ -3,25 +3,20 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 
-const data = [
-  { id: '1', name: '원빈', classname: '재미있는 스키반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00', subject: '스키', level: '초급' },
-  { id: '2', name: '주성', classname: '재미있는 보드반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00', subject: '보드', level: '중급' },
-  { id: '3', name: '정훈', classname: '재미는 있나 스키반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00', subject: '스키', level: '고급' },
-];
 
 const TeacherInfoScreen = () => {
   const navigation = useNavigation();
   const [teachers, setTeachers] = useState([]);
 
   
-  // useEffect(() => {
-  //   fetch('선생님 데이터 받아오는 API')
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setTeachers(data); 
-  //     })
-  //     .catch((error) => console.error('Error fetching data: ', error));
-  // }, []);
+  useEffect(() => {
+    fetch('선생님 데이터 받아오는 API')
+      .then((response) => response.json())
+      .then((data) => {
+        setTeachers(data); 
+      })
+      .catch((error) => console.error('Error fetching data: ', error));
+  }, []);
 
   const onGoBack = () => {
     navigation.goBack();
@@ -36,7 +31,7 @@ const TeacherInfoScreen = () => {
         </View>
       </View>
       <FlatList
-        data={data}
+        data={teachers}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
