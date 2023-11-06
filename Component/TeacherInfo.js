@@ -4,11 +4,11 @@ import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation} from '@react-navigation/native';
 
 
-const data = [
-  { id: '1', name: '원빈', classname: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00',subject:'스키' },
-  { id: '2', name: '주성', classname: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00',subject:'보드'},
-  { id: '3', name: '정훈', classname: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00',subject:'스키' },
-];
+// const data = [
+//   { id: '1', name: '원빈', classname: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00',subject:'스키',level:'초급' },
+//   { id: '2', name: '주성', classname: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00',subject:'보드',level:'중급'},
+//   { id: '3', name: '정훈', classname: '스키초급반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00',subject:'스키',level:'고급' },
+// ];
 
 
   //DB에서 필요한 데이터는 선생님 이름 name 이랑 종목 이름 subject 반 이름 classname id는 선생님 고유 번호
@@ -58,7 +58,7 @@ const TeacherInfoScreen = () => {
                 <View style={styles.subjectContainer}>
                   <Text style={styles.subjectText}>{item.classname}</Text>
                 </View>
-                <Text style={styles.itemText}>{item.subject}</Text>
+                <Text style={styles.itemText}>{item.subject}/{item.level}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => onCancel(item.id)}
