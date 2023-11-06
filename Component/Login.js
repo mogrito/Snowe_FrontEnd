@@ -45,7 +45,7 @@ const LoginScreen = () => {
 
 
   const onGoBack = () => {
-    navigation.goBack();
+    navigation.navigate('MainView');
   };
 
 

@@ -200,10 +200,10 @@ function TabNavigator() {
         name="TeacherReserve"
         component={TeacherReserveScreen}
         options={{
-          tabBarLabel: '강사 예약',
+          tabBarLabel: '강습 예약',
           tabBarIcon: ({ color }) => (
-            <FontAwesome5
-              name="chalkboard-teacher"
+            <MaterialCommunityIcons
+              name="calendar-clock"
               color={color}
               size={26}
             />
@@ -230,8 +230,8 @@ function TabNavigator() {
         options={{
           tabBarLabel: '강사 정보',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
-              name="account-group"
+            <FontAwesome5
+              name="chalkboard-teacher"
               color={color}
               size={26}
             />

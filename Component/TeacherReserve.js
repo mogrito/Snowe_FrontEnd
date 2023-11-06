@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimen
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
+import { getTokens } from './TokenUtils';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -17,9 +18,9 @@ const TeacherReserveScreen = () => {
   
   const navigation = useNavigation();
 
-  useEffect(() => {
-    verifyTokens(navigation);
-  },);
+  // useEffect(() => {
+  //   verifyTokens(navigation);
+  // },);
 
   // 예약 신청을 서버에 업데이트하는 함수
   const reserveLesson = async () => {

@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 
+
 const data = [
   { id: '1', name: '원빈', subject: '스키초급반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00' },
   { id: '2', name: '주성', subject: '보드초급반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00' },
@@ -13,7 +14,7 @@ const TeacherInfoScreen = () => {
   const navigation = useNavigation();
 
   const onGoBack = () => {
-    navigation.pop();
+    navigation.goBack();
   };
 
   //수강신청 취소 
@@ -23,14 +24,9 @@ const TeacherInfoScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>예약 목록</Text>
-
-        <View style={styles.buttonContainer}>
-          <TransparentCircleButton
-            onPress={onGoBack}
-            name="left"
-            color="#424242"
-          />
+        <View style={styles.topBar}>
+          <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
+          <Text style={styles.title}>강사 정보</Text>
         </View>
 
       </View>
@@ -54,7 +50,7 @@ const TeacherInfoScreen = () => {
                 onPress={() => onCancel(item.id)}
                 style={styles.cancelButton}
               >
-                <Text style={styles.cancelButtonText}>취소</Text>
+                <Text style={styles.cancelButtonText}>상세보기</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -76,10 +72,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    
   },
   title: {
-    fontSize: 30,
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 20,
     fontWeight: 'bold',
   },
   buttonContainer: {
@@ -90,6 +88,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginVertical: 8,
     borderRadius: 8,
+    
   },
   itemContent: {
     flexDirection: 'row',
@@ -120,9 +119,10 @@ const styles = StyleSheet.create({
   },
   subjectText: {
     fontSize: 16,
+    marginLeft:10,
   },
   cancelButton: {
-    width: '15%',
+    width: '20%',
     padding: 10,
     borderRadius: 5,
     backgroundColor: 'skyblue',
@@ -131,6 +131,12 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     textAlign: 'center', 
+  },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    marginBottom: 20,
+    marginRight:30,
   },
 });
 
