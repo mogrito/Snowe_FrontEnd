@@ -91,7 +91,7 @@ const LoginScreen = () => {
 
       <View style={styles.linkContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.button}>
-          <Text style={styles.sign}>회원이 아니신가요?</Text>
+          <Text style={styles.sign}>회원가입</Text>
         </TouchableOpacity>
         <View style={{ width: 10 }} />
         <TouchableOpacity  onPress={() => navigation.navigate('ForgetId')} style={styles.button}>

@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   profileContainer: {
+    
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
