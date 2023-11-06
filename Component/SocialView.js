@@ -103,7 +103,7 @@ function FreeBoardScreen() {
 }
 
 function NoticeScreen({ navigation }) {
-
+  
   const [refreshing, setRefreshing] = useState(false);
 
   const notice = {
