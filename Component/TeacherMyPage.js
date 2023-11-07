@@ -123,6 +123,15 @@ const MyPageScreen = () => {
           <TouchableOpacity onPress={ChangePwPage}>
             <Text style={styles.accountPw}>비밀번호 변경</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={ChangeLessonNamePage}>
+            <Text style={styles.accountPw}>강좌명 변경</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ChangeMySelfPage}>
+            <Text style={styles.accountPw}>자기소개 변경</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ChangeCarrerPage}>
+            <Text style={styles.accountPw}>경력 변경</Text>
+          </TouchableOpacity>
           </View>
         </View>
 
