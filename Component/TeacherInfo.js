@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
+import { useNavigation } from '@react-navigation/native';
 
 const data = [
   { id: '1', name: '원빈', introduce: '강해지고 싶나?', image: require('../Images/face.jpg'), count: 0, edudate: '09:00', subject: '스키', level: 'LV1' },
@@ -26,6 +27,7 @@ const TeacherInfoScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const navigation = useNavigation();
 
     // useEffect(() => {
   //   async function fetchData() {
