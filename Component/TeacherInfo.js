@@ -20,6 +20,7 @@ const eachsubject = {
   보드: require('../Images/skiboard.png'),
 };
 
+
 const TeacherInfoScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
@@ -254,3 +255,6 @@ const styles = StyleSheet.create({
 });
 
 export default TeacherInfoScreen;
+
+
+
