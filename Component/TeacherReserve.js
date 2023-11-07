@@ -30,6 +30,7 @@ const TeacherReserveScreen = () => {
         const response = await fetch('API 적어주시공', {
           method: 'POST',
           headers: {
+            // 토큰값
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -79,13 +80,13 @@ const TeacherReserveScreen = () => {
   };
   
   
-
+  
   const resetTeacherList = () => {
     setFilteredTeachers([]);
     setSelectedTeacher(null);
     setSelectedDate(null);
   };
-
+  
   useEffect(() => {
     if (isFocused) {
       resetTeacherList();

@@ -4,30 +4,32 @@ import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 
 
-const data = [
-  { id: '1', name: '원빈', classname: '재미있는 스키반', image: require('../Images/face.jpg'), count: 0, edudate: '09:00', subject: '스키', level: '초급' },
-  { id: '2', name: '주성', classname: '재미있는 보드반', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00', subject: '보드', level: '중급' },
-  { id: '3', name: '정훈', classname: '재미는 있나 스키반', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00', subject: '스키', level: '고급' },
-];
-
-
 //가져와야하는 데이터는 강사이름 'name', 강좌제목 'classname' 초급,중급,고급 'level인데 이게 아마 다른 테이블에 있을꺼야' 
 
 
 
 const TeacherInfoScreen = () => {
-  const navigation = useNavigation();
   const [teachers, setTeachers] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   
+
   useEffect(() => {
-    fetch('선생님 데이터 받아오는 API')
-      .then((response) => response.json())
-      .then((data) => {
-        setTeachers(data); 
-      })
-      .catch((error) => console.error('Error fetching data: ', error));
-  }, []);
+    async function fetchData() {
+      try {
+        const response = await fetch(`http://localhost:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
+        if (!response.ok) {
+          throw new Error('서버에서 데이터를 가져오지 못했습니다.');
+        }
+        const data = await response.json();
+        setTeachers(data); // 데이터를 teachers 상태로 설정
+        console.log(data);
+      } catch (error) {
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      }
+    }
+    fetchData();
+  }, [selectedCategory]);
 
   const onGoBack = () => {
     navigation.goBack();
@@ -43,36 +45,35 @@ const TeacherInfoScreen = () => {
         </View>
       </View>
       <View style={styles.categori}>
-      <TouchableOpacity style={styles.all}>
-        <Text style={styles.cancelButtonText}>전체</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.ski}>
-        <Text style={styles.cancelButtonText}>스키</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.board}>
-        <Text style={styles.cancelButtonText}>보드</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.all} onPress={() => setSelectedCategory('All')}>
+          <Text style={styles.cancelButtonText}>전체</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.ski} onPress={() => setSelectedCategory('Ski')}>
+          <Text style={styles.cancelButtonText}>스키</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.board} onPress={() => setSelectedCategory('Board')}>
+          <Text style={styles.cancelButtonText}>보드</Text>
+        </TouchableOpacity>
       </View>
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <View style={styles.teacherContent}>
-              <Image source={item.image} style={styles.teacherImage} />
-              <View style={styles.textContainer}>
-                <Text style={styles.itemText}>{item.name}</Text>
-                <Text style={styles.subjectText}>{item.classname}</Text>
+          data={teachers}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <View style={styles.teacherContent}>
+                <Image source={item.image} style={styles.teacherImage} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.itemText}>{item.name}</Text>
+                  <Text style={styles.subjectText}>{item.classname}</Text>
+                </View>
+                <Text style={styles.skilevel}>{item.level}</Text>  
+                <TouchableOpacity
+                  // onPress={openModal}
+                  style={styles.cancelButton}
+                >
+                  <Text style={styles.cancelButtonText}>상세보기</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.skilevel}>{item.level}</Text>  
-              <TouchableOpacity
-                // onPress={openModal}
-                style={styles.cancelButton}
-              >
-                <Text style={styles.cancelButtonText}>상세보기</Text>
-              </TouchableOpacity>
             </View>
-          </View>
         )}
         showsVerticalScrollIndicator={false}
       />

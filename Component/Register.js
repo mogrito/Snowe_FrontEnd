@@ -125,7 +125,7 @@ const RegisterScreen = () => {
       }
 
 
-      const response = await fetch(`${URL}/member/members`, {
+      const response = await fetch(`${URL}/member/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
