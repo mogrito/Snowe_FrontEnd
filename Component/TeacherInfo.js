@@ -22,8 +22,27 @@ const eachsubject = {
 
 
 const TeacherInfoScreen = () => {
+  const [teachers, setTeachers] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
+
+    // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await fetch(`http://localhost:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
+  //       if (!response.ok) {
+  //         throw Error('서버에서 데이터를 가져오지 못했습니다.');
+  //       }
+  //       const data = await response.json();
+  //       setTeachers(data);
+  //       console.log(data);
+  //     } catch (error) {
+  //       console.error('데이터 가져오기 중 오류 발생:', error);
+  //     }
+  //   }
+  //   fetchData();
+  // }, [selectedCategory]);
 
   const onShowDetails = (item) => {
     setSelectedTeacher(item);
