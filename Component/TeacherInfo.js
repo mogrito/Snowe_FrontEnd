@@ -4,10 +4,6 @@ import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 
 
-//가져와야하는 데이터는 강사이름 'name', 강좌제목 'classname' 초급,중급,고급 'level인데 이게 아마 다른 테이블에 있을꺼야' 
-
-
-
 const TeacherInfoScreen = () => {
   const [teachers, setTeachers] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -183,5 +179,3 @@ const styles = StyleSheet.create({
   }
 
 });
-
-export default TeacherInfoScreen;
