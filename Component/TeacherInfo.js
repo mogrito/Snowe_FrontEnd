@@ -1,35 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import { useNavigation } from '@react-navigation/native';
+
+const data = [
+  { id: '1', name: '원빈', introduce: '강해지고 싶나?', image: require('../Images/face.jpg'), count: 0, edudate: '09:00', subject: '스키', level: 'LV1' },
+  { id: '2', name: '주성', introduce: '찾아라 원피스', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00', subject: '보드', level: 'LV2' },
+  { id: '3', name: '정훈', introduce: '아이스 에이지..', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00', subject: '스키', level: 'LV3' },
+];
 
 
-//가져와야하는 데이터는 강사이름 'name', 강좌제목 'classname' 초급,중급,고급 'level인데 이게 아마 다른 테이블에 있을꺼야' 
+const levelColors = {
+  LV1: 'lightgreen',
+  LV2: 'lightblue',
+  LV3: 'lightpink',
+};
 
-
+const eachsubject = {
+  스키: require('../Images/ski.png'),
+  보드: require('../Images/skiboard.png'),
+};
 
 const TeacherInfoScreen = () => {
-  const [teachers, setTeachers] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
 
-  
+  const onShowDetails = (item) => {
+    setSelectedTeacher(item);
+    setModalVisible(true);
+  };
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(`http://localhost:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
-        if (!response.ok) {
-          throw new Error('서버에서 데이터를 가져오지 못했습니다.');
-        }
-        const data = await response.json();
-        setTeachers(data); // 데이터를 teachers 상태로 설정
-        console.log(data);
-      } catch (error) {
-        console.error('데이터 가져오기 중 오류 발생:', error);
-      }
-    }
-    fetchData();
-  }, [selectedCategory]);
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedTeacher(null);
+  };
 
   const onGoBack = () => {
     navigation.goBack();
@@ -37,8 +40,7 @@ const TeacherInfoScreen = () => {
 
   return (
     <View style={styles.container}>
-      
-      <View style={styles.header}>
+       <View style={styles.header}>
         <View style={styles.topBar}>
           <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
           <Text style={styles.title}>강사 정보</Text>
@@ -56,27 +58,42 @@ const TeacherInfoScreen = () => {
         </TouchableOpacity>
       </View>
       <FlatList
-          data={teachers}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <View style={styles.teacherContent}>
-                <Image source={item.image} style={styles.teacherImage} />
-                <View style={styles.textContainer}>
-                  <Text style={styles.itemText}>{item.name}</Text>
-                  <Text style={styles.subjectText}>{item.classname}</Text>
-                </View>
-                <Text style={styles.skilevel}>{item.level}</Text>  
-                <TouchableOpacity
-                  // onPress={openModal}
-                  style={styles.cancelButton}
-                >
-                  <Text style={styles.cancelButtonText}>상세보기</Text>
-                </TouchableOpacity>
+        data={data}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <View style={styles.teacherContent}>
+              <Image source={item.image} style={styles.teacherImage} />
+              <View style={styles.textContainer}>
+                <Text style={styles.itemText}>{item.name}</Text>
+                <Text style={styles.subjectText}>{item.introduce}</Text>
               </View>
+              <View style={[styles.badge, { backgroundColor: levelColors[item.level] }]}>
+                <Text style={styles.skilevel}>{item.level}</Text>
+              </View>
+              <Image source={eachsubject[item.subject]} style={styles.subjectImage} />
+              <TouchableOpacity style={styles.cancelButton} onPress={() => onShowDetails(item)}>
+                <Text style={styles.cancelButtonText}>상세보기</Text>
+              </TouchableOpacity>
             </View>
+          </View>
         )}
         showsVerticalScrollIndicator={false}
       />
+
+      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={closeModal}>
+        <View style={styles.modalContainer}>
+          {selectedTeacher && (
+            <View style={styles.modalContent}>
+              <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
+                 <TransparentCircleButton onPress={closeModal} name="left" color="#424242" />
+              </TouchableOpacity>
+              <Image source={selectedTeacher.image} style={styles.modalTeacherImage} />
+              <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
+              <Text style={styles.modalSubjectText}>{selectedTeacher.introduce}</Text>
+            </View>
+          )}
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -98,9 +115,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  buttonContainer: {
-    marginRight: 1,
   },
   item: {
     backgroundColor: 'white',
@@ -124,7 +138,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
   subjectText: {
     fontSize: 16,
@@ -145,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight:5,
+    marginRight: 5,
   },
   ski: {
     width: '12%',
@@ -154,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight:5,
+    marginRight: 5,
   },
   board: {
     width: '12%',
@@ -163,7 +177,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight:5,
+    marginRight: 5,
   },
   cancelButtonText: {
     textAlign: 'center',
@@ -174,14 +188,69 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginRight: 30,
   },
-  skilevel:{
-    marginRight:50,
+  skilevel: {
+    marginRight: 0,
+    fontSize: 15,
   },
-  categori:{
+  categori: {
     flexDirection: 'row',
-    marginBottom:10,
-  }
+    marginBottom: 10,
+  },
+  badge: {
+    borderRadius: 4,
+    width: 'auto',
+    marginRight:15,
+    
+  },
+  subjectImage: {
+    width: 50,
+    height: 50,
+    marginRight:12,
+  },
 
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    
+  },
+  modalContent: {
+    backgroundColor: '#DBEBF9',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    width:'100%',
+    height:'100%',
+  },
+  modalTeacherImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginTop:60,
+    
+  },
+  modalItemText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  modalSubjectText: {
+    fontSize: 18,
+    marginTop: 10,
+  },
+  modalCloseButton: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    padding: 10,
+    zIndex: 1, 
+    marginTop:30,
+  },
+  modalCloseButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
 });
 
 export default TeacherInfoScreen;
