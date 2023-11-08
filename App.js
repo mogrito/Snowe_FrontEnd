@@ -146,7 +146,6 @@ export default function App() {
           name="NoticeInfo"
           component={NoticeScreen}
           options={{ headerShown: false }}
-          
         />
         </RootStack.Navigator>
       </LogContextProvider>

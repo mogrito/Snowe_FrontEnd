@@ -59,10 +59,13 @@ function FloatingWriteButton({hidden}) {
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    bottom: 16,
-    right: 16,
-    width: '20%',
-    borderRadius: 28,
+    width: 95,
+    height: 45,
+    top: '95%', // 화면 세로 중앙
+    left: '50%', // 화면 가로 중앙
+    marginTop: -22.5,
+    marginLeft: -47.5, 
+    borderRadius: 25,
     // iOS 전용 그림자 설정
     shadowColor: '#4d4d4d',
     shadowOffset: {width: 0, height: 4},

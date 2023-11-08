@@ -53,26 +53,11 @@ const SearchScreen = () => {
     setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    loadSearchHistory(); // 검색 기록을 불러오기
-  }, []);
-
-  const loadSearchHistory = async () => {
-    try {
-      const history = await AsyncStorage.getItem('searchHistory');
-      if (history !== null) {
-        setSearchHistory(JSON.parse(history));
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.searchBar}>
         <TouchableOpacity style={styles.userIcon} onPress={onGoBack}>
-          <MaterialIcons name="left" size={30} color="black" />
+          <MaterialIcons name="arrow-back" size={30} color="black" />
         </TouchableOpacity>
         <View style={styles.searchTypeContainer}>
           <Button
@@ -169,6 +154,8 @@ const styles = StyleSheet.create({
   searchTypeContainer: {
     flex: 3,
     paddingHorizontal: 1,
+    marginLeft:10,
+    marginRight:10
   },
   searchInputContainer: {
     flex: 7,

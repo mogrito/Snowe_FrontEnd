@@ -4,7 +4,6 @@ import {ko} from 'date-fns/locale';
 import React, {useReducer} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const initialState = {mode: 'date', visible: false};
 
@@ -70,6 +69,7 @@ function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
         )}
          {/* 저장 버튼 */}
         <TransparentCircleButton
+          onPress={onSave}
           name="check"
           color="#009688"
         />
@@ -83,13 +83,13 @@ function WriteHeader({onSave, onAskRemove, isEditing, date, onChangeDate}) {
           <Text>{format(new Date(date), 'p', {locale: ko})}</Text>
         </Pressable>
       </View>
-      <DateTimePickerModal
+      {/* <DateTimePickerModal
         isVisible={state.visible}
         mode={state.mode}
         onConfirm={onConfirm}
         onCancel={close}
         date={date}
-      />
+      /> */}
     </View>
   );
 }

@@ -13,7 +13,7 @@ const TeacherInfoScreen = () => {
   const navigation = useNavigation();
 
   const onGoBack = () => {
-    navigation.pop();
+    navigation.goBack();
   };
 
   //수강신청 취소 
