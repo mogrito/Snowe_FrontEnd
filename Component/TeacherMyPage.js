@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Alert } from 'react-native';
 
 
-const MyPageScreen = () => {
+const TeacherMyPageScreen = () => {
   const navigation = useNavigation();
   const [data, setData] = useState(null);
   const [user, setUser] = useState({
@@ -66,6 +66,24 @@ const MyPageScreen = () => {
     navigation.navigate('NoticeInfo');
   };
 
+  const LessonSignUpPage = () => {
+    navigation.navigate('LessonSignUp')
+  }
+
+  const ChangeMySelfPage = () => {
+    navigation.navigate('TeacherChangeMySelf')
+  }
+  const ChangeCarrerPage = () => {
+    navigation.navigate('TeacherChangeMySelf')
+  }
+  const ChangearkPage = () => {
+    navigation.navigate('TeacherChangeMySelf')
+  }
+  const ChangeTeamPage = () => {
+    navigation.navigate('TeacherChangeMySelf')
+  }
+
+
   const handleAccountDeletion = async () => {
     Alert.alert(
       '회원탈퇴',
@@ -99,6 +117,10 @@ const MyPageScreen = () => {
       ],
     );
   };
+
+
+
+
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -123,14 +145,17 @@ const MyPageScreen = () => {
           <TouchableOpacity onPress={ChangePwPage}>
             <Text style={styles.accountPw}>비밀번호 변경</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={ChangeLessonNamePage}>
-            <Text style={styles.accountPw}>강좌명 변경</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={ChangeMySelfPage}>
-            <Text style={styles.accountPw}>자기소개 변경</Text>
+            <Text style={styles.accountPw}>한줄소개 변경</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={ChangeCarrerPage}>
             <Text style={styles.accountPw}>경력 변경</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ChangearkPage}>
+            <Text style={styles.accountPw}>약력 변경</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ChangeTeamPage}>
+            <Text style={styles.accountPw}>소속 변경</Text>
           </TouchableOpacity>
           </View>
         </View>
@@ -307,4 +332,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPageScreen;
+export default TeacherMyPageScreen;

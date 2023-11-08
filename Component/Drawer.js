@@ -1,9 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { MaterialCommunityIcons,FontAwesome } from '@expo/vector-icons';
+import { MaterialCommunityIcons,FontAwesome,Foundation } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function CustomDrawerContent({ navigation }) {
+
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+
+  useEffect(() => {
+    async function checkLoginStatus() {
+      try {
+        const token = await AsyncStorage.getItem('Tokens');
+        if (token) {
+          setIsUserLoggedIn(true);
+        } else {
+          setIsUserLoggedIn(false);
+        }
+      } catch (error) {
+        console.error('토큰 확인 중 오류 발생: ', error);
+      }
+    }
+
+    checkLoginStatus();
+  }, []);
 
   return (
     <DrawerContentScrollView>
@@ -12,7 +33,7 @@ export function CustomDrawerContent({ navigation }) {
           source={require('../Images/UserIcon.jpg')}
           style={{ width: 72, height: 72, borderRadius: 36 }}
         />
-        <TouchableOpacity onPress={() => navigation.navigate('MyPage')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>
             로그인하기
           </Text>
@@ -23,7 +44,26 @@ export function CustomDrawerContent({ navigation }) {
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('MyPage')}
+        onPress={() => {
+           if (isUserLoggedIn) {
+            navigation.navigate('MyPage');
+           } else {
+            navigation.navigate('Login');
+           }
+        }}
+      />
+      <DrawerItem
+        label="강사 마이페이지"
+        icon={({ color, size }) => (
+          <MaterialCommunityIcons name="account" color={color} size={size} />
+        )}
+        onPress={() => {
+          if (isUserLoggedIn) {
+           navigation.navigate('TeacherMyPage');
+          } else {
+           navigation.navigate('Login');
+          }
+        }}
       />
       <DrawerItem
         label="스키장 리스트"
@@ -40,11 +80,18 @@ export function CustomDrawerContent({ navigation }) {
         onPress={() => navigation.navigate('ReservationList')}
       />
        <DrawerItem
-        label="강사자격 신청"
+        label="강사자격 신청 및 등록"
         icon={({ color, size }) => (
           <FontAwesome name="id-card-o" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('TeacherSignUp')}
+        onPress={() => navigation.navigate('TeacherVerify')}
+      />
+       <DrawerItem
+        label="강습 등록"
+        icon={({ color, size }) => (
+          <Foundation name="page-edit" color={color} size={size} />
+        )}
+        onPress={() => navigation.navigate('LessonSignUp')}
       />
     </DrawerContentScrollView>
   );

@@ -27,7 +27,9 @@ import MyPageScreen from './Component/MyPage';
 import DeleteUserScreen from './Component/DeleteUser';
 import NoticeScreen from './Component/SocialView'
 import TeacherInfoScreen from './Component/TeacherInfo';
-import TeacherSignUpScreen from './Component/TeacherSignUp';
+import TeacherVerifyScreen from './Component/TeacherVerify';
+import LessonSignUpScreen from './Component/LessonSignUp';
+import TeacherMyPageScreen from './Component/TeacherMyPage';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -66,6 +68,8 @@ export default function App() {
           name="Login"
           component={LoginScreen}
           options={{ headerShown: false }}
+  
+          
         />
         <RootStack.Screen
           name="Register"
@@ -149,8 +153,20 @@ export default function App() {
           
         />
          <RootStack.Screen
-          name="TeacherSignUp"
-          component={TeacherSignUpScreen}
+          name="TeacherVerify"
+          component={TeacherVerifyScreen}
+          options={{ headerShown: false }}
+          
+        />
+        <RootStack.Screen
+          name="LessonSignUp"
+          component={LessonSignUpScreen}
+          options={{ headerShown: false }}
+          
+        />
+        <RootStack.Screen
+          name="TeacherMyPage"
+          component={TeacherMyPageScreen}
           options={{ headerShown: false }}
           
         />

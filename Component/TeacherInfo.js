@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
 
-//yak = 약력 carrer = 경력 team = 소속 
+//brief = 약력 carrer = 경력 team = 소속 
 
 const data = [
   {
@@ -39,15 +39,15 @@ const data = [
   { id: '2', name: '주성', introduce: '찾아라 원피스', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00', subject: '보드', level: 'LV2' ,
   yak: [
     '- T&D(Technical & Different)SKI PROGRAM DIRECTOR',
-    '- (현)SBAK 한국스키장경영협회 데몬스트레이터 3기 인정(2018~2025)',
-    '- (현)KSEA 대한스키교육협회 교육위원장',
-    '- (전)KSIA 대한스키지도자연맹 데몬스트레이터 4기 인정(2013~2017)'
+    '- SBAK 한국스키장경영협회 데몬스트레이터 3기 인정 (2018~2025)',
+    '- KSEA 대한스키교육협회 교육위원장',
+    '- KSIA 대한스키지도자연맹 데몬스트레이터 4기 인정 (2013~2017)'
   ],
   carrer: [
     '- 제 8회 SBAK 한국스키장경영협회 전국기술선수권대회 종합 3위 ',
-    '- 제 4기 SBAK 한국스키장경영협회 데몬스트레이터 선발 (임기: 2023~2025)',
-    'KSEA 대한스키교육협회 교육위원장 임명',
-    '한솔섬유배 인터스키대회 전주자(With 김소진 HEAD COACH)'
+    '- 제 4기 SBAK 한국스키장경영협회 데몬스트레이터 선발',
+    '- KSEA 대한스키교육협회 교육위원장 임명',
+    '- 한솔섬유배 인터스키대회 전주자'
   ],
   team: [
     '- WONYANG 후원',
@@ -96,22 +96,22 @@ const TeacherInfoScreen = () => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const navigation = useNavigation();
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const response = await fetch(`http://localhost:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
-  //       if (!response.ok) {
-  //         throw Error('서버에서 데이터를 가져오지 못했습니다.');
-  //       }
-  //       const data = await response.json();
-  //       setTeachers(data);
-  //       console.log(data);
-  //     } catch (error) {
-  //       console.error('데이터 가져오기 중 오류 발생:', error);
-  //     }
-  //   }
-  //   fetchData();
-  // }, [selectedCategory]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(`http://localhost:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
+        if (!response.ok) {
+          throw Error('서버에서 데이터를 가져오지 못했습니다.');
+        }
+        const data = await response.json();
+        setTeachers(data);
+        console.log(data);
+      } catch (error) {
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      }
+    }
+    fetchData();
+  }, [selectedCategory]);
 
  // 이부분이 선택된 강사의 DATA를 DB에서 가져오는 거
  
@@ -198,12 +198,8 @@ const TeacherInfoScreen = () => {
               <View style={styles.modalinfoimage}>
                 <Image source={selectedTeacher.image} style={styles.modalTeacherImage} />
                 <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
-                <Text style={styles.modalSubjectText}>{selectedTeacher.introduce}</Text>
+                <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
-              <Text style={styles.yaks}>약력</Text>
-              {selectedTeacher.yak && selectedTeacher.yak.map((item, index) => (
-                <Text style={styles.yak} key={index}>{item}</Text>
-              ))}
               <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/SnoweFirst.jpg')} style={styles.swiperImage} />  
@@ -215,6 +211,10 @@ const TeacherInfoScreen = () => {
                   <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
                 </View>
                </Swiper>
+              <Text style={styles.yaks}>약력</Text>
+              {selectedTeacher.yak && selectedTeacher.yak.map((item, index) => (
+                <Text style={styles.yak} key={index}>{item}</Text>
+              ))}
                <Text style={styles.carrers}>경력</Text>
               {selectedTeacher.yak && selectedTeacher.carrer.map((item, index) => (
                 <Text style={styles.carrer} key={index}>{item}</Text>
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
 
   },
   modalContent: {
-    backgroundColor: '#DBEBF9',
+    backgroundColor: 'white',
     padding: 16,
     borderRadius: 8,
     width: '100%',
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   yaks: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: 15,
   },
   carrers: {
     fontSize: 20,
@@ -421,10 +421,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    
   },
   swiperImage: {
     width: '100%',
-    height: '100%',
+    height: '110%',
+    borderRadius:5,
+    marginTop:40
   },
 });
 

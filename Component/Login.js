@@ -49,7 +49,7 @@ const LoginScreen = () => {
     navigation.navigate('MainView');
   };
 
-
+  
   return (
     <View style={styles.container}>
 
