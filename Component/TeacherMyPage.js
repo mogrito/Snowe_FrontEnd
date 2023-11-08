@@ -101,7 +101,7 @@ const TeacherMyPageScreen = () => {
           onPress: async () => {
             try {
               const response = await fetch('API', {
-                method: 'DELETE',
+                method: 'POST',
                 headers: {
                   'Authorization': 'Bearer ' + 'YOUR_AUTH_TOKEN',
                   'Content-Type': 'application/json',
