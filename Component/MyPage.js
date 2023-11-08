@@ -18,7 +18,7 @@ const MyPageScreen = () => {
   });
 
   useEffect(() => {
-    checkTokenAndNavigate(navigation);
+    // checkTokenAndNavigate(navigation);
 
     async function fetchData() {
       try {

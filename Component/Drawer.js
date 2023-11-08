@@ -5,6 +5,23 @@ import { MaterialCommunityIcons,FontAwesome } from '@expo/vector-icons';
 
 export function CustomDrawerContent({ navigation }) {
 
+  useEffect(() => {
+    async function checkLoginStatus() {
+      try {
+        const token = await AsyncStorage.getItem('Tokens');
+        if (token) {
+          setIsUserLoggedIn(true);
+        } else {
+          setIsUserLoggedIn(false);
+        }
+      } catch (error) {
+        console.error('토큰 확인 중 오류 발생: ', error);
+      }
+    }
+
+    checkLoginStatus();
+  }, []);
+
   return (
     <DrawerContentScrollView>
       <View style={{ flexDirection: 'row', alignItems: 'center', padding: 19 }}>
@@ -23,7 +40,10 @@ export function CustomDrawerContent({ navigation }) {
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('MyPage')}
+        onPress={() => {
+          checkTokenAndNavigate();
+          navigation.navigate('MyPage');
+        }}
       />
       <DrawerItem
         label="스키장 리스트"
