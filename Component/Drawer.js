@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons,FontAwesome,Foundation } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function CustomDrawerContent({ navigation }) {
 
@@ -12,7 +13,7 @@ export function CustomDrawerContent({ navigation }) {
           source={require('../Images/UserIcon.jpg')}
           style={{ width: 72, height: 72, borderRadius: 36 }}
         />
-        <TouchableOpacity onPress={() => navigation.navigate('MyPage')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>
             로그인하기
           </Text>
@@ -38,6 +39,20 @@ export function CustomDrawerContent({ navigation }) {
           <MaterialCommunityIcons name="account-clock" color={color} size={size} />
         )}
         onPress={() => navigation.navigate('ReservationList')}
+      />
+       <DrawerItem
+        label="강사자격 신청 및 등록"
+        icon={({ color, size }) => (
+          <FontAwesome name="id-card-o" color={color} size={size} />
+        )}
+        onPress={() => navigation.navigate('TeacherVerify')}
+      />
+       <DrawerItem
+        label="강습 등록"
+        icon={({ color, size }) => (
+          <Foundation name="page-edit" color={color} size={size} />
+        )}
+        onPress={() => navigation.navigate('LessonSignUp')}
       />
     </DrawerContentScrollView>
   );

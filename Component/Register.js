@@ -8,7 +8,7 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
-  Platform  
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
@@ -125,7 +125,7 @@ const RegisterScreen = () => {
       }
 
 
-      const response = await fetch(`${URL}/member/members`, {
+      const response = await fetch(`${URL}/member/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
-    marginBottom:100,
+    marginBottom:120,
   },
   backgroundImage: {
     position: 'absolute',
