@@ -27,6 +27,13 @@ export function CustomDrawerContent({ navigation }) {
         onPress={() => navigation.navigate('MyPage')}
       />
       <DrawerItem
+        label="강사 마이페이지"
+        icon={({ color, size }) => (
+          <MaterialCommunityIcons name="account" color={color} size={size} />
+        )}
+        onPress={() => navigation.navigate('TeacherMyPage')}
+      />
+      <DrawerItem
         label="스키장 리스트"
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="ski" color={color} size={size} />

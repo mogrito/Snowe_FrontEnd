@@ -23,95 +23,99 @@ const data = [
     image: require('../Images/face.jpg'),
     count: 0,
     edustartdate: '2023-11-09',
-    eduenddate:  '2023-12-01',
+    eduenddate: '2023-12-01',
+    edustarttime:'10:00',
     subject: '스키',
     level: 'LV1',
     yak: [
       '- T&D(Technical & Different) HEAD COACH',
       '- (전) 알파인 스키선수 (2007~2014)',
       '- 건국대학교 생활체육학과 졸업',
-      '- 생활체육지도자 2급'
+      '- 생활체육지도자 2급',
     ],
     carrer: [
       '- KSIA 대한스키지도자연맹 전국기술선수권대회 종합 14위',
       '- SBAK 한국스키장경영협회 전국기술선수권대회 종합 13위',
       '- 대명비발디파크 카브배 기술선수권대회 종합 5위',
-      '- 한솔섬유배 인터스키대회 전주자'
+      '- 한솔섬유배 인터스키대회 전주자',
+    ],
+    team: ['- T&D SKI ', '- BHS', '- POC ', '- LEKI'],
+    
+  },
+  { 
+    id: '2', 
+    name: '주성', 
+    introduce: '찾아라 원피스', 
+    image: require('../Images/face1.jpg'), 
+    count: 0, 
+    edustartdate: '2023-09-07', 
+    eduenddate: '2023-10-07', 
+    edustarttime:'12:00',
+    subject: '보드', 
+    level: 'LV2',
+    yak: [
+      '- T&D(Technical & Different)SKI PROGRAM DIRECTOR',
+      '- SBAK 한국스키장경영협회 데몬스트레이터 3기 인정 (2018~2025)',
+      '- KSEA 대한스키교육협회 교육위원장',
+      '- KSIA 대한스키지도자연맹 데몬스트레이터 4기 인정 (2013~2017)',
+    ],
+    carrer: [
+      '- 제 8회 SBAK 한국스키장경영협회 전국기술선수권대회 종합 3위 ',
+      '- 제 4기 SBAK 한국스키장경영협회 데몬스트레이터 선발',
+      '- KSEA 대한스키교육협회 교육위원장 임명',
+      '- 한솔섬유배 인터스키대회 전주자',
+    ],
+    team: [
+      '- WONYANG 후원',
+      '- 한방유비스 후원',
+      '- OGASAKA SKI(오가사카) ',
+      '- REXXAM BOOTS(렉삼) '
+    ]
+  },
+  { 
+    id: '3', 
+    name: '정훈', 
+    introduce: '아이스 에이지..', 
+    image: require('../Images/face2.jpg'), 
+    count: 0, 
+    edustartdate: '2024-11-07',
+    eduenddate: '2024-12-04', 
+    edustarttime:'15:00',
+    subject: '스키', 
+    level: 'LV3',
+    yak: [
+      'T&D(Technical & Different)  COACH',
+      '- (전) 알파인 스키선수 (2007~2014)',
+      '- 용인대학교 체육학과 졸업',
+      '- 스키 경력 (12년)'
+    ],
+    carrer: [
+      '- 한솔섬유배 인터스키대회 출전',
+      '- 지산배 한국오픈스키 챔피언십 출전',
+      '- SBAK 한국스키장경영협회 전국기술선수권대회 출전',
+      '- 뉴질랜드 하계 스키캠프 참여',
     ],
     team: [
       '- T&D SKI ',
-      '- BHS',
-      '- POC ',
-      '- LEKI'
-    ]
-  }, 
-  
-  { id: '2', name: '주성', introduce: '찾아라 원피스', image: require('../Images/face1.jpg'), count: 0, edustartdate: '2023-09-07', eduenddate:'2023-10-07', subject: '보드', level: 'LV2' ,
-  yak: [
-    '- T&D(Technical & Different)SKI PROGRAM DIRECTOR',
-    '- SBAK 한국스키장경영협회 데몬스트레이터 3기 인정 (2018~2025)',
-    '- KSEA 대한스키교육협회 교육위원장',
-    '- KSIA 대한스키지도자연맹 데몬스트레이터 4기 인정 (2013~2017)'
-  ],
-  carrer: [
-    '- 제 8회 SBAK 한국스키장경영협회 전국기술선수권대회 종합 3위 ',
-    '- 제 4기 SBAK 한국스키장경영협회 데몬스트레이터 선발',
-    '- KSEA 대한스키교육협회 교육위원장 임명',
-    '- 한솔섬유배 인터스키대회 전주자'
-  ],
-  team: [
-    '- WONYANG 후원',
-    '- 한방유비스 후원',
-    '- OGASAKA SKI(오가사카) ',
-    '- REXXAM BOOTS(렉삼) '
-  ]},
-
-
-
-  { id: '3', name: '정훈', introduce: '아이스 에이지..', image: require('../Images/face2.jpg'), count: 0, edustartdate: '2024-11-07',eduenddate:'2024-12-04', subject: '스키', level: 'LV3',
-  yak: [
-    'T&D(Technical & Different)  COACH',
-    '- (전) 알파인 스키선수 (2007~2014)',
-    '- 용인대학교 체육학과 졸업',
-    '- 스키 경력 (12년)'
-  ],
-  carrer: [
-    '- 한솔섬유배 인터스키대회 출전',
-    '- 지산배 한국오픈스키 챔피언십 출전',
-    '- SBAK 한국스키장경영협회 전국기술선수권대회 출전',
-    '- 뉴질랜드 하계 스키캠프 참여'
-  ],
-  team: [
-    '- T&D SKI ',
-  ] },
+    ] 
+  },
 ];
-
 
 const ReservationListScreen = () => {
   const navigation = useNavigation();
-  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState(null);
 
   const onGoBack = () => {
     navigation.pop();
   };
 
-  const onCancel = (reservationId) => {
-    // 취소 로직 구현
-  };
-
-  const onMoreInfo = (teacher) => {
-    setSelectedTeacher(teacher);
-  };
-
-  const closeModal = () => {
-    setSelectedTeacher(null);
-  };
-
-  // edudate를 기준으로 데이터를 세 그룹으로 분류
   const currentDate = new Date();
-  const beforeLessons = data.filter(item => new Date(item.edustartdate) > currentDate);
-  const duringLessons = data.filter(item => new Date(item.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate));
-  const afterLessons = data.filter(item => new Date(item.edustartdate) > currentDate);
+  const beforeLessons = data.filter((item) => new Date(item.edustartdate) > currentDate);
+  const duringLessons = data.filter(
+    (item) => new Date(item.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate)
+  );
+  const afterLessons = data.filter((item) => new Date(item.edustartdate) > currentDate);
 
   return (
     <View style={styles.container}>
@@ -122,7 +126,7 @@ const ReservationListScreen = () => {
         <Text style={styles.title}>예약 목록</Text>
       </View>
 
-      <Tab.Navigator >
+      <Tab.Navigator>
         <Tab.Screen name="수강 전">
           {() => (
             <FlatList
@@ -139,10 +143,15 @@ const ReservationListScreen = () => {
                       <Text style={styles.itemText}>{item.name}</Text>
                       <Text style={styles.itemText1}>{item.introduce}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => onMoreInfo(item)} style={styles.moreinfoButton}>
+                    <TouchableOpacity
+                      style={styles.moreinfoButton}
+                      onPress={() => {
+                        setSelectedReservation(item);
+                        setModalVisible(true);
+                      }}
+                    >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity onPress={() => onCancel(item.id)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
@@ -157,8 +166,8 @@ const ReservationListScreen = () => {
         <Tab.Screen name="수강 중">
           {() => (
             <FlatList
-              data={duringLessons}
               style={{ backgroundColor: '#DBEBF9' }}
+              data={duringLessons}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.item}>
@@ -170,10 +179,15 @@ const ReservationListScreen = () => {
                       <Text style={styles.itemText}>{item.name}</Text>
                       <Text style={styles.itemText1}>{item.introduce}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => onMoreInfo(item)} style={styles.moreinfoButton}>
+                    <TouchableOpacity
+                      style={styles.moreinfoButton}
+                      onPress={() => {
+                        setSelectedReservation(item);
+                        setModalVisible(true);
+                      }}
+                    >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity onPress={() => onCancel(item.id)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
@@ -188,8 +202,8 @@ const ReservationListScreen = () => {
         <Tab.Screen name="수강 후">
           {() => (
             <FlatList
-              data={afterLessons}
               style={{ backgroundColor: '#DBEBF9' }}
+              data={afterLessons}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.item}>
@@ -201,10 +215,15 @@ const ReservationListScreen = () => {
                       <Text style={styles.itemText}>{item.name}</Text>
                       <Text style={styles.itemText1}>{item.introduce}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => onMoreInfo(item)} style={styles.moreinfoButton}>
+                    <TouchableOpacity
+                      style={styles.moreinfoButton}
+                      onPress={() => {
+                        setSelectedReservation(item);
+                        setModalVisible(true);
+                      }}
+                    >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity onPress={() => onCancel(item.id)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
@@ -217,21 +236,22 @@ const ReservationListScreen = () => {
         </Tab.Screen>
       </Tab.Navigator>
 
-      {/* 상세 정보를 표시하는 모달 */}
-      <Modal visible={selectedTeacher !== null} animationType="slide" transparent={false}>
-        <ScrollView style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            {/* 선택한 강사에 대한 상세 정보를 표시 */}
-            {/* selectedTeacher를 사용하여 정보를 표시할 수 있습니다 */}
-            {/* 예를 들면: */}
-            <Text style={styles.modalText}>{selectedTeacher?.name}</Text>
-            {/* ... (다른 정보 표시) */}
-
-            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>닫기</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+      <Modal visible={isModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <ScrollView>
+            <View style={styles.modalContent}>
+              <Image source={selectedReservation?.image} style={styles.modalImage} />
+              <Text style={styles.modalText1}>{selectedReservation?.name}</Text>
+              <Text style={styles.modalText}>{`강습 장소: 선택된 리조트 `}</Text>
+              <Text style={styles.modalText}>{`강습명: ${selectedReservation?.introduce}`}</Text>
+              <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.edustartdate}`}</Text>
+              <Text style={styles.modalText}>{`강습 시간: ${selectedReservation?.edustarttime}`}</Text>
+              <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false) }>
+                <Text style={styles.modalCloseButton}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
       </Modal>
     </View>
   );
@@ -315,30 +335,49 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     textAlign: 'center',
   },
-  // 모달에 대한 스타일
   modalContainer: {
     flex: 1,
-    backgroundColor: '#DBEBF9',
-    paddingTop: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
+    backgroundColor: 'white',
+    width:300,
     padding: 16,
-    alignItems: 'center',
+    borderRadius: 8,
+    alignItems: 'center', // 중앙 정렬을 위해 추가
+    marginTop:290,
+  },
+  modalImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
   },
   modalText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 16,
+    marginTop: 10,
   },
-  closeButton: {
-    padding: 10,
+  modalText1: {
+    fontSize: 16,
+    marginTop: 10,
+    fontWeight:'bold',
+  },
+  modalCloseButton: {
+    fontSize: 18,
+    color: 'black',
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  cancelButton1: {
+    width: '25%',
+    height:40,
+    padding:0,
     borderRadius: 5,
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  closeButtonText: {
-    textAlign: 'center',
+    marginTop: 10,
   },
 });
 
