@@ -213,10 +213,10 @@ const TeacherVerifyScreen = () => {
     },
 
     backButton: {
-
     marginTop:50,
     marginLeft:20,
     },
+    
     textinfo: {
       marginRight:135,
       marginBottom:5,

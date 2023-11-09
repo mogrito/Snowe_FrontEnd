@@ -14,10 +14,8 @@ import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
 import TransparentCircleButton from './TransparentCircleButton';
 import { TextInputMask } from 'react-native-masked-text'
-
-// 이미지를 import 합니다.
 import backgroundImage from '../Images/dr1.png'; 
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 
 const LessonSignUpScreen = () => {
@@ -331,7 +329,7 @@ const styles = StyleSheet.create({
 
   },
   timeinput: {
-    width: '%',
+    width: '29%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,

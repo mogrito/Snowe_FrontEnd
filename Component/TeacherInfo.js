@@ -4,6 +4,7 @@ import TransparentCircleButton from './TransparentCircleButton';
 import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
 
+
 //brief = 약력 carrer = 경력 team = 소속 
 
 const data = [
@@ -426,7 +427,6 @@ const styles = StyleSheet.create({
   swiperImage: {
     width: '100%',
     height: '110%',
-    borderRadius:5,
     marginTop:40
   },
 });

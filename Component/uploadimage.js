@@ -3,6 +3,8 @@ import { View, Text, Button, Image, StyleSheet, TouchableOpacity} from 'react-na
 import ImagePicker from 'react-native-image-picker';
 import Axios from 'axios';
 
+
+
 const ImageUploadScreen = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
