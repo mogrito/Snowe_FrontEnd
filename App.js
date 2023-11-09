@@ -21,7 +21,6 @@ import SearchScreen from './Component/SearchScreen';
 import SkiResortListScreen from './Component/SkiResortList';
 import ReservationListScreen from './Component/ReservationList';
 import ChangeNickNameScreen from './Component/ChangeNickName';
-import ChangeIdScreen from './Component/ChangeId';
 import ChangePwScreen from './Component/ChangePw';
 import MyPageScreen from './Component/MyPage';
 import DeleteUserScreen from './Component/DeleteUser';
@@ -124,11 +123,6 @@ export default function App() {
          <RootStack.Screen
           name="MyPage"
           component={MyPageScreen}
-          options={{ headerShown: false }}
-        />
-        <RootStack.Screen
-          name="ChangeId"
-          component={ChangeIdScreen}
           options={{ headerShown: false }}
         />
         <RootStack.Screen
