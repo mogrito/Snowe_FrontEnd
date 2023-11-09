@@ -173,11 +173,13 @@ const TeacherInfoScreen = () => {
             <View style={styles.teacherContent}>
               <Image source={item.image} style={styles.teacherImage} />
               <View style={styles.textContainer}>
-                <Text style={styles.itemText}>{item.name}</Text>
+                <View style={styles.headerimage}>
+                  <Text style={styles.itemText}>{item.name}</Text>
+                  <View style={[styles.badge1, { backgroundColor: levelColors[item.level] }]}>
+                    <Text style={styles.skilevel}>{item.level}</Text>
+                  </View>
+                </View>
                 <Text style={styles.subjectText}>{item.introduce}</Text>
-              </View>
-              <View style={[styles.badge, { backgroundColor: levelColors[item.level] }]}>
-                <Text style={styles.skilevel}>{item.level}</Text>
               </View>
               <Image source={eachsubject[item.subject]} style={styles.subjectImage} />
               <TouchableOpacity style={styles.cancelButton} onPress={() => onShowDetails(item)}>
@@ -338,9 +340,9 @@ const styles = StyleSheet.create({
 
   },
   subjectImage: {
-    width: 50,
-    height: 50,
-    marginRight: 12,
+    width: 30,
+    height: 30,
+    marginRight: 50,
   },
 
   modalContainer: {
@@ -428,6 +430,17 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '110%',
     marginTop:40
+  },
+  headerimage:{
+    flexDirection:'row'
+  },
+  badge1: {
+    borderRadius: 4,
+    width: 'auto',
+    marginLeft:5,
+    marginTop:-1,
+
+
   },
 });
 

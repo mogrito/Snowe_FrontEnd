@@ -83,44 +83,6 @@ const TeacherMyPageScreen = () => {
     navigation.navigate('TeacherChangeMySelf')
   }
 
-
-  const handleAccountDeletion = async () => {
-    Alert.alert(
-      '회원탈퇴',
-      '회원탈퇴를 진행하시겠습니까?',
-      [
-        {
-          text: '아니요',
-          onPress: () => {
-            // 아무 작업도 수행하지 않음
-          },
-          style: 'cancel',
-        },
-        {
-          text: '예',
-          onPress: async () => {
-            try {
-              const response = await fetch('API', {
-                method: 'POST',
-                headers: {
-                  'Authorization': 'Bearer ' + 'YOUR_AUTH_TOKEN',
-                  'Content-Type': 'application/json',
-                },
-              });
-
-              // 삭제 후의 작업 수행
-            } catch (error) {
-              console.error('회원탈퇴 중 오류 발생:', error);
-            }
-          },
-        },
-      ],
-    );
-  };
-
-
-
-
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>

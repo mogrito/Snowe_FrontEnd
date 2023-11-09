@@ -116,7 +116,7 @@ function MainScreen() {
       }
     }
 
-    fetchWeather();
+    fetchWeather();rr
   }, []);
 
   
