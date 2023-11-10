@@ -9,7 +9,7 @@ const URL = 'http://192.168.25.204:8080';
 
 
 function PostView({ route }) {
-  const { boardId, image, content, title } = route.params;
+  const { boardId, image, content, title, recommendCount } = route.params;
   const navigation = useNavigation();
   const [comments, setComments] = useState([]);
   const [replyComments, setReplyComments] = useState([]);
@@ -48,31 +48,31 @@ function PostView({ route }) {
   };
 
   // 게시글 id를 기반으로 댓글 데이터를 가져옴
-  // useEffect(() => {
-  //   fetchComments(boardId); // 게시글 id를 전달하여 해당 게시글의 댓글을 가져오는 함수
-  // }, [boardId]);
+  useEffect(() => {
+    fetchComments(boardId); // 게시글 id를 전달하여 해당 게시글의 댓글을 가져오는 함수
+  }, [boardId]);
 
-// 함수 내에서 댓글 및 답글 분류 및 관리
-// const fetchComments = async (boardId) => {
-//   try {
-//     const response = await fetch(`${URL}/comment/list/${boardId}`);
-//     const commentData = await response.json();
+  // 함수 내에서 댓글 및 답글 분류 및 관리
+  const fetchComments = async (boardId) => {
+    try {
+      const response = await fetch(`${URL}/comment/list/${boardId}`);
+      const commentData = await response.json();
 
-//     console.log(commentData);
-//     // 최상위 댓글과 답글을 분류
-//     const topLevelComments = commentData.filter(comment => comment.parentCommentId === 0);
-//     const replyComments = commentData.filter(comment => comment.parentCommentId !== 0);
+      console.log(commentData);
+      // 최상위 댓글과 답글을 분류
+      const topLevelComments = commentData.filter(comment => comment.parentCommentId === 0);
+      const replyComments = commentData.filter(comment => comment.parentCommentId !== 0);
 
-//     console.log(topLevelComments);
-//     console.log(replyComments);
+      console.log(topLevelComments);
+      console.log(replyComments);
 
-//     setComments(topLevelComments); // 최상위 댓글 상태 업데이트
-//     setReplyComments(replyComments); // 답글 상태 업데이트
-//   } catch (error) {
-//     console.error(error);
-//     alert('댓글 불러오기 실패');
-//   }
-// };
+      setComments(topLevelComments); // 최상위 댓글 상태 업데이트
+      setReplyComments(replyComments); // 답글 상태 업데이트
+    } catch (error) {
+      console.error(error);
+      alert('댓글 불러오기 실패');
+    }
+  };
 
   const onGoBack = () => {
     navigation.pop();
@@ -348,7 +348,6 @@ function PostView({ route }) {
       });
   
       if (response.ok) {
-        setLiked(!liked);
       } else {
         // 요청이 실패한 경우
         console.error('추천 요청 실패');
@@ -405,12 +404,9 @@ return (
     <View style={styles.like}>
       <TouchableOpacity 
         onPress={handleLike}           
-        style={[
-          liked ? styles.likedButton : styles.likeButton,
-          { alignItems: 'flex-start' }
-        ]}>
-            <Text style={{ color: liked ? 'red' : 'black' }}>
-              {liked ? '❤️ 좋아요' : '🤍 좋아요'}
+        style={styles.likeButton}>
+            <Text>
+              ❤️ 공감 {recommendCount}
             </Text>
       </TouchableOpacity>
     </View>
@@ -422,7 +418,7 @@ return (
     >
       <ScrollView style={styles.commentListContainer}>
         <FlatList
-          data={comments}
+          data={commentss}
           keyExtractor={(item, index) => `comment-${index}`}
           renderItem={({ item }) => (
             <View style={styles.commentContainer}>
@@ -679,6 +675,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: 'black',
     padding: 10,
+    backgroundColor:'white',
+    marginLeft:10
   },
 });
 

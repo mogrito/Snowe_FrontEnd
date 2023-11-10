@@ -208,7 +208,8 @@ function SocialView(){
         boardId: board.boardId, 
         image: board.image,
         content: board.content,
-        title:board.title
+        title:board.title,
+        recommendCount:board.recommendCount
       }); 
     };
 
@@ -226,7 +227,7 @@ function SocialView(){
       <View style={styles.container}>
         
         <FlatList
-              data={freeBoardData}
+              data={sampleData}
               keyExtractor={(item) => item.boardId.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity
