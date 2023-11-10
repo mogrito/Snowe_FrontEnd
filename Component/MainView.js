@@ -60,16 +60,16 @@ function MainScreen() {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedResortName, setSelectedResortName] = useState(''); 
+  const [selectedResortName, setSelectedResortName] = useState('');
 
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
   const location = selectedResort?.location;
 
- 
+
   const handleUserIconPress = () => {
     navigation.openDrawer();
-  }; 
+  };
 
   useEffect(() => {
     async function loadCustomFont() {
@@ -105,6 +105,7 @@ function MainScreen() {
           if (response.status === 200) {
             const data = response.data;
             setWeatherData(data);
+            console.log(data);
           } else {
             console.error('날씨 데이터를 가져올 수 없습니다');
           }
@@ -119,7 +120,7 @@ function MainScreen() {
     fetchWeather();
   }, []);
 
-  
+
   return (
     <View style={styles.background}>
       <View style={styles.header}>
@@ -148,8 +149,8 @@ function MainScreen() {
               {weatherData && weatherData.weather && weatherData.weather.length > 0 ? getKoreanWeatherCondition(weatherData.weather[0].main) : 'question'}
             </Text>
             <Text style={styles.weatherTemp}> {weatherData && weatherData.main
-    ? `${(weatherData.main.temp - 273.15).toFixed(0)}°C`
-    : 'N/A'}</Text>
+              ? `현재 온도: ${(weatherData.main.temp - 273.15).toFixed(0)}°C`
+              : 'N/A'}</Text>
           </View>
         )}
 
@@ -180,7 +181,8 @@ function MainScreen() {
           </TouchableOpacity>
         </View>
 
-        <Calendar style={styles.calendar} monthFormat={'yyyy년 MM월'}/>
+        <Calendar style={styles.calendar} monthFormat={'yyyy년 MM월'} />
+
       </ScrollView>
     </View>
   );
@@ -244,7 +246,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   weatherTemp: {
-    fontSize: 25,
+    fontSize: 20,
   },
   weatherexp: {
     fontSize: 30,
@@ -253,8 +255,8 @@ const styles = StyleSheet.create({
   },
 
   SkiInfo: {
-    flexDirection: 'row', 
-    justifyContent: 'space-evenly', 
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     backgroundColor: 'white',
     width: '90%',
     height: 110,
@@ -279,11 +281,11 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: 'center',
-    
-    
+
+
   },
   iconText: {
-    marginTop: 10, 
+    marginTop: 10,
   },
 
 

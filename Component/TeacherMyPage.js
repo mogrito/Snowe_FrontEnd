@@ -66,21 +66,17 @@ const TeacherMyPageScreen = () => {
     navigation.navigate('NoticeInfo');
   };
 
-  const LessonSignUpPage = () => {
-    navigation.navigate('LessonSignUp')
-  }
-
   const ChangeMySelfPage = () => {
     navigation.navigate('TeacherChangeMySelf')
   }
   const ChangeCarrerPage = () => {
-    navigation.navigate('TeacherChangeMySelf')
+    navigation.navigate('TeacherChangeCarrer')
   }
-  const ChangearkPage = () => {
-    navigation.navigate('TeacherChangeMySelf')
+  const ChangeBriefPage = () => {
+    navigation.navigate('TeacherChangeBrief')
   }
   const ChangeTeamPage = () => {
-    navigation.navigate('TeacherChangeMySelf')
+    navigation.navigate('TeacherChangeTeam')
   }
 
   return (
@@ -113,7 +109,7 @@ const TeacherMyPageScreen = () => {
           <TouchableOpacity onPress={ChangeCarrerPage}>
             <Text style={styles.accountPw}>경력 변경</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={ChangearkPage}>
+          <TouchableOpacity onPress={ChangeBriefPage}>
             <Text style={styles.accountPw}>약력 변경</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={ChangeTeamPage}>

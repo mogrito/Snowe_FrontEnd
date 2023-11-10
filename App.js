@@ -29,6 +29,11 @@ import TeacherInfoScreen from './Component/TeacherInfo';
 import TeacherVerifyScreen from './Component/TeacherVerify';
 import LessonSignUpScreen from './Component/LessonSignUp';
 import TeacherMyPageScreen from './Component/TeacherMyPage';
+import TeacherChangeBreifScreen from './Component/TeacherChangeBrief';
+import TeacherChangeCarrerScreen from './Component/TeacherChangeCarrer';
+import TeacherChangeMySelfScreen from './Component/TeacherChangeMySelf';
+import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
+import Schedule from './Component/Callender';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -164,6 +169,30 @@ export default function App() {
           options={{ headerShown: false }}
           
         />
+         <RootStack.Screen
+          name="TeacherChangeBrief"
+          component={TeacherChangeBreifScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeCarrer"
+          component={TeacherChangeCarrerScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeMySelf"
+          component={TeacherChangeMySelfScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeTeam"
+          component={TeacherChangeTeamScreen}
+          options={{ headerShown: false }}
+          
+        />
         </RootStack.Navigator>
       </LogContextProvider>
     </NavigationContainer>
@@ -245,6 +274,20 @@ function TabNavigator() {
       <Tab.Screen
         name="TeacherInfo"
         component={TeacherInfoScreen}
+        options={{
+          tabBarLabel: '강사 정보',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5
+              name="chalkboard-teacher"
+              color={color}
+              size={26}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Callender"
+        component={Schedule}
         options={{
           tabBarLabel: '강사 정보',
           tabBarIcon: ({ color }) => (
