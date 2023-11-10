@@ -2,11 +2,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, KeyboardAvoidingView, View, Platform, Button, TextInput, Modal, Text, TouchableOpacity, Pressable, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import WriteHeader from './WriteHeader';
-import ImagePicker2 from './ImagePicker2';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import TransparentCircleButton from './TransparentCircleButton';
+import base64 from 'base64-js';
 
 const URL = 'http://192.168.25.204:8080';
 
@@ -20,18 +19,18 @@ function WriteScreen({ route }) {
   const loginId = '정훈';
   const [category, setCategory] = useState(''); // 선택한 카테고리 상태
   const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('카테고리 선택');
+  const [selectedCategory, setSelectedCategory] = useState('게시판 선택');
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const [imageUrl, setImageUrl] = useState('');
-  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+  // const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date().toLocaleTimeString());
-    }, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentTime(new Date().toLocaleTimeString());
+  //   }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const handleTitleChange = (text) => {
     setTitle(text);
@@ -67,13 +66,16 @@ function WriteScreen({ route }) {
         // Base64 데이터를 Blob으로 변환
         const byteCharacters = base64.decode(imageUrl.split(',')[1]);
         const byteArray = new Uint8Array(byteCharacters.length);
+        console.log(byteCharacters);
 
         for (let i = 0; i < byteCharacters.length; i++) {
           byteArray[i] = byteCharacters.charCodeAt(i);
         }
 
-        const blob = new Blob([byteArray], { type: 'image/jpeg' });
+        const blob = new Blob([byteArray], { type: 'image/png' });
+        const blob2 = new Blob([byteArray], { type: 'image/png' });
 
+        console.log('블롭:', blob);
         const uriParts = imageUrl.split('/');
         const fileName = uriParts[uriParts.length - 1];
 
@@ -82,13 +84,13 @@ function WriteScreen({ route }) {
 
       console.log(formData.get('image', imageUrl));
       console.log(formData.get('board'));
-      console.log(formData.get('image'));
+      console.log('이미지: ' ,formData.get('image'));
 
       const response = await fetch(`${URL}/board/add`, {
         method: 'POST',
         body: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
 
@@ -130,10 +132,9 @@ function WriteScreen({ route }) {
     console.log(result.uri); 
     // console.log(result.filename); 
   // 추출한 uri에서 파일 이름을 가져오는 방법
-  const uriComponents = result.uri.split('/');
-  const filename = uriComponents[uriComponents.length - 1];
-  console.log('이미지 파일 이름:', filename);
-
+  // const uriComponents = result.uri.split('/');
+  // const filename = uriComponents[uriComponents.length - 1];
+  // console.log('이미지 파일 이름:', filename);
   };
 
   return (
@@ -151,7 +152,7 @@ function WriteScreen({ route }) {
             name="left"
             color="#424242"
           />
-          <Text style={{marginTop:8}}>{currentTime}</Text>
+          {/* <Text style={{marginTop:8}}>{currentTime}</Text> */}
           <TransparentCircleButton
             onPress={onSave}
             name="check"
@@ -160,7 +161,7 @@ function WriteScreen({ route }) {
         </View>
         <View style={styles.category}>
           <TouchableOpacity onPress={handleOpenModal}>
-            <Text style={{marginTop:2}}>{selectedCategory || '카테고리 선택'}</Text>
+            <Text style={{marginTop:2, backgroundColor: '#DBEBF9' }}>{selectedCategory}</Text>
           </TouchableOpacity>
           <TextInput
             placeholder="제목을 입력하세요"
@@ -200,7 +201,19 @@ function WriteScreen({ route }) {
           <View style={styles.modalContent}>
             <Text>검색 대상을 선택하세요:</Text>
             <View style={styles.buttonContainer}>
-              <Button title="공지사항" onPress={() => handleSelectCategory('공지사항', '공지사항')} />
+              {loginId !== 'admin' && (
+                <Button 
+                  title="공지사항" 
+                  onPress={() => handleSelectCategory('공지사항', '공지사항')} 
+                  disabled={true} // 비활성화
+                />
+              )}
+              {loginId === 'admin' && (
+                <Button 
+                  title="공지사항" 
+                  onPress={() => handleSelectCategory('공지사항', '공지사항')} 
+                />
+              )}
             </View>
             <View style={styles.buttonContainer}>
               <Button title="자유게시판" onPress={() => handleSelectCategory('자유게시판', '자유게시판')} />

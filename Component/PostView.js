@@ -22,6 +22,7 @@ function PostView({ route }) {
   const [commentId, setCommentId] = useState(null); 
   const [boardDetails, setBoardDetails] = useState([]);
   const [statusBarHeight, setStatusBarHeight] = useState(0);
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
   
@@ -215,7 +216,7 @@ function PostView({ route }) {
   
   const editComment = async (commentId, editedContent) => {
     try {
-      const response = await fetch(`http://192.168.25.204:8080/comment/edit/${commentId}`, {
+      const response = await fetch(`${URL}/comment/edit/${commentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -275,7 +276,7 @@ function PostView({ route }) {
   };
     const deleteComment = async (commentId, boardId) => {
       try {
-        const response = await fetch(`http://192.168.25.204:8080/comment/del/${commentId}/${boardId}`, {
+        const response = await fetch(`${URL}/comment/del/${commentId}/${boardId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -334,8 +335,28 @@ function PostView({ route }) {
       commentId : '23',
       content : 'dd'
     },
-
   ]
+  //좋아요 기능
+  const handleLike = async () => {
+    try {
+      const response = await fetch(`${URL}/board/recommend/${boardId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ boardId: boardId }),
+      });
+  
+      if (response.ok) {
+        setLiked(!liked);
+      } else {
+        // 요청이 실패한 경우
+        console.error('추천 요청 실패');
+      }
+    } catch (error) {
+      console.error('추천 요청 중 오류:', error);
+    }
+  };
 
 return (
   <SafeAreaView style={styles.container}>
@@ -378,9 +399,21 @@ return (
           />
         )}
       />
-    </View>  
+    </View>
 
     <View style={styles.borderLine}></View>
+    <View style={styles.like}>
+      <TouchableOpacity 
+        onPress={handleLike}           
+        style={[
+          liked ? styles.likedButton : styles.likeButton,
+          { alignItems: 'flex-start' }
+        ]}>
+            <Text style={{ color: liked ? 'red' : 'black' }}>
+              {liked ? '❤️ 좋아요' : '🤍 좋아요'}
+            </Text>
+      </TouchableOpacity>
+    </View>
 
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -389,7 +422,7 @@ return (
     >
       <ScrollView style={styles.commentListContainer}>
         <FlatList
-          data={commentss}
+          data={comments}
           keyExtractor={(item, index) => `comment-${index}`}
           renderItem={({ item }) => (
             <View style={styles.commentContainer}>
@@ -629,6 +662,23 @@ const styles = StyleSheet.create({
   postButtonText: {
     color: '#009688',
     width: 25
+  },
+  like: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  likedButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'red',
+    padding: 10,
+  },
+  likeButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'black',
+    padding: 10,
   },
 });
 

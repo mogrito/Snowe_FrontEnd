@@ -6,7 +6,6 @@ import FloatingWriteButton from './FloatingWriteButton';
 import { MaterialIcons} from '@expo/vector-icons';
 import { PaperProvider } from 'react-native-paper';
 import TransparentCircleButton from './TransparentCircleButton';
-import axios from 'axios';
 
 
 
@@ -16,11 +15,13 @@ function SocialView(){
   const Tab = createMaterialTopTabNavigator();
 
   const navigation = useNavigation(); // 네비게이션 객체 생성
-  const [hidden, setHidden] = useState(false);
-  const [freeBoardData, setFreeBoardData] = useState([]); // 자유게시판 데이터
-  const [noticeData, setNoticeData] = useState([]); // 공지사항 데이터
-  const [imageData, setImageData] = useState(null);
-  const [boardId, setBoardId] = useState('');
+  const [ hidden, setHidden ] = useState(false);
+  const [ freeBoardData, setFreeBoardData ] = useState([]); // 자유게시판 데이터
+  const [ noticeData, setNoticeData ] = useState([]); // 공지사항 데이터
+  const [ QnAData, setQnAData ] = useState([]);
+  const [ TipBoardData, setTipBoardData ] = useState([]);
+  // const [ imageData, setImageData ] = useState(null);
+  const [ boardId, setBoardId ] = useState('');
   const [ boardList, setBoardList ] = useState([]);
   
   const onGoBack = () => {
@@ -32,9 +33,9 @@ function SocialView(){
     navigation.navigate('SearchScreen'); 
   };
 
-  useEffect(() => {
-    fetchImage(); // 컴포넌트가 마운트되면 이미지 가져오기 함수 호출
-  }, []);
+  // useEffect(() => {
+  //   fetchImage(); // 컴포넌트가 마운트되면 이미지 가져오기 함수 호출
+  // }, []);
 
   const fetchBoardData = async () => {
     try {
@@ -49,22 +50,26 @@ function SocialView(){
       // 받아온 데이터를 카테고리에 따라 분류
       const freeBoardData = boardData.filter(item => item.category === '자유게시판');
       const noticeData = boardData.filter(item => item.category === '공지사항');
+      const QnAData = boardData.filter(item => item.category === '묻고답하기');
+      const TipBoardData = boardData.filter(item => item.category === '꿀팁공유');
 
       // 각 카테고리별 데이터를 해당하는 화면으로 전달
       setFreeBoardData(freeBoardData);
       setNoticeData(noticeData);
+      setQnAData(QnAData);
+      setTipBoardData(TipBoardData);
 
       console.log(boardData);
       setBoardList(boardData);
 
       setBoardId(boardData.boardId);
 
-      const images = {};
-      for (const boardItem of boardData) {
-        const imageUrl = await fetchImage(boardItem.boardId);
-        images[boardItem.boardId] = imageUrl;
-      }
-      setImageUrls(images);
+      // const images = {};
+      // for (const boardItem of boardData) {
+      //   const imageUrl = await fetchImage(boardItem.boardId);
+      //   images[boardItem.boardId] = imageUrl;
+      // }
+      // setImageUrls(images);
 
     } catch (error) {
       console.error(error);
@@ -72,22 +77,22 @@ function SocialView(){
     }
   }
 
-    // 이미지 가져오는 함수
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(`${URL}/file?boardId=${boardId}`);
-        console.log(boardId);
-        if (response.status === 200) {
-          const imageUrl = URL.createObjectURL(new Blob([response.data]));
-          return imageUrl;
-        } else {
-          return null;
-        }
-      } catch (error) {
-        console.error('이미지 가져오기 오류:', error);
-        return null;
-      }
-  };
+  //   // 이미지 가져오는 함수
+  //   const fetchImage = async () => {
+  //     try {
+  //       const response = await axios.get(`${URL}/file?boardId=${boardId}`);
+  //       console.log(boardId);
+  //       if (response.status === 200) {
+  //         const imageUrl = URL.createObjectURL(new Blob([response.data]));
+  //         return imageUrl;
+  //       } else {
+  //         return null;
+  //       }
+  //     } catch (error) {
+  //       console.error('이미지 가져오기 오류:', error);
+  //       return null;
+  //     }
+  // };
 
 
   return (
@@ -119,20 +124,26 @@ function SocialView(){
     const navigation = useNavigation(); 
     
     const [imageUrls, setImageUrls] = useState({});
-
+    //이미지 불러오기
     useEffect(() => {
-      fetchAllImages();
+      fetchImage();
     }, []);
 
-    const fetchAllImages = async () => {
-      const images = {};
-      for (const item of sampleData) {
-        const imageUrl = await fetchImage(item.boardId);
-        images[item.boardId] = imageUrl;
+    const fetchImage = async () => {
+      try {
+        const response = await fetch(`${URL}/file?boardId=${boardId}`);
+        if (response.ok) {
+          const data = await response.blob();
+          const imageUrl = URL.createObjectURL(data);
+          return imageUrl;
+        } else {
+          return null;
+        }
+      } catch (error) {
+        console.error('이미지 가져오기 오류:', error);
+        return null;
       }
-      setImageUrls(images);
     };
-
 
 
     const sampleData = [
@@ -141,7 +152,9 @@ function SocialView(){
         title: '내 첫 번째 글',
         content: '이것은 내 첫 번째 글입니다.',
         date: '2023-10-03T12:00:00Z',
-        comments: '5',
+        commentCount: '5',
+        viewCount: '20',
+        recommendCount:'20',
         loginId: '정훈',
         image: [
           {
@@ -159,6 +172,7 @@ function SocialView(){
         date: '2023-10-03T12:00:00Z',
         comments: '0',
         loginId: 'dodasha',
+
         //image: require('../Images/face1.jpg'),
       },  
       {
@@ -225,7 +239,7 @@ function SocialView(){
                       <Text>{item.title}</Text>
                       <View style={styles.textComment}>
                         <MaterialIcons name='comment' size={10} color='black' />
-                        <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount}</Text>
+                        <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount} · ❤️ {item.recommendCount} </Text>
                       </View>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
@@ -284,8 +298,8 @@ function SocialView(){
       <View style={styles.container}>
         {/* 공지사항 화면 구현 */}
         <FlatList
-          data={[notice]}
-          keyExtractor={(item) => item.id.toString()}
+          data={noticeData}
+          keyExtractor={(item) => item.boardId.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.noticeItem} onPress={handleNoticePress}>
               <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
@@ -357,14 +371,14 @@ function SocialView(){
     return (
       <View style={styles.container}>
         <FlatList
-          data={questions}
-          keyExtractor={(item) => item.id.toString()}
+          data={QnAData}
+          keyExtractor={(item) => item.boardId.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.textContainer}
               onPress={() => {
                 // 네비게이션을 통해 해당 질문/답변 화면으로 이동
-                navigation.navigate('QuestionDetail', { questionId: item.id });
+                navigation.navigate('PostView', { boardId: item.boardId });
               }}
             >
               <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
@@ -399,7 +413,7 @@ function SocialView(){
     const [refreshing, setRefreshing] = useState(false);
     const navigation = useNavigation();
 
-    const [tips, setTips] = useState([
+    const [tips] = useState([
       {
         id: 'tip1',
         loginId : '희찬',
@@ -423,22 +437,6 @@ function SocialView(){
       
     ]);
 
-    const handleTipPress = (tip) => {
-      navigation.navigate('PostView', {
-        loginId: tip.loginid,
-        title: tip.title,
-        content: tip.content,
-        comments: tip.comments,
-      });
-    };
-
-    const handleLike = (id) => {
-      setTips((prevTips) =>
-        prevTips.map((tip) =>
-          tip.id === id ? { ...tip, liked: !tip.liked, likes: tip.liked ? tip.likes - 1 : tip.likes + 1 } : tip
-        )
-      );
-    };
 
     const refreshTipData = () => {
       setRefreshing(true);
@@ -451,32 +449,32 @@ function SocialView(){
     return (
       <View style={styles.container}>
         <FlatList
-          data={tips}
-          keyExtractor={(item) => item.id.toString()}
+          data={TipBoardData}
+          keyExtractor={(item) => item.boardId.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={styles.instagramItem} 
-              onPress={() => handleTipPress(item)}
+              style={styles.textContainer}
+              onPress={() => {
+                // 네비게이션을 통해 해당 질문/답변 화면으로 이동
+                navigation.navigate('PostView', { boardId: item.boardId });
+              }}
             >
-              <View style={styles.instagramItemContent}>
-                <Image
-                    source={item.image}
-                    style={styles.ImageStyle2}
-                />
-                <Text style={styles.instagramTitle}>{item.title}</Text>
-                <Text style={styles.instagramContent}>{item.content}</Text>
-              </View>
-              <View style={styles.tipFooter}>
-                <TouchableOpacity onPress={() => handleLike(item.id)}>
-                  <MaterialIcons name={item.liked ? 'favorite' : 'favorite-border'} size={30} color="red" />
-                </TouchableOpacity>
-                <Text>{item.likes}</Text>
-                <View style={styles.textComment}>
-                  <MaterialIcons name='comment' size={30} color="black" />
-                  <Text style={{ margin: 5 }}>{item.comments}</Text>
+              <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.loginId}>{item.loginId}</Text>
+                  <Text>{item.title}</Text>
+                  <View style={styles.textComment}>
+                    <MaterialIcons name='comment' size={10} color='black' />
+                    <Text style={{ padding: 3, fontSize: 10 }}>{item.comments}</Text>
+                  </View>
                 </View>
+                <Image
+                  source={item.image}
+                  style={styles.ImageStyle}
+                />
               </View>
             </TouchableOpacity>
+            
           )}
           refreshControl={
             <RefreshControl
@@ -556,38 +554,6 @@ const styles = StyleSheet.create({
     borderRadius: 5, 
     margin:10
   },
-  instagramItem: {
-    borderWidth: 1,
-    borderColor: 'black',
-    padding: 20,
-    borderRadius: 5,
-    margin: 10,
-    backgroundColor: 'white', 
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  instagramItemContent: {
-    marginBottom: 10,
-  },
-  instagramTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  instagramContent: {
-    fontSize: 16,
-  },
-  tipFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
   loginId:{
     fontSize:10,
     color:'gray',
@@ -598,11 +564,6 @@ const styles = StyleSheet.create({
     height: 60, 
     resizeMode: 'contain', 
   },
-  ImageStyle2:{
-    width: '100%', 
-    height: 200, 
-    resizeMode: 'contain', 
-  }
 });
 
 export default SocialView;
