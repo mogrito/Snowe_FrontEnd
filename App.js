@@ -33,7 +33,7 @@ import TeacherChangeBreifScreen from './Component/TeacherChangeBrief';
 import TeacherChangeCarrerScreen from './Component/TeacherChangeCarrer';
 import TeacherChangeMySelfScreen from './Component/TeacherChangeMySelf';
 import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
-import Schedule from './Component/Callender';
+import Schedule from './Component/Callenders';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -274,20 +274,6 @@ function TabNavigator() {
       <Tab.Screen
         name="TeacherInfo"
         component={TeacherInfoScreen}
-        options={{
-          tabBarLabel: '강사 정보',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5
-              name="chalkboard-teacher"
-              color={color}
-              size={26}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Callender"
-        component={Schedule}
         options={{
           tabBarLabel: '강사 정보',
           tabBarIcon: ({ color }) => (

@@ -8,8 +8,9 @@ import {
   ScrollView,
   ActivityIndicator,
   Linking,
+  Image,
 } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import { Agenda, LocaleConfig } from 'react-native-calendars';
 import {
   FontAwesome,
   MaterialIcons,
@@ -19,6 +20,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import * as Location from 'expo-location';
 import axios from 'axios';
+import { Card, Avatar } from 'react-native-paper';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -120,6 +122,107 @@ function MainScreen() {
     fetchWeather();
   }, []);
 
+  LocaleConfig.locales['ko'] = {
+    monthNames: [
+      '1월',
+      '2월',
+      '3월',
+      '4월',
+      '5월',
+      '6월',
+      '7월',
+      '8월',
+      '9월',
+      '10월',
+      '11월',
+      '12월',
+    ],
+    monthNamesShort: [
+      '1월',
+      '2월',
+      '3월',
+      '4월',
+      '5월',
+      '6월',
+      '7월',
+      '8월',
+      '9월',
+      '10월',
+      '11월',
+      '12월',
+    ],
+    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+  };
+  
+  LocaleConfig.defaultLocale = 'ko'; // Set the default locale to Korean
+  
+  const timeToString = (time) => {
+    const date = new Date(time);
+    return date.toISOString().split('T')[0];
+  };
+  
+    const [items, setItems] = useState({});
+  
+    // Replace this array with your hardcoded data
+    const hardcodedData = [
+      // {
+      //   date: '2023-11-11',
+      //   events: [
+      //     { name: 'Meeting with Team A'},
+      //   ],
+      // },
+      {
+        date: '2023-11-06',
+        events: [
+          { name: 'Meeting with Team B'},
+        ],
+      },
+      // Add more entries as needed
+    ];
+  
+    const loadItems = () => {
+      setTimeout(() => {
+        hardcodedData.forEach((dayData) => {
+          const { date, events } = dayData;
+          const strTime = timeToString(new Date(date).getTime());
+  
+          if (!items[strTime]) {
+            items[strTime] = [];
+  
+            events.forEach((event) => {
+              items[strTime].push({
+                name: event.name,
+                height: event.height,
+              });
+            });
+          }
+        });
+  
+        const newItems = { ...items };
+        setItems(newItems);
+      }, 1000);
+    };
+  
+    const renderItem = (item) => {
+      return (
+        <TouchableOpacity style={{ margin: 5, padding: 10 }}>
+          <Card>
+            <Card.Content>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text>{item.name}</Text>
+                <Image source={require('../Images/face.jpg')} style={styles.image}/>  
+              </View>
+            </Card.Content>
+          </Card>
+        </TouchableOpacity>
+      );
+    };
 
   return (
     <View style={styles.background}>
@@ -181,8 +284,15 @@ function MainScreen() {
           </TouchableOpacity>
         </View>
 
-        <Calendar style={styles.calendar} monthFormat={'yyyy년 MM월'} />
-
+        <View style={{ flex: 1, marginTop: 20 ,width:windowWidth*0.9}}>
+          <Agenda
+            items={items}
+            loadItemsForMonth={loadItems}
+            selected={timeToString(new Date().getTime())}
+            renderItem={renderItem}
+            style={{ borderRadius: 5,height: 250,}} 
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -287,6 +397,13 @@ const styles = StyleSheet.create({
   iconText: {
     marginTop: 10,
   },
+  image:{
+    width: 60,
+    height: 60,
+    borderRadius: 60,
+    marginLeft: 20,
+
+  }
 
 
 });
