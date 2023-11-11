@@ -285,14 +285,36 @@ function MainScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={{ flex: 1, marginTop: 20 ,width:windowWidth*0.9}}>
+        <View style={{ flex: 1, marginTop: 10 ,width:windowWidth*0.9}}>
           <Agenda
             items={items}
             loadItemsForMonth={loadItems}
             selected={timeToString(new Date().getTime())}
             renderItem={renderItem}
-            style={{ borderRadius: 5,height: 250,}} 
+            style={{ borderRadius: 10,height: 290,}} 
           />
+        </View>
+
+        <View style={styles.hotboardContainer}>
+          <Text style={styles.hotboardheader}>🔥 인기 게시물</Text>
+          <View style={styles.hotboarditems}>
+          
+          <TouchableOpacity>
+            <Text style={styles.hotboarditem}>오늘 스키장 같이 가실분?</Text>
+            <Text style={styles.hotboarddate}>10/26</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity>
+            <Text style={styles.hotboarditem1}>하앙</Text>
+            <Text style={styles.hotboarddate1}>10/30</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+            <Text style={styles.hotboarditem2}>정훈아 해줘</Text>
+            <Text style={styles.hotboarddate2}>10/21</Text>
+          </TouchableOpacity>
+          
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -308,7 +330,7 @@ const styles = StyleSheet.create({
     position: 'sticky',
     top: 40,
     backgroundColor: '#DBEBF9',
-    paddingVertical: 10,
+    paddingVertical: 7,
     paddingHorizontal: 10,
     zIndex: 1,
   },
@@ -340,7 +362,7 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.9,
     height: 300,
     marginBottom: 0,
-    backgroundColor: 'white',
+    backgroundColor: '#EEF3F5',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -371,7 +393,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '90%',
     height: 110,
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 10,
   },
   SkiInfoIcon: {
@@ -404,7 +426,53 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     marginLeft: 20,
 
-  }
+  },
+  hotboardContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    width: windowWidth * 0.9,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop:10,
+  },
+  hotboarditems:{
+    flex: 1,
+
+  },
+  hotboarditem: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboarditem1: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate1: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboarditem2: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate2: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboardheader: {
+    fontSize: 18,
+    marginBottom: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginLeft:-5,
+  },
 
 
 });

@@ -68,6 +68,9 @@ const ChangeNickNameScreen = ({ navigation }) => {
     navigation.pop();
   };
 
+
+
+  
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -75,6 +78,7 @@ const ChangeNickNameScreen = ({ navigation }) => {
           onPress={onGoBack}
           name="left"
           color="#424242"
+          
         />
         <Text style={styles.title}>닉네임 설정</Text>
       </View>
@@ -107,7 +111,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#DBEBF9',
-    paddingHorizontal: 16,
     paddingTop: 60,
   },
   topBar: {
