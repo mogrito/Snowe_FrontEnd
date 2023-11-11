@@ -9,6 +9,7 @@ const ChangePwScreen = ({ navigation }) => {
   const [isPasswordMatching, setIsPasswordMatching] = useState(true);
   const [showPasswordHint, setShowPasswordHint] = useState(false);
 
+
   const onConfirmPasswordChange = (text) => {
     setConfirmPassword(text);
     setIsPasswordMatching(newpassword === text);
@@ -27,10 +28,13 @@ const ChangePwScreen = ({ navigation }) => {
 
     setShowPasswordHint(text.length > 0 && (!hasLetter || !hasNumber) || text.length < 8);
   };
+
+
   const onGoBack = () => {
     navigation.pop();
   };
 
+  
   const handleChangePassword = () => {
 
     fetch('서버의_API', {

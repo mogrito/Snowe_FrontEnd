@@ -42,7 +42,7 @@ const DeleteUserScreen = ({ navigation }) => {
                   // 계정 삭제 로직을 처리.
                   try {
                     const deleteResponse = await fetch('API', {
-                      method: 'DELETE',
+                      method: 'POST',
                       headers: {
                         'Authorization': 'Bearer ' + '당신의_인증_토큰',
                         'Content-Type': 'application/json',

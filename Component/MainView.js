@@ -8,8 +8,10 @@ import {
   ScrollView,
   ActivityIndicator,
   Linking,
+  Image,
+  FlatList,
 } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import { Agenda, LocaleConfig } from 'react-native-calendars';
 import {
   FontAwesome,
   MaterialIcons,
@@ -19,6 +21,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import * as Location from 'expo-location';
 import axios from 'axios';
+import { Card, Avatar } from 'react-native-paper';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -60,13 +63,13 @@ function MainScreen() {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedResortName, setSelectedResortName] = useState(''); 
+  const [selectedResortName, setSelectedResortName] = useState('');
 
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
   const location = selectedResort?.location;
 
- 
+
   const handleUserIconPress = () => {
     navigation.openDrawer();
   };
@@ -105,6 +108,7 @@ function MainScreen() {
           if (response.status === 200) {
             const data = response.data;
             setWeatherData(data);
+            console.log(data);
           } else {
             console.error('날씨 데이터를 가져올 수 없습니다');
           }
@@ -117,7 +121,109 @@ function MainScreen() {
     }
 
     fetchWeather();
-  }, [location]);
+  }, []);
+
+  LocaleConfig.locales['ko'] = {
+    monthNames: [
+      '1월',
+      '2월',
+      '3월',
+      '4월',
+      '5월',
+      '6월',
+      '7월',
+      '8월',
+      '9월',
+      '10월',
+      '11월',
+      '12월',
+    ],
+    monthNamesShort: [
+      '1월',
+      '2월',
+      '3월',
+      '4월',
+      '5월',
+      '6월',
+      '7월',
+      '8월',
+      '9월',
+      '10월',
+      '11월',
+      '12월',
+    ],
+    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+  };
+  
+  LocaleConfig.defaultLocale = 'ko'; 
+  
+  const timeToString = (time) => {
+    const date = new Date(time);
+    return date.toISOString().split('T')[0];
+  };
+  
+    const [items, setItems] = useState({});
+  
+
+    const hardcodedData = [
+      // {
+      //   date: '2023-11-11',
+      //   events: [
+      //     { name: 'Meeting with Team A'},
+      //   ],
+      // },
+      {
+        date: '2023-11-11',
+        events: [
+          { name: 'Meeting with Team B'},
+        ],
+      },
+  
+    ];
+  
+    const loadItems = () => {
+      setTimeout(() => {
+        hardcodedData.forEach((dayData) => {
+          const { date, events } = dayData;
+          const strTime = timeToString(new Date(date).getTime());
+  
+          if (!items[strTime]) {
+            items[strTime] = [];
+  
+            events.forEach((event) => {
+              items[strTime].push({
+                name: event.name,
+                height: event.height,
+              });
+            });
+          }
+        });
+  
+        const newItems = { ...items };
+        setItems(newItems);
+      }, 1000);
+    };
+  
+    const renderItem = (item) => {
+      return (
+        <TouchableOpacity style={{ margin: 5, padding: 10 }}>
+          <Card>
+            <Card.Content>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text>{item.name}</Text>
+                <Image source={require('../Images/face.jpg')} style={styles.image}/>  
+              </View>
+            </Card.Content>
+          </Card>
+        </TouchableOpacity>
+      );
+    };
 
   return (
     <View style={styles.background}>
@@ -139,14 +245,16 @@ function MainScreen() {
             <Text style={styles.weatherCity}>{selectedResortName}</Text>
             <MaterialCommunityIcons
               style={styles.weatherIcon}
-              name={getWeatherIconName(weatherData.weather[0].main)}
+              name={weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherIconName(weatherData.weather[0].main) : 'question'}
               size={150}
               color="black"
             />
             <Text style={styles.weatherexp}>
-              {getKoreanWeatherCondition(weatherData.weather[0].main)}
+              {weatherData && weatherData.weather && weatherData.weather.length > 0 ? getKoreanWeatherCondition(weatherData.weather[0].main) : 'question'}
             </Text>
-            <Text style={styles.weatherTemp}>{(weatherData.main.temp - 273.15).toFixed(0)}°C</Text>
+            <Text style={styles.weatherTemp}> {weatherData && weatherData.main
+              ? `현재 온도: ${(weatherData.main.temp - 273.15).toFixed(0)}°C`
+              : 'N/A'}</Text>
           </View>
         )}
 
@@ -177,7 +285,15 @@ function MainScreen() {
           </TouchableOpacity>
         </View>
 
-        <Calendar style={styles.calendar} monthFormat={'yyyy년 MM월'}/>
+        <View style={{ flex: 1, marginTop: 20 ,width:windowWidth*0.9}}>
+          <Agenda
+            items={items}
+            loadItemsForMonth={loadItems}
+            selected={timeToString(new Date().getTime())}
+            renderItem={renderItem}
+            style={{ borderRadius: 5,height: 250,}} 
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -241,7 +357,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   weatherTemp: {
-    fontSize: 25,
+    fontSize: 20,
   },
   weatherexp: {
     fontSize: 30,
@@ -250,8 +366,8 @@ const styles = StyleSheet.create({
   },
 
   SkiInfo: {
-    flexDirection: 'row', 
-    justifyContent: 'space-evenly', 
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     backgroundColor: 'white',
     width: '90%',
     height: 110,
@@ -276,12 +392,19 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: 'center',
-    
-    
+
+
   },
   iconText: {
-    marginTop: 10, 
+    marginTop: 10,
   },
+  image:{
+    width: 60,
+    height: 60,
+    borderRadius: 60,
+    marginLeft: 20,
+
+  }
 
 
 });

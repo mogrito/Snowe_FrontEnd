@@ -8,7 +8,7 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
-  Platform  
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
@@ -31,7 +31,7 @@ const RegisterScreen = () => {
   const [isUsernameValid, setIsUsernameValid] = useState(false); // 아이디 중복 확인 상태
   const [isNicknameValid, setIsNicknameValid] = useState(false);  // 닉네임 중복 확인 상태
   const navigation = useNavigation();
-  const URL = 'http://192.168.25.204:8080';
+  const URL = 'http://192.168.219.103:8080';
   const onGoBack = () => {
     navigation.pop();
   };
@@ -124,7 +124,8 @@ const RegisterScreen = () => {
         return;
       }
 
-      const response = await fetch(`${URL}/member/members`, {
+
+      const response = await fetch(`${URL}/member/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -272,7 +273,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
-    marginBottom:100,
+    marginBottom:120,
   },
   backgroundImage: {
     position: 'absolute',

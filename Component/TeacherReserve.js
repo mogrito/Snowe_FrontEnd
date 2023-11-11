@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimen
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
+import { getTokens } from './TokenUtils';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -17,6 +18,10 @@ const TeacherReserveScreen = () => {
   
   const navigation = useNavigation();
 
+  // useEffect(() => {
+  //   verifyTokens(navigation);
+  // },);
+
   // 예약 신청을 서버에 업데이트하는 함수
   const reserveLesson = async () => {
     if (selectedTeacher) {
@@ -25,6 +30,7 @@ const TeacherReserveScreen = () => {
         const response = await fetch('API 적어주시공', {
           method: 'POST',
           headers: {
+            // 토큰값
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -74,13 +80,13 @@ const TeacherReserveScreen = () => {
   };
   
   
-
+  
   const resetTeacherList = () => {
     setFilteredTeachers([]);
     setSelectedTeacher(null);
     setSelectedDate(null);
   };
-
+  
   useEffect(() => {
     if (isFocused) {
       resetTeacherList();
@@ -192,6 +198,11 @@ const TeacherReserveScreen = () => {
     </View>
   );
 };
+
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {

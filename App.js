@@ -20,14 +20,19 @@ import EditScreen from './Component/EditScreen';
 import SearchScreen from './Component/SearchScreen';
 import SkiResortListScreen from './Component/SkiResortList';
 import ReservationListScreen from './Component/ReservationList';
-import TeacherReserveTestScreen from './Component/TeacherReserveTest';
 import ChangeNickNameScreen from './Component/ChangeNickName';
-import ChangeIdScreen from './Component/ChangeId';
 import ChangePwScreen from './Component/ChangePw';
 import MyPageScreen from './Component/MyPage';
 import DeleteUserScreen from './Component/DeleteUser';
 import NoticeScreen from './Component/SocialView'
 import TeacherInfoScreen from './Component/TeacherInfo';
+import TeacherVerifyScreen from './Component/TeacherVerify';
+import LessonSignUpScreen from './Component/LessonSignUp';
+import TeacherMyPageScreen from './Component/TeacherMyPage';
+import TeacherChangeBreifScreen from './Component/TeacherChangeBrief';
+import TeacherChangeCarrerScreen from './Component/TeacherChangeCarrer';
+import TeacherChangeMySelfScreen from './Component/TeacherChangeMySelf';
+import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -41,7 +46,7 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowFirstScreen(false);
-    }, 2000); 
+    }, 2000);
   }, []);
 
   return (
@@ -66,6 +71,8 @@ export default function App() {
           name="Login"
           component={LoginScreen}
           options={{ headerShown: false }}
+  
+          
         />
         <RootStack.Screen
           name="Register"
@@ -123,11 +130,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <RootStack.Screen
-          name="ChangeId"
-          component={ChangeIdScreen}
-          options={{ headerShown: false }}
-        />
-        <RootStack.Screen
           name="ChangePw"
           component={ChangePwScreen}
           options={{ headerShown: false }}
@@ -148,6 +150,48 @@ export default function App() {
           options={{ headerShown: false }}
           
         />
+         <RootStack.Screen
+          name="TeacherVerify"
+          component={TeacherVerifyScreen}
+          options={{ headerShown: false }}
+          
+        />
+        <RootStack.Screen
+          name="LessonSignUp"
+          component={LessonSignUpScreen}
+          options={{ headerShown: false }}
+          
+        />
+        <RootStack.Screen
+          name="TeacherMyPage"
+          component={TeacherMyPageScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeBrief"
+          component={TeacherChangeBreifScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeCarrer"
+          component={TeacherChangeCarrerScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeMySelf"
+          component={TeacherChangeMySelfScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeTeam"
+          component={TeacherChangeTeamScreen}
+          options={{ headerShown: false }}
+          
+        />
         </RootStack.Navigator>
       </LogContextProvider>
     </NavigationContainer>
@@ -163,9 +207,7 @@ function DrawerNavigator() {
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="SkiResortList" component={SkiResortListScreen} options={{ headerShown: false }} />
-      <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
-      <Drawer.Screen name="MainView" component={MainScreen} options={{ headerShown: false }} />
-      
+      <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />  
     </Drawer.Navigator>
   );
 }
@@ -203,12 +245,13 @@ function TabNavigator() {
         name="TeacherReserve"
         component={TeacherReserveScreen}
         options={{
-          tabBarLabel: '강사 예약',
+          tabBarLabel: '강습 예약',
           tabBarIcon: ({ color }) => (
-            <FontAwesome5
-              name="chalkboard-teacher"
+            <MaterialCommunityIcons
+              name="calendar-clock"
               color={color}
               size={26}
+              
             />
           ),
         }}
@@ -231,10 +274,10 @@ function TabNavigator() {
         name="TeacherInfo"
         component={TeacherInfoScreen}
         options={{
-          tabBarLabel: '자유게시판',
+          tabBarLabel: '강사 정보',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
-              name="account-group"
+            <FontAwesome5
+              name="chalkboard-teacher"
               color={color}
               size={26}
             />

@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Alert } from 'react-native';
 
 
-const MyPageScreen = () => {
+const TeacherMyPageScreen = () => {
   const navigation = useNavigation();
   const [data, setData] = useState(null);
   const [user, setUser] = useState({
@@ -18,7 +18,7 @@ const MyPageScreen = () => {
   });
 
   useEffect(() => {
-    // checkTokenAndNavigate(navigation);
+    checkTokenAndNavigate(navigation);
 
     async function fetchData() {
       try {
@@ -66,39 +66,19 @@ const MyPageScreen = () => {
     navigation.navigate('NoticeInfo');
   };
 
-  const handleAccountDeletion = async () => {
-    Alert.alert(
-      '회원탈퇴',
-      '회원탈퇴를 진행하시겠습니까?',
-      [
-        {
-          text: '아니요',
-          onPress: () => {
-            // 아무 작업도 수행하지 않음
-          },
-          style: 'cancel',
-        },
-        {
-          text: '예',
-          onPress: async () => {
-            try {
-              const response = await fetch('API', {
-                method: 'DELETE',
-                headers: {
-                  'Authorization': 'Bearer ' + 'YOUR_AUTH_TOKEN',
-                  'Content-Type': 'application/json',
-                },
-              });
+  const ChangeMySelfPage = () => {
+    navigation.navigate('TeacherChangeMySelf')
+  }
+  const ChangeCarrerPage = () => {
+    navigation.navigate('TeacherChangeCarrer')
+  }
+  const ChangeBriefPage = () => {
+    navigation.navigate('TeacherChangeBrief')
+  }
+  const ChangeTeamPage = () => {
+    navigation.navigate('TeacherChangeTeam')
+  }
 
-              // 삭제 후의 작업 수행
-            } catch (error) {
-              console.error('회원탈퇴 중 오류 발생:', error);
-            }
-          },
-        },
-      ],
-    );
-  };
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -122,6 +102,18 @@ const MyPageScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={ChangePwPage}>
             <Text style={styles.accountPw}>비밀번호 변경</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ChangeMySelfPage}>
+            <Text style={styles.accountPw}>한줄소개 변경</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ChangeCarrerPage}>
+            <Text style={styles.accountPw}>경력 변경</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ChangeBriefPage}>
+            <Text style={styles.accountPw}>약력 변경</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ChangeTeamPage}>
+            <Text style={styles.accountPw}>소속 변경</Text>
           </TouchableOpacity>
           </View>
         </View>
@@ -162,6 +154,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   profileContainer: {
+    
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
@@ -297,4 +290,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPageScreen;
+export default TeacherMyPageScreen;

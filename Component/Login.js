@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import * as Font from 'expo-font';
-import backgroundImage from '../Images/dr1.png';
 import { getTokens } from './TokenUtils';
 import TransparentCircleButton from './TransparentCircleButton';
+import backgroundImage from '../Images/dr1.png'; 
+
 
 
 const LoginScreen = () => {
@@ -30,7 +31,7 @@ const LoginScreen = () => {
     
     async function loadCustomFont() {
       await Font.loadAsync({
-        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'), // 폰트 경로를 업데이트하세요
+        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
       });
       setFontLoaded(true);
     }
@@ -45,10 +46,10 @@ const LoginScreen = () => {
 
 
   const onGoBack = () => {
-    navigation.goBack();
+    navigation.navigate('MainView');
   };
 
-
+  
   return (
     <View style={styles.container}>
 
@@ -90,7 +91,7 @@ const LoginScreen = () => {
 
       <View style={styles.linkContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.button}>
-          <Text style={styles.sign}>회원이 아니신가요?</Text>
+          <Text style={styles.sign}>회원가입</Text>
         </TouchableOpacity>
         <View style={{ width: 10 }} />
         <TouchableOpacity  onPress={() => navigation.navigate('ForgetId')} style={styles.button}>
@@ -111,6 +112,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 50,
+    marginBottom:40,
     
   },
   title: {

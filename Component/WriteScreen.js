@@ -1,21 +1,27 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { StyleSheet, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WriteHeader from './WriteHeader';
 import LogContext from '../context/LogContext';
 import ImagePicker2 from './ImagePicker2';
-import { Picker } from '@react-native-picker/picker'; 
-
+import { Picker } from '@react-native-picker/picker';
+import { checkTokenAndNavigate } from './TokenUtils';
 const URL = 'http://192.168.25.204:8080';
 
-function WriteScreen({ route }) {
-  const log = route.params?.log;
-  const logContext = useContext(LogContext);
 
+
+function WriteScreen({ route }) {
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    checkTokenAndNavigate(navigation);
+  }, []);
+  
+  const log = route.params?.log;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const navigation = useNavigation();
   const bodyRef = useRef();
   const [date, setDate] = useState(log ? new Date(log.date) : new Date());
   const loginId = '정훈';
