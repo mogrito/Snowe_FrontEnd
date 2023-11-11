@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Linking,
   Image,
+  FlatList,
 } from 'react-native';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import {
@@ -155,7 +156,7 @@ function MainScreen() {
     dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
   };
   
-  LocaleConfig.defaultLocale = 'ko'; // Set the default locale to Korean
+  LocaleConfig.defaultLocale = 'ko'; 
   
   const timeToString = (time) => {
     const date = new Date(time);
@@ -164,7 +165,7 @@ function MainScreen() {
   
     const [items, setItems] = useState({});
   
-    // Replace this array with your hardcoded data
+
     const hardcodedData = [
       // {
       //   date: '2023-11-11',
@@ -173,12 +174,12 @@ function MainScreen() {
       //   ],
       // },
       {
-        date: '2023-11-06',
+        date: '2023-11-11',
         events: [
           { name: 'Meeting with Team B'},
         ],
       },
-      // Add more entries as needed
+  
     ];
   
     const loadItems = () => {

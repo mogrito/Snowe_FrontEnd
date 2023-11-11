@@ -61,7 +61,7 @@ const TeacherChangeBreifScreen = ({ navigation }) => {
       <View>
         <View style={styles.text}>
           <Text style={styles.inputLabel}>현재 내 약력</Text>
-          <Text style={styles.rightText}>변경 할 약력 앞에 -를 붙여 작성해 주세요</Text>
+          <Text style={styles.rightText}>변경 할 약력을 작성해 주세요</Text>
         </View>
         <View style={styles.inputContainer}>
           <TextInput
