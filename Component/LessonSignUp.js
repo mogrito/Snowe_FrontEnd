@@ -81,6 +81,7 @@ const LessonSignUpScreen = () => {
       alert('강습 정보를 입력해주세요');
     }
   };
+  
 
   return (
     <KeyboardAvoidingView

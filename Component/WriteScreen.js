@@ -73,7 +73,6 @@ function WriteScreen({ route }) {
         }
 
         const blob = new Blob([byteArray], { type: 'image/png' });
-        const blob2 = new Blob([byteArray], { type: 'image/png' });
 
         console.log('블롭:', blob);
         const uriParts = imageUrl.split('/');

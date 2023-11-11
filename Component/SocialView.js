@@ -62,7 +62,7 @@ function SocialView(){
       console.log(boardData);
       setBoardList(boardData);
 
-      setBoardId(boardData.boardId);
+      // setBoardId(boardData.boardId);
 
       // const images = {};
       // for (const boardItem of boardData) {
@@ -125,25 +125,25 @@ function SocialView(){
     
     const [imageUrls, setImageUrls] = useState({});
     //이미지 불러오기
-    useEffect(() => {
-      fetchImage();
-    }, []);
+    // useEffect(() => {
+    //   fetchImage();
+    // }, []);
 
-    const fetchImage = async () => {
-      try {
-        const response = await fetch(`${URL}/file?boardId=${boardId}`);
-        if (response.ok) {
-          const data = await response.blob();
-          const imageUrl = URL.createObjectURL(data);
-          return imageUrl;
-        } else {
-          return null;
-        }
-      } catch (error) {
-        console.error('이미지 가져오기 오류:', error);
-        return null;
-      }
-    };
+    // const fetchImage = async () => {
+    //   try {
+    //     const response = await fetch(`${URL}/file?boardId=${boardId}`);
+    //     if (response.ok) {
+    //       const data = await response.blob();
+    //       const imageUrl = URL.createObjectURL(data);
+    //       return imageUrl;
+    //     } else {
+    //       return null;
+    //     }
+    //   } catch (error) {
+    //     console.error('이미지 가져오기 오류:', error);
+    //     return null;
+    //   }
+    // };
 
 
     const sampleData = [
@@ -195,12 +195,12 @@ function SocialView(){
       },
     ];
 
-    const refreshBoardData = () => {
-      // 게시글 데이터를 새로고침하는 함수
-      setRefreshing(true); // 새로고침 시작
-      fetchBoardData()
-        .then(() => setRefreshing(false)); 
-    };
+    // const refreshBoardData = () => {
+    //   // 게시글 데이터를 새로고침하는 함수
+    //   setRefreshing(true); // 새로고침 시작
+    //   fetchBoardData()
+    //     .then(() => setRefreshing(false)); 
+    // };
 
     const onBoardPress = (board) => {
       setSelectedBoard(board);
@@ -213,12 +213,12 @@ function SocialView(){
       }); 
     };
 
-    useEffect(() => {
-      if (isFocused) {
-        // 화면이 포커스되면 게시글 데이터를 새로고침
-        refreshBoardData();
-      }
-    }, [isFocused]);
+    // useEffect(() => {
+    //   if (isFocused) {
+    //     // 화면이 포커스되면 게시글 데이터를 새로고침
+    //     refreshBoardData();
+    //   }
+    // }, [isFocused]);
 
 
 
@@ -252,12 +252,12 @@ function SocialView(){
                   </View>
                 </TouchableOpacity>
               )}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={refreshBoardData}
-                />
-              }
+              // refreshControl={
+              //   <RefreshControl
+              //     refreshing={refreshing}
+              //     onRefresh={refreshBoardData}
+              //   />
+              // }
             />
       </View>
     );

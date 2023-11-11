@@ -3,6 +3,7 @@ import { View, ScrollView, Text, Image, StyleSheet, TextInput, FlatList,  Keyboa
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 
+
 const { StatusBarManager } = NativeModules
 
 const URL = 'http://192.168.25.204:8080';
@@ -23,6 +24,9 @@ function PostView({ route }) {
   const [boardDetails, setBoardDetails] = useState([]);
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   const [liked, setLiked] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(null);
+  const [isReplyModalVisible, setReplyModalVisible] = useState(false);
+  const [replyText, setReplyText] = useState('');
 
   useEffect(() => {
   
@@ -299,43 +303,32 @@ function PostView({ route }) {
       }
     };
 
-  const onReplyButtonPress = () => {
-    // "답글" 버튼이 눌렸을 때 수행할 동작 추가
-  };
+    const onReplyButtonPress = () => {
+
+    };
+
+    // const onReplyButtonPress = (commentId) => {
+    //   const selectedComment = commentss.find(comment => comment.commentId === commentId);
+    //   setSelectedComment(selectedComment);
+    //   setReplyModalVisible(true);
+    // };
+
   const commentss = [
     {
       commentId : '23',
       content : 'dd'
     },
     {
-      commentId : '23',
+      commentId : '24',
       content : 'dd'
     },
+  ];
+  const replyCommentss = [
     {
-      commentId : '23',
-      content : 'dd'
-    },
-    {
-      commentId : '23',
-      content : 'dd'
-    },
-    {
-      commentId : '23',
-      content : 'dd'
-    },
-    {
-      commentId : '23',
-      content : 'dd'
-    },
-    {
-      commentId : '23',
-      content : 'dd'
-    },
-    {
-      commentId : '23',
-      content : 'dd'
-    },
-  ]
+      parentCommentId : '23',
+      content:'ss'
+    }
+  ];
   //좋아요 기능
   const handleLike = async () => {
     try {
@@ -356,6 +349,17 @@ function PostView({ route }) {
       console.error('추천 요청 중 오류:', error);
     }
   };
+
+  // const submitReply = () => {
+  //   // replyText에 대한 필요한 유효성 검사를 수행합니다.
+  //   // 그런 다음 서버에 답글을 전송하거나 로컬 상태를 업데이트할 수 있습니다.
+  //   // 여기서는 예를 들어 replyComments 상태에 새 답글을 추가합니다.
+  //   const newReply = { content: replyText, parentCommentId: selectedCommentId, loginId: loginId };
+  //   setReplyComments([...replyComments, newReply]);
+  
+  //   // 답글 모달을 닫습니다
+  //   setReplyModalVisible(false);
+  // };
 
 return (
   <SafeAreaView style={styles.container}>
@@ -446,6 +450,18 @@ return (
             </View>
           )}
         />
+        <View>
+          <FlatList
+            data={replyCommentss}
+            keyExtractor={(item, index) => `reply-${index}`}
+            renderItem={({ item }) => (
+              <View style={styles.commentContainer}>
+                {/* 답글에 대한 UI를 표시하는 코드 */}
+                <Text style={styles.commentText}>{item.content}</Text>
+              </View>
+            )}
+          />
+        </View>
       </ScrollView>
       <View style={styles.commentInputWithButton}>
         <TextInput
@@ -464,6 +480,7 @@ return (
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
+    {/* 댓글모달 */}
     <Modal
         animationType="slide"
         transparent={true}
@@ -489,7 +506,66 @@ return (
           </View>
         </View>
       </View>
-    </Modal>  
+    </Modal> 
+    {/* {/* 답글모달
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isReplyModalVisible}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View>
+            <Text>?????{selectedComment}</Text>
+          </View>
+          <Text style={styles.editCommentTitle}>댓글에 답글 작성</Text>
+          {selectedComment && (
+            <View>
+              <Text style={styles.selectedCommentText}>{selectedComment.content}</Text>
+            </View>
+          )}
+          <TextInput
+            multiline
+            placeholder="답글을 작성하세요"
+            value={replyText}
+            onChangeText={(text) => setReplyText(text)}
+            style={styles.editCommentInput}
+          />
+           답글 목록을 나열하는 FlatList 추가 
+           각 답글에 대한 작성자와 내용을 표시하고, 필요에 따라 수정 및 삭제 버튼을 추가 
+          <FlatList
+            data={replyComments.filter(reply => reply.parentCommentId === selectedComment?.commentId)}
+            keyExtractor={(item, index) => `reply-${index}`}
+            renderItem={({ item }) => (
+              <View style={styles.commentContainer}>
+                 작성자와 내용 표시 
+                <Text style={styles.commentAuthor}>{item.loginId}</Text>
+                <Text style={styles.commentText}>{item.content}</Text>
+                 수정 및 삭제 버튼 
+                {item.loginId === loginId && (
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
+                      <Text style={styles.actionButtonText}>수정</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
+                      <Text style={styles.actionButtonText}>삭제</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            )}
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={submitReply} style={[styles.editCommentButton, styles.saveButton]}>
+              <Text style={styles.commentButtonText}>저장</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setReplyModalVisible(false)} style={[styles.editCommentButton, styles.cancelButton]}>
+              <Text style={styles.commentButtonText}>취소</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>   */}
   </SafeAreaView>
 );
 }
@@ -520,6 +596,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginBottom: 8,
+    height:95
   },
   contentText: {
     fontSize: 18,
@@ -583,7 +660,9 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 30,
+    padding: 50,
+    width:'90%',
+    height:'90%',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
