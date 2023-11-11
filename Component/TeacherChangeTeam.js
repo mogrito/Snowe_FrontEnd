@@ -61,7 +61,7 @@ const TeacherChangeTeamScreen = ({ navigation }) => {
       <View>
         <View style={styles.text}>
           <Text style={styles.inputLabel}>현재 내 소속</Text>
-          <Text style={styles.rightText}>변경 할 소속을 앞에 -를 붙여 작성해 주세요</Text>
+          <Text style={styles.rightText}>변경 할 소속을 작성해 주세요</Text>
         </View>
         <View style={styles.inputContainer}>
           <TextInput
