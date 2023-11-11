@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import Swiper from 'react-native-swiper';
+//import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
 
 

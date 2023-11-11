@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Alert, Modal, NativeModules } from 'react-native';
+import { View, ScrollView, Text, Image, StyleSheet, TextInput, FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Alert, Modal, NativeModules } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 
@@ -9,7 +9,7 @@ const URL = 'http://192.168.25.204:8080';
 
 
 function PostView({ route }) {
-  const { boardId, refreshData} = route.params;
+  const { boardId, image, content, title, recommendCount } = route.params;
   const navigation = useNavigation();
   const [comments, setComments] = useState([]);
   const [replyComments, setReplyComments] = useState([]);
@@ -22,7 +22,8 @@ function PostView({ route }) {
   const [commentId, setCommentId] = useState(null); 
   const [boardDetails, setBoardDetails] = useState([]);
   const [statusBarHeight, setStatusBarHeight] = useState(0);
-  
+  const [liked, setLiked] = useState(false);
+
   useEffect(() => {
   
     fetchBoardDetails(boardId); 
@@ -32,7 +33,7 @@ function PostView({ route }) {
     Platform.OS == 'ios' ? StatusBarManager.getHeight((statusBarFrameData) => {
         setStatusBarHeight(statusBarFrameData.height)
       }) : null
-}, []);
+  }, []);
 
 
   const fetchBoardDetails = async (boardId) => {
@@ -51,27 +52,27 @@ function PostView({ route }) {
     fetchComments(boardId); // 게시글 id를 전달하여 해당 게시글의 댓글을 가져오는 함수
   }, [boardId]);
 
-// 함수 내에서 댓글 및 답글 분류 및 관리
-const fetchComments = async (boardId) => {
-  try {
-    const response = await fetch(`${URL}/comment/list/${boardId}`);
-    const commentData = await response.json();
+  // 함수 내에서 댓글 및 답글 분류 및 관리
+  const fetchComments = async (boardId) => {
+    try {
+      const response = await fetch(`${URL}/comment/list/${boardId}`);
+      const commentData = await response.json();
 
-    console.log(commentData);
-    // 최상위 댓글과 답글을 분류
-    const topLevelComments = commentData.filter(comment => comment.parentCommentId === 0);
-    const replyComments = commentData.filter(comment => comment.parentCommentId !== 0);
+      console.log(commentData);
+      // 최상위 댓글과 답글을 분류
+      const topLevelComments = commentData.filter(comment => comment.parentCommentId === 0);
+      const replyComments = commentData.filter(comment => comment.parentCommentId !== 0);
 
-    console.log(topLevelComments);
-    console.log(replyComments);
+      console.log(topLevelComments);
+      console.log(replyComments);
 
-    setComments(topLevelComments); // 최상위 댓글 상태 업데이트
-    setReplyComments(replyComments); // 답글 상태 업데이트
-  } catch (error) {
-    console.error(error);
-    alert('댓글 불러오기 실패');
-  }
-};
+      setComments(topLevelComments); // 최상위 댓글 상태 업데이트
+      setReplyComments(replyComments); // 답글 상태 업데이트
+    } catch (error) {
+      console.error(error);
+      alert('댓글 불러오기 실패');
+    }
+  };
 
   const onGoBack = () => {
     navigation.pop();
@@ -215,7 +216,7 @@ const fetchComments = async (boardId) => {
   
   const editComment = async (commentId, editedContent) => {
     try {
-      const response = await fetch(`http://192.168.25.204:8080/comment/edit/${commentId}`, {
+      const response = await fetch(`${URL}/comment/edit/${commentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -275,7 +276,7 @@ const fetchComments = async (boardId) => {
   };
     const deleteComment = async (commentId, boardId) => {
       try {
-        const response = await fetch(`http://192.168.25.204:8080/comment/del/${commentId}/${boardId}`, {
+        const response = await fetch(`${URL}/comment/del/${commentId}/${boardId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -301,6 +302,60 @@ const fetchComments = async (boardId) => {
   const onReplyButtonPress = () => {
     // "답글" 버튼이 눌렸을 때 수행할 동작 추가
   };
+  const commentss = [
+    {
+      commentId : '23',
+      content : 'dd'
+    },
+    {
+      commentId : '23',
+      content : 'dd'
+    },
+    {
+      commentId : '23',
+      content : 'dd'
+    },
+    {
+      commentId : '23',
+      content : 'dd'
+    },
+    {
+      commentId : '23',
+      content : 'dd'
+    },
+    {
+      commentId : '23',
+      content : 'dd'
+    },
+    {
+      commentId : '23',
+      content : 'dd'
+    },
+    {
+      commentId : '23',
+      content : 'dd'
+    },
+  ]
+  //좋아요 기능
+  const handleLike = async () => {
+    try {
+      const response = await fetch(`${URL}/board/recommend/${boardId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ boardId: boardId }),
+      });
+  
+      if (response.ok) {
+      } else {
+        // 요청이 실패한 경우
+        console.error('추천 요청 실패');
+      }
+    } catch (error) {
+      console.error('추천 요청 중 오류:', error);
+    }
+  };
 
 return (
   <SafeAreaView style={styles.container}>
@@ -313,12 +368,12 @@ return (
         />
       </View>
       <View>
-        <Text style={styles.headerTitle}>{boardDetails.title}</Text>
+        <Text style={styles.headerTitle}>{title}</Text>
       </View>
       <View style={styles.headerButton}>
         <TransparentCircleButton
           onPress={handleDeletePost}
-          name="delete-forever"
+          name="delete"
           color="#ef5350"             
         />
         <TransparentCircleButton
@@ -328,60 +383,86 @@ return (
         />
       </View>
     </View>
-    <Text style={styles.contentText}>{boardDetails.content}</Text>     
-    {/* <Text style={styles.writerText}>{writer}</Text> */}
-    <View style={styles.borderLine}></View>
-    <View style={styles.commentListContainer}>
-    <FlatList
-      data={comments}
-      keyExtractor={(item, index) => `comment-${index}`}
-      renderItem={({ item }) => (
-        <View style={styles.commentContainer}>
-          <View style={styles.commentHeader}>
-            <Text style={styles.commentAuthor}>{item.loginId}</Text>
-            {item.loginId === loginId && (
-              <View style={styles.actionButtons}>
-                <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
-                  <Text style={styles.actionButtonText}>수정</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
-                  <Text style={styles.actionButtonText}>삭제</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-          <View style={styles.commentItem}>
-            <Text style={styles.commentText}>{item.content}</Text>
-            <View>
-              <TouchableOpacity onPress={onReplyButtonPress}>
-                <Text style={styles.replyButtonWithBorder}>답글</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      )}
-    />
-    </View>
-    <KeyboardAvoidingView
-      behavior={"padding"}
-      style={{flex : 1}}
-      keyboardVerticalOffset={statusBarHeight+44}
-    >
-      <TextInput
-        placeholder="댓글을 입력하세요"
-        onChangeText={(text) => setCommentText(text)}
-        multiline
-        value={commentText}
-        style={styles.commentInput}
+    <View>
+      <Text style={styles.contentText}>{content}</Text>  
+    </View>  
+    <View>
+      <FlatList
+        data={image}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <Image 
+            source={{ uri: item.url }} 
+            style={{ width: 200, height: 300, alignSelf: 'center' }}
+            resizeMode='contain' 
+          />
+        )}
       />
-      <TouchableOpacity
-        style={styles.commentButton}
-        onPress={() => {
-          addComment(commentText);
-        }}
-      >
-        <Text style={styles.commentButtonText}>댓글 남기기</Text>
+    </View>
+
+    <View style={styles.borderLine}></View>
+    <View style={styles.like}>
+      <TouchableOpacity 
+        onPress={handleLike}           
+        style={styles.likeButton}>
+            <Text>
+              ❤️ 공감 {recommendCount}
+            </Text>
       </TouchableOpacity>
+    </View>
+
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      style={{ flex: 1}}
+      keyboardVerticalOffset={statusBarHeight-50}
+    >
+      <ScrollView style={styles.commentListContainer}>
+        <FlatList
+          data={commentss}
+          keyExtractor={(item, index) => `comment-${index}`}
+          renderItem={({ item }) => (
+            <View style={styles.commentContainer}>
+              <View style={styles.commentHeader}>
+                <Text style={styles.commentAuthor}>{item.loginId}</Text>
+                {item.loginId === loginId && (
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
+                      <Text style={styles.actionButtonText}>수정</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
+                      <Text style={styles.actionButtonText}>삭제</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+              <View style={styles.commentItem}>
+                <Text style={styles.commentText}>{item.content}</Text>
+                <View>
+                  <TouchableOpacity onPress={onReplyButtonPress}>
+                    <Text style={styles.replyButtonWithBorder}>답글</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
+        />
+      </ScrollView>
+      <View style={styles.commentInputWithButton}>
+        <TextInput
+          placeholder="댓글을 입력하세요"
+          onChangeText={(text) => setCommentText(text)}
+          value={commentText}
+          style={styles.commentInput}
+        />
+        <TouchableOpacity
+          style={styles.postButton}
+          onPress={() => {
+            addComment(commentText)
+          }}
+        >
+          <Text style={styles.postButtonText}>게시</Text>
+        </TouchableOpacity>
+      </View>
     </KeyboardAvoidingView>
     <Modal
         animationType="slide"
@@ -450,10 +531,11 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   borderLine: {
-    borderTopWidth: 2,
-    borderTopColor: '#000',
-    marginTop: '20%',
-    marginBottom: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#7290F2',
+    marginTop: '5%',
+    marginBottom: 5,
+    flexDirection:'row',
   },
   commentItem: {
     backgroundColor: '#f5f5f5',
@@ -467,18 +549,11 @@ const styles = StyleSheet.create({
   commentView:{
     padding:10,
   },  
-  commentInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 8,
-  },
-  commentButton: {
-    backgroundColor: '#009688',
-    borderRadius: 8,
-    padding: 12,
+  commentButtonView: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
   },
   commentButtonText: {
     color: '#fff',
@@ -496,6 +571,7 @@ const styles = StyleSheet.create({
   },
   commentListContainer:{
     padding:5,
+    height:300
   },
   centeredView: {
     flex: 1,
@@ -561,6 +637,46 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     marginLeft: 10, // "수정/삭제" 버튼 사이의 간격 추가
+  },
+  commentInputWithButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 8,
+    margin: 8,
+  },
+  commentInput: {
+    flex: 1,
+  },
+  postButton: {
+    borderRadius: 8,
+    padding: 8,
+    marginLeft: 8,
+  },
+  postButtonText: {
+    color: '#009688',
+    width: 25
+  },
+  like: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  likedButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'red',
+    padding: 10,
+  },
+  likeButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'black',
+    padding: 10,
+    backgroundColor:'white',
+    marginLeft:10
   },
 });
 

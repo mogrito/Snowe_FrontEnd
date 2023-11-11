@@ -33,7 +33,7 @@ import TeacherChangeBreifScreen from './Component/TeacherChangeBrief';
 import TeacherChangeCarrerScreen from './Component/TeacherChangeCarrer';
 import TeacherChangeMySelfScreen from './Component/TeacherChangeMySelf';
 import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
-import Schedule from './Component/Callenders';
+//import Schedule from './Component/Callenders';
 
 
 const Tab = createMaterialBottomTabNavigator();

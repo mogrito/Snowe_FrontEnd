@@ -21,7 +21,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
   const navigation = useNavigation();
-  const URL = 'http://192.168.25.202:8080';
+  const URL = 'http://192.168.25.204:8080';
   const requestData = {
     loginId: loginId,
     password: password,
