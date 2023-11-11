@@ -31,7 +31,7 @@ const LoginScreen = () => {
     
     async function loadCustomFont() {
       await Font.loadAsync({
-        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'), // 폰트 경로를 업데이트하세요
+        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
       });
       setFontLoaded(true);
     }
