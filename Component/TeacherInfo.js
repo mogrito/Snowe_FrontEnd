@@ -1,87 +1,16 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import Swiper from 'react-native-swiper';
+// import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
 
 
 //brief = 약력 carrer = 경력 team = 소속 
 
-const data = [
-  {
-    id: '1',
-    name: '원빈',
-    introduce: '강해지고 싶나?',
-    image: require('../Images/face.jpg'),
-    count: 0,
-    edudate: '09:00',
-    subject: '스키',
-    level: 'LV1',
-    yak: [
-      '- T&D(Technical & Different) HEAD COACH',
-      '- (전) 알파인 스키선수 (2007~2014)',
-      '- 건국대학교 생활체육학과 졸업',
-      '- 생활체육지도자 2급'
-    ],
-    carrer: [
-      '- KSIA 대한스키지도자연맹 전국기술선수권대회 종합 14위',
-      '- SBAK 한국스키장경영협회 전국기술선수권대회 종합 13위',
-      '- 대명비발디파크 카브배 기술선수권대회 종합 5위',
-      '- 한솔섬유배 인터스키대회 전주자'
-    ],
-    team: [
-      '- T&D SKI ',
-      '- BHS',
-      '- POC ',
-      '- LEKI'
-    ]
-  }, 
-  
-  { id: '2', name: '주성', introduce: '찾아라 원피스', image: require('../Images/face1.jpg'), count: 0, edudate: '17:00', subject: '보드', level: 'LV2' ,
-  yak: [
-    '- T&D(Technical & Different)SKI PROGRAM DIRECTOR',
-    '- SBAK 한국스키장경영협회 데몬스트레이터 3기 인정 (2018~2025)',
-    '- KSEA 대한스키교육협회 교육위원장',
-    '- KSIA 대한스키지도자연맹 데몬스트레이터 4기 인정 (2013~2017)'
-  ],
-  carrer: [
-    '- 제 8회 SBAK 한국스키장경영협회 전국기술선수권대회 종합 3위 ',
-    '- 제 4기 SBAK 한국스키장경영협회 데몬스트레이터 선발',
-    '- KSEA 대한스키교육협회 교육위원장 임명',
-    '- 한솔섬유배 인터스키대회 전주자'
-  ],
-  team: [
-    '- WONYANG 후원',
-    '- 한방유비스 후원',
-    '- OGASAKA SKI(오가사카) ',
-    '- REXXAM BOOTS(렉삼) '
-  ]},
-
-
-
-  { id: '3', name: '정훈', introduce: '아이스 에이지..', image: require('../Images/face2.jpg'), count: 0, edudate: '11:00', subject: '스키', level: 'LV3',
-  yak: [
-    'T&D(Technical & Different)  COACH',
-    '- (전) 알파인 스키선수 (2007~2014)',
-    '- 용인대학교 체육학과 졸업',
-    '- 스키 경력 (12년)'
-  ],
-  carrer: [
-    '- 한솔섬유배 인터스키대회 출전',
-    '- 지산배 한국오픈스키 챔피언십 출전',
-    '- SBAK 한국스키장경영협회 전국기술선수권대회 출전',
-    '- 뉴질랜드 하계 스키캠프 참여'
-  ],
-  team: [
-    '- T&D SKI ',
-  ] },
-];
-
-
 const levelColors = {
-  LV1: 'lightgreen',
-  LV2: 'lightblue',
-  LV3: 'lightpink',
+  LV01: 'lightgreen',
+  LV02: 'lightblue',
+  LV03: 'lightpink',
 };
 
 const eachsubject = {
@@ -113,25 +42,6 @@ const TeacherInfoScreen = () => {
     }
     fetchData();
   }, [selectedCategory]);
-
- // 이부분이 선택된 강사의 DATA를 DB에서 가져오는 거
- 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-        
-  //       const response = await fetch('api');
-  //       if (!response.ok) {
-  //         throw Error('Failed to fetch data from the server.');
-  //       }
-  //       const data = await response.json();
-  //       setTeachers(data);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
 
   const onShowDetails = (item) => {
     setSelectedTeacher(item);
@@ -167,7 +77,7 @@ const TeacherInfoScreen = () => {
         </TouchableOpacity>
       </View>
       <FlatList
-        data={data}
+        data={teachers}
         renderItem={({ item }) => (
           <View style={styles.item}>
             <View style={styles.teacherContent}>
@@ -175,13 +85,13 @@ const TeacherInfoScreen = () => {
               <View style={styles.textContainer}>
                 <View style={styles.headerimage}>
                   <Text style={styles.itemText}>{item.name}</Text>
-                  <View style={[styles.badge1, { backgroundColor: levelColors[item.level] }]}>
-                    <Text style={styles.skilevel}>{item.level}</Text>
+                  <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
+                    <Text style={styles.skilevel}>{item.classLevel}</Text>
                   </View>
                 </View>
                 <Text style={styles.subjectText}>{item.introduce}</Text>
               </View>
-              <Image source={eachsubject[item.subject]} style={styles.subjectImage} />
+              <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
               <TouchableOpacity style={styles.cancelButton} onPress={() => onShowDetails(item)}>
                 <Text style={styles.cancelButtonText}>상세보기</Text>
               </TouchableOpacity>
@@ -203,7 +113,7 @@ const TeacherInfoScreen = () => {
                 <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
-              <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
+              {/* <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/SnoweFirst.jpg')} style={styles.swiperImage} />  
                 </View>
@@ -213,7 +123,7 @@ const TeacherInfoScreen = () => {
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
                 </View>
-               </Swiper>
+               </Swiper> */}
               <Text style={styles.yaks}>약력</Text>
               {selectedTeacher.yak && selectedTeacher.yak.map((item, index) => (
                 <Text style={styles.yak} key={index}>{item}</Text>
@@ -420,17 +330,17 @@ const styles = StyleSheet.create({
     width: 190,
     height: 190,
   },
-  swiperSlide: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  // swiperSlide: {
+  //   flex: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
     
-  },
-  swiperImage: {
-    width: '100%',
-    height: '110%',
-    marginTop:40
-  },
+  // },
+  // swiperImage: {
+  //   width: '100%',
+  //   height: '110%',
+  //   marginTop:40
+  // },
   headerimage:{
     flexDirection:'row'
   },
