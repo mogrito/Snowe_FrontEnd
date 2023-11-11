@@ -14,8 +14,10 @@ import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
 import TransparentCircleButton from './TransparentCircleButton';
 import { TextInputMask } from 'react-native-masked-text'
-import backgroundImage from '../Images/dr1.png'; 
 
+// 이미지를 import 합니다.
+import backgroundImage from '../Images/dr1.png'; 
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const LessonSignUpScreen = () => {
@@ -88,11 +90,10 @@ const LessonSignUpScreen = () => {
       <Image source={backgroundImage} style={styles.backgroundImage} />
       <View style={styles.topBar}>
         <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
-        <Text style={styles.title1}>강습 등록</Text>
       </View>
       <ScrollView contentContainerStyle={styles.container}>
         {/* 배경 이미지 설정 */}
-        <Text style={fontLoaded ? styles.title : {}}>Sign Up</Text>
+        <Text style={fontLoaded ? styles.title : {}}>강습 등록</Text>
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input2}
@@ -123,7 +124,7 @@ const LessonSignUpScreen = () => {
           </View>
         </View>
 
-        <View style={styles.inputContainer1}>
+        <View style={styles.inputContainer2}>
           <TextInputMask
             style={styles.dateinput}
             type={'datetime'}
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   title: {
-    fontSize: 50,
+    fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 20,
     marginTop: 90,
@@ -317,6 +318,12 @@ const styles = StyleSheet.create({
   inputContainer1: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '48%',
+    marginBottom: 0,
+  },
+  inputContainer2: {
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '100%',
     marginBottom: 0,
   },
@@ -329,7 +336,7 @@ const styles = StyleSheet.create({
 
   },
   timeinput: {
-    width: '29%',
+    width: '%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
