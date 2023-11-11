@@ -3,7 +3,8 @@ import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { MaterialCommunityIcons,FontAwesome,Foundation } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { checkTokenAndNavigate } from './TokenUtils';
+import { getTokenFromLocal } from './TokenUtils';
 export function CustomDrawerContent({ navigation }) {
 
   return (
@@ -13,7 +14,7 @@ export function CustomDrawerContent({ navigation }) {
           source={require('../Images/UserIcon.jpg')}
           style={{ width: 72, height: 72, borderRadius: 36 }}
         />
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => checkTokenAndNavigate(navigation)}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>
             로그인하기
           </Text>
@@ -24,7 +25,16 @@ export function CustomDrawerContent({ navigation }) {
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('MyPage')}
+        onPress={async () => {
+          const token = await getTokenFromLocal();
+          console.log(token);
+          if (token) {
+            navigation.navigate('MyPage');
+          }
+          else{
+            navigation.navigate('Login');
+          }
+        }}
       />
       <DrawerItem
         label="강사 마이페이지"

@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 
-const URL = "http://192.168.219.103:8080/member"; // API 엔드포인트 URL
+const URL = "http://localhost:8080/member"; // API 엔드포인트 URL
 const onGoBack = () => {
   navigation.goBack();
 };
@@ -36,7 +36,7 @@ export const getTokens = async (requestData, navigation) => {
 };
 
 // AsyncStorage에서 토큰 가져옴
-const getTokenFromLocal = async () => {
+export const getTokenFromLocal = async () => {
   try {
     const value = await AsyncStorage.getItem('Tokens');
     if (value !== null) {
@@ -87,7 +87,7 @@ export const getInfo = async () => {
   const token = await getTokenFromLocal();
   const authorizationHeader = `Bearer ${token}`;
   try {
-    const response = await axios.get('http://192.168.219.103:8080/member/me', {
+    const response = await axios.get('http://localhost:8080/member/me', {
       headers: {
         'Authorization': authorizationHeader,
       },

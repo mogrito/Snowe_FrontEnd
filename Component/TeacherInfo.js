@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import Swiper from 'react-native-swiper';
+// import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -203,7 +203,7 @@ const TeacherInfoScreen = () => {
                 <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
-              <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
+              {/* <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/SnoweFirst.jpg')} style={styles.swiperImage} />  
                 </View>
@@ -213,7 +213,7 @@ const TeacherInfoScreen = () => {
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
                 </View>
-               </Swiper>
+               </Swiper> */}
               <Text style={styles.yaks}>약력</Text>
               {selectedTeacher.yak && selectedTeacher.yak.map((item, index) => (
                 <Text style={styles.yak} key={index}>{item}</Text>
@@ -420,17 +420,17 @@ const styles = StyleSheet.create({
     width: 190,
     height: 190,
   },
-  swiperSlide: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  // swiperSlide: {
+  //   flex: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
     
-  },
-  swiperImage: {
-    width: '100%',
-    height: '110%',
-    marginTop:40
-  },
+  // },
+  // swiperImage: {
+  //   width: '100%',
+  //   height: '110%',
+  //   marginTop:40
+  // },
   headerimage:{
     flexDirection:'row'
   },
