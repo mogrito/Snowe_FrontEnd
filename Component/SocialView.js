@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useFocusEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList, RefreshControl, Image } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native'; 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -78,6 +78,8 @@ function SocialView(){
     }
   }
 
+
+
   return (
     <PaperProvider>
       <View style={styles.container}>
@@ -118,8 +120,18 @@ function SocialView(){
       }
     };
 
+    useEffect(() => {
+      const focusListener = navigation.addListener('focus', () => {
+        refreshBoardData();
+      });
+  
+      return () => {
+        focusListener();
+      };
+    }, [navigation]);
+
     const onBoardPress = (board) => {
-      setSelectedBoard(board);
+      // setSelectedBoard(board);
       navigation.navigate('PostView', { 
         boardId: board.boardId, 
         image: board.image,
@@ -128,10 +140,9 @@ function SocialView(){
         recommendCount:board.recommendCount
       }); 
     };
-
+    //게시글 자세히보기 갔다가 돌아올때 새로고침
     useEffect(() => {
       if (isFocused && !freeBoardData.length) {
-        // 화면이 포커스되고 데이터가 아직 로드되지 않은 경우에만 데이터 가져오기
         refreshBoardData();
       }
     }, [isFocused]);
@@ -181,7 +192,7 @@ function SocialView(){
     const [refreshing, setRefreshing] = useState(false);
 
 
-    const handleNoticePress = () => {
+    const handleNoticePress = (noticeData) => {
       // 공지사항 선택 시 동작
       navigation.navigate('PostView', {
         boardId: noticeData.boardId,
@@ -201,6 +212,16 @@ function SocialView(){
         setRefreshing(false); // 새로고침 완료
       }
     };
+
+    useEffect(() => {
+      const focusListener = navigation.addListener('focus', () => {
+        refreshNoticeData();
+      });
+  
+      return () => {
+        focusListener();
+      };
+    }, [navigation]);
 
     return (
       <View style={styles.container}>
@@ -251,6 +272,25 @@ function SocialView(){
       }
     };
 
+    useEffect(() => {
+      const focusListener = navigation.addListener('focus', () => {
+        refreshQuestionData();
+      });
+  
+      return () => {
+        focusListener();
+      };
+    }, [navigation]);
+
+    const handleQnAPress = (QnAData) => {
+      navigation.navigate('PostView', {
+        boardId: QnAData.boardId,
+        title: QnAData.title,
+        content: QnAData.content,
+        loginId: 'Admin',
+      });
+    };
+
     return (
       <View style={styles.container}>
         <FlatList
@@ -259,10 +299,7 @@ function SocialView(){
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.textContainer}
-              onPress={() => {
-                // 네비게이션을 통해 해당 질문/답변 화면으로 이동
-                navigation.navigate('PostView', { boardId: item.boardId });
-              }}
+              onPress={handleQnAPress}
             >
               <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flex: 1 }}>
@@ -306,6 +343,27 @@ function SocialView(){
       }
     };
 
+    useEffect(() => {
+      const focusListener = navigation.addListener('focus', () => {
+        refreshTipData();
+      });
+  
+      return () => {
+        focusListener();
+      };
+    }, [navigation]);
+
+    const handleTipPress = (TipBoardData) => {
+      // 공지사항 선택 시 동작
+      navigation.navigate('PostView', {
+        boardId: TipBoardData.boardId,
+        title: TipBoardData.title,
+        content: TipBoardData.content,
+        loginId: 'Admin', 
+      });
+    };
+
+
     return (
       <View style={styles.container}>
         <FlatList
@@ -314,10 +372,7 @@ function SocialView(){
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.textContainer}
-              onPress={() => {
-                // 네비게이션을 통해 해당 질문/답변 화면으로 이동
-                navigation.navigate('PostView', { boardId: item.boardId });
-              }}
+              onPress={handleTipPress}
             >
               <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flex: 1 }}>

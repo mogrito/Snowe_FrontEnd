@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, Image, StyleSheet, TextInput, FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Alert, Modal, NativeModules } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
+import { getTokenFromLocal } from './TokenUtils';
 
 
 const { StatusBarManager } = NativeModules
@@ -28,6 +29,7 @@ function PostView({ route }) {
   const [isReplyModalVisible, setReplyModalVisible] = useState(false);
   const [replyText, setReplyText] = useState('');
 
+
   useEffect(() => {
   
     fetchBoardDetails(boardId); 
@@ -51,6 +53,26 @@ function PostView({ route }) {
     }
   };
 
+  // const fetchBoardDetails = async (boardId) => {
+  //   try {
+  //     const response = await fetch(`${URL}/board/view/${boardId}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json', 
+
+  //       },
+
+  //     });
+  
+  //     const boardData = await response.json();
+  //     console.log(boardData); // 게시글 정보 확인
+  //     setBoardDetails(boardData);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+
   // 게시글 id를 기반으로 댓글 데이터를 가져옴
   useEffect(() => {
     fetchComments(boardId); // 게시글 id를 전달하여 해당 게시글의 댓글을 가져오는 함수
@@ -61,6 +83,7 @@ function PostView({ route }) {
     try {
       const response = await fetch(`${URL}/comment/list/${boardId}`);
       const commentData = await response.json();
+      
 
       console.log(commentData);
       // 최상위 댓글과 답글을 분류
@@ -106,6 +129,7 @@ function PostView({ route }) {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': authorizationHeader,
             },
           });
     
@@ -332,10 +356,14 @@ function PostView({ route }) {
   //좋아요 기능
   const handleLike = async () => {
     try {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+
       const response = await fetch(`${URL}/board/recommend/${boardId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
         },
         body: JSON.stringify({ boardId: boardId }),
       });
@@ -422,7 +450,7 @@ return (
     >
       <ScrollView style={styles.commentListContainer}>
         <FlatList
-          data={commentss}
+          data={comments}
           keyExtractor={(item, index) => `comment-${index}`}
           renderItem={({ item }) => (
             <View style={styles.commentContainer}>
