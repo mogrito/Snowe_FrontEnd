@@ -41,7 +41,16 @@ export function CustomDrawerContent({ navigation }) {
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('TeacherMyPage')}
+        onPress={async () => {
+          const token = await getTokenFromLocal();
+          console.log(token);
+          if (token) {
+            navigation.navigate('TeacherMyPage');
+          }
+          else{
+            navigation.navigate('Login');
+          }
+        }}
       />
       <DrawerItem
         label="스키장 리스트"
