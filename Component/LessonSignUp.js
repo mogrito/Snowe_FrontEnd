@@ -14,11 +14,11 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
 import TransparentCircleButton from './TransparentCircleButton';
-import { TextInputMask } from 'react-native-masked-text' 
-import { Calendar } from 'react-native-calendars';
+import { TextInputMask } from 'react-native-masked-text'
+
+// 이미지를 import 합니다.
 import backgroundImage from '../Images/dr1.png'; 
-import { FontAwesome5 } from '@expo/vector-icons';
-import { max } from 'date-fns';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const LessonSignUpScreen = () => {
@@ -31,20 +31,16 @@ const LessonSignUpScreen = () => {
   const [endlessontime, setEndLessontime] = useState('');
   const [ampm,setAmPm] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [maxReserveCount, setMaxReserveCount] = useState('');
-  const [isSki, setIsSki] = useState(false);
-  const [isBoard, setIsBoard] = useState(false);
-  const [lessonClass, setLessonClass] = useState('');
-  const [isCalendarModalVisible, setCalendarModalVisible] = useState(false);
   const navigation = useNavigation();
-  
-  const URL = 'http://192.168.219.103:8080';
-  
+
+
+  const URL = 'http://localhost:8080';
   const onGoBack = () => {
     navigation.pop();
   };
 
   useEffect(() => {
+  
     async function loadCustomFont() {
       await Font.loadAsync({
         DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
@@ -57,19 +53,23 @@ const LessonSignUpScreen = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await fetch(`${URL}`, {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+
+      const response = await fetch(`${URL}/lesson/add`, {
         method: 'POST',
         headers: {
+          'Authorization': authorizationHeader,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          lessonname: lessonname,
-          startday: startday,
-          endday: endday,
-          level:level,
-          startlessontime: startlessontime,
-          endlessontime: endlessontime, 
-          ampm:ampm,
+          lessonTitle: lessonname,
+          lessonDate: startday,
+          lessonDateEnd: endday,
+          lessonLevel:level,
+          lessonStart: startlessontime,
+          lessonEnd: endlessontime, 
+          lessonDiv:ampm,
           maxReserveCount:parseInt(maxReserveCount),
           lessonClass:lessonClass,
         }),
@@ -139,6 +139,21 @@ const LessonSignUpScreen = () => {
       <ScrollView contentContainerStyle={styles.container}>
         {/* 배경 이미지 설정 */}
         <Text style={fontLoaded ? styles.title : {}}>강습 등록</Text>
+        <View style={styles.iconContainer}>
+          <TouchableOpacity
+            style={isSki ? styles.skiButtonSelected : styles.selectedButton}
+            onPress={handleSkiPress}
+          >
+            <FontAwesome5 name="skiing" size={20} color={isSki ? 'white' : 'gray'} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={isBoard ? styles.boardButtonSelected : styles.selectedButton}
+            onPress={handleBoardPress}
+          >
+            <FontAwesome5 name="snowboarding" size={20} color={isBoard ? 'white' : 'gray'} />
+          </TouchableOpacity>
+        </View>
         <View style={styles.inputContainer}>
           <View style={styles.iconContainer1}>
             <TouchableOpacity
@@ -272,6 +287,7 @@ const LessonSignUpScreen = () => {
 
 
         </View>
+
 
         <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
           <Text style={styles.registerButtonText}>등록하기</Text>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,107 +15,70 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 const Tab = createMaterialTopTabNavigator();
 
-const data = [
-  {
-    id: '1',
-    name: '원빈',
-    introduce: '강해지고 싶나?',
-    image: require('../Images/face.jpg'),
-    count: 0,
-    edustartdate: '2023-11-09',
-    eduenddate: '2023-12-01',
-    edustarttime:'10:00',
-    subject: '스키',
-    level: 'LV1',
-    yak: [
-      '- T&D(Technical & Different) HEAD COACH',
-      '- (전) 알파인 스키선수 (2007~2014)',
-      '- 건국대학교 생활체육학과 졸업',
-      '- 생활체육지도자 2급',
-    ],
-    carrer: [
-      '- KSIA 대한스키지도자연맹 전국기술선수권대회 종합 14위',
-      '- SBAK 한국스키장경영협회 전국기술선수권대회 종합 13위',
-      '- 대명비발디파크 카브배 기술선수권대회 종합 5위',
-      '- 한솔섬유배 인터스키대회 전주자',
-    ],
-    team: ['- T&D SKI ', '- BHS', '- POC ', '- LEKI'],
-    
-  },
-  { 
-    id: '2', 
-    name: '주성', 
-    introduce: '찾아라 원피스', 
-    image: require('../Images/face1.jpg'), 
-    count: 0, 
-    edustartdate: '2023-09-07', 
-    eduenddate: '2023-10-07', 
-    edustarttime:'12:00',
-    subject: '보드', 
-    level: 'LV2',
-    yak: [
-      '- T&D(Technical & Different)SKI PROGRAM DIRECTOR',
-      '- SBAK 한국스키장경영협회 데몬스트레이터 3기 인정 (2018~2025)',
-      '- KSEA 대한스키교육협회 교육위원장',
-      '- KSIA 대한스키지도자연맹 데몬스트레이터 4기 인정 (2013~2017)',
-    ],
-    carrer: [
-      '- 제 8회 SBAK 한국스키장경영협회 전국기술선수권대회 종합 3위 ',
-      '- 제 4기 SBAK 한국스키장경영협회 데몬스트레이터 선발',
-      '- KSEA 대한스키교육협회 교육위원장 임명',
-      '- 한솔섬유배 인터스키대회 전주자',
-    ],
-    team: [
-      '- WONYANG 후원',
-      '- 한방유비스 후원',
-      '- OGASAKA SKI(오가사카) ',
-      '- REXXAM BOOTS(렉삼) '
-    ]
-  },
-  { 
-    id: '3', 
-    name: '정훈', 
-    introduce: '아이스 에이지..', 
-    image: require('../Images/face2.jpg'), 
-    count: 0, 
-    edustartdate: '2024-11-07',
-    eduenddate: '2024-12-04', 
-    edustarttime:'15:00',
-    subject: '스키', 
-    level: 'LV3',
-    yak: [
-      'T&D(Technical & Different)  COACH',
-      '- (전) 알파인 스키선수 (2007~2014)',
-      '- 용인대학교 체육학과 졸업',
-      '- 스키 경력 (12년)'
-    ],
-    carrer: [
-      '- 한솔섬유배 인터스키대회 출전',
-      '- 지산배 한국오픈스키 챔피언십 출전',
-      '- SBAK 한국스키장경영협회 전국기술선수권대회 출전',
-      '- 뉴질랜드 하계 스키캠프 참여',
-    ],
-    team: [
-      '- T&D SKI ',
-    ] 
-  },
-];
-
 const ReservationListScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
+  const [reservatedata, setReservatedataData] = useState([]); //예약 데이터 
+
+
+  //예약 데이터 들고오기 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('your-api-endpoint');
+        const result = await response.json();
+        setReservatedataData(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  //취소버튼을 누르면 item.id, item.teacherId 를 onCancel로 보내고 cancelReservation에 값을 전달하고 cancelReservation를 통해 DB로 보냄
+  
+  const cancelReservation = async (reservationId, teacherId) => {
+    try {
+      // 서버에 예약 취소를 요청합니다.
+      const response = await fetch('취소 API 엔드포인트', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reservationId,
+          teacherId,
+        }),
+      });
+
+      if (response.ok) {
+        // 취소가 성공하면 상태를 업데이트하여 취소된 예약을 제거합니다.
+        setReservatedataData((prevData) => prevData.filter(item => item.id !== reservationId));
+      } else {
+        console.error('예약 취소 중 오류 발생');
+      }
+    } catch (error) {
+      console.error('예약 취소 중 오류 발생:', error);
+    }
+  };
+
+  const onCancel = (reservationId, teacherId) => {
+    // 강사 ID가 예약 데이터에 있는 것
+    cancelReservation(reservationId, teacherId);
+  };
 
   const onGoBack = () => {
     navigation.pop();
   };
 
   const currentDate = new Date();
-  const beforeLessons = data.filter((item) => new Date(item.edustartdate) > currentDate);
-  const duringLessons = data.filter(
-    (item) => new Date(item.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate)
+  const beforeLessons = reservatedata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const duringLessons = reservatedata.filter(
+    (item) => new Date(reservatedata.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate)
   );
-  const afterLessons = data.filter((item) => new Date(item.edustartdate) > currentDate);
+  const afterLessons = reservatedata.filter((item) => new Date(item.edustartdate) > currentDate);
 
   return (
     <View style={styles.container}>
@@ -152,7 +115,7 @@ const ReservationListScreen = () => {
                     >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.id)} style={styles.cancelButton}>
+                    <TouchableOpacity onPress={() => onCancel(item.id, item.teacherId)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
                   </View>
@@ -188,7 +151,7 @@ const ReservationListScreen = () => {
                     >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.id)} style={styles.cancelButton}>
+                    <TouchableOpacity onPress={() => onCancel(item.id, item.teacherId)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
                   </View>
@@ -246,7 +209,7 @@ const ReservationListScreen = () => {
               <Text style={styles.modalText}>{`강습명: ${selectedReservation?.introduce}`}</Text>
               <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.edustartdate}`}</Text>
               <Text style={styles.modalText}>{`강습 시간: ${selectedReservation?.edustarttime}`}</Text>
-              <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false) }>
+              <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
                 <Text style={styles.modalCloseButton}>닫기</Text>
               </TouchableOpacity>
             </View>
@@ -343,11 +306,11 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: 'white',
-    width:300,
+    width: 300,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center', // 중앙 정렬을 위해 추가
-    marginTop:290,
+    marginTop: 290,
   },
   modalImage: {
     width: 150,
@@ -361,7 +324,7 @@ const styles = StyleSheet.create({
   modalText1: {
     fontSize: 16,
     marginTop: 10,
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
   modalCloseButton: {
     fontSize: 18,
@@ -371,8 +334,8 @@ const styles = StyleSheet.create({
   },
   cancelButton1: {
     width: '25%',
-    height:40,
-    padding:0,
+    height: 40,
+    padding: 0,
     borderRadius: 5,
     backgroundColor: 'skyblue',
     justifyContent: 'center',
