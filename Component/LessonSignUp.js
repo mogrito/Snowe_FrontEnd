@@ -14,11 +14,12 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
 import TransparentCircleButton from './TransparentCircleButton';
-import { TextInputMask } from 'react-native-masked-text'
-
-// 이미지를 import 합니다.
+import { TextInputMask } from 'react-native-masked-text' 
+import { Calendar } from 'react-native-calendars';
 import backgroundImage from '../Images/dr1.png'; 
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { max } from 'date-fns';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 const LessonSignUpScreen = () => {
@@ -27,20 +28,26 @@ const LessonSignUpScreen = () => {
   const [startday, setStartday] = useState('');
   const [endday, setEndday] = useState('');
   const [level, setLevel] = useState('');
+  const [age, setAge] = useState('');
   const [startlessontime, setStartLessontime] = useState('');
   const [endlessontime, setEndLessontime] = useState('');
   const [ampm,setAmPm] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
+  const [maxReserveCount, setMaxReserveCount] = useState('');
+  const [isSki, setIsSki] = useState(false);
+  const [isBoard, setIsBoard] = useState(false);
+  const [lessonClass, setLessonClass] = useState('');
+  const [isCalendarModalVisible, setCalendarModalVisible] = useState(false);
+  const [lessonIntroduce, setLessonIntroduce] = useState('');
   const navigation = useNavigation();
-
-
-  const URL = 'http://localhost:8080';
+  
+  const URL = 'http://192.168.219.103:8080';
+  
   const onGoBack = () => {
     navigation.pop();
   };
 
   useEffect(() => {
-  
     async function loadCustomFont() {
       await Font.loadAsync({
         DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
@@ -53,13 +60,9 @@ const LessonSignUpScreen = () => {
 
   const handleRegister = async () => {
     try {
-      const token = await getTokenFromLocal();
-      const authorizationHeader = `Bearer ${token}`;
-
-      const response = await fetch(`${URL}/lesson/add`, {
+      const response = await fetch(`${URL}`, {
         method: 'POST',
         headers: {
-          'Authorization': authorizationHeader,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -72,6 +75,8 @@ const LessonSignUpScreen = () => {
           lessonDiv:ampm,
           maxReserveCount:parseInt(maxReserveCount),
           lessonClass:lessonClass,
+          lessonAge:age,
+          lessonIntroduce:lessonIntroduce
         }),
       });
 
@@ -128,34 +133,18 @@ const LessonSignUpScreen = () => {
   
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : null}
-      style={{ flex: 1 }}
-    >
+    <View style={styles.rootContainer}>
       <Image source={backgroundImage} style={styles.backgroundImage} />
-      <View style={styles.topBar}>
-        <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
-      </View>
-      <ScrollView contentContainerStyle={styles.container}>
+
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.container}
+      >
+        <View style={styles.topBar}>
+          <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
+        </View>
         {/* 배경 이미지 설정 */}
         <Text style={fontLoaded ? styles.title : {}}>강습 등록</Text>
-        <View style={styles.iconContainer}>
-          <TouchableOpacity
-            style={isSki ? styles.skiButtonSelected : styles.selectedButton}
-            onPress={handleSkiPress}
-          >
-            <FontAwesome5 name="skiing" size={20} color={isSki ? 'white' : 'gray'} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={isBoard ? styles.boardButtonSelected : styles.selectedButton}
-            onPress={handleBoardPress}
-          >
-            <FontAwesome5 name="snowboarding" size={20} color={isBoard ? 'white' : 'gray'} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputContainer}>
-          <View style={styles.iconContainer1}>
+        <View style={styles.subjectContainer}>
             <TouchableOpacity
               style={isSki ? styles.skiButtonSelected : styles.selectedButton}
               onPress={handleSkiPress}
@@ -170,6 +159,29 @@ const LessonSignUpScreen = () => {
               <FontAwesome5 name="snowboarding" size={20} color={isBoard ? 'white' : 'gray'} />
             </TouchableOpacity>
           </View>
+        <View style={styles.inputContainer}>
+          <View style={styles.iconContainer1}>
+            <TouchableOpacity
+              style={age === '상관없음' ? styles.selectedAgeButton : styles.ageButton}
+              onPress={() => setAge('상관없음')}
+            >
+              <Text style={styles. levelButtonText}>상관없음</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={age === '청소년' ? styles.selectedAgeButton : styles.ageButton}
+              onPress={() => setAge('청소년')}
+            >
+              <Text style={styles. levelButtonText}>청소년</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={age === '성인' ? styles.selectedAgeButton : styles.ageButton}
+              onPress={() => setAge('성인')}
+            >
+              <Text style={styles. levelButtonText}>성인</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.iconContainer2}>
             <TextInput
               style={styles.input3} 
@@ -184,20 +196,20 @@ const LessonSignUpScreen = () => {
         <View style={styles.inputContainer}>
           <View style={styles.inputContainer1_1}>
             <TouchableOpacity
-              style={level === '초급' ? styles.levelButtonSelected : styles.selectedLessonButton}
+              style={level === '초급' ? styles.selectedLevelButton : styles.levelButton}
               onPress={() => setLevel('초급')}
             >
               <Text style={styles. levelButtonText}>초급</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={level === '중급' ? styles.levelButtonSelected : styles.selectedLessonButton}
+              style={level === '중급' ? styles.selectedLevelButton : styles.levelButton}
               onPress={() => setLevel('중급')}
             >
               <Text style={styles. levelButtonText}>중급</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={level === '고급' ? styles.levelButtonSelected : styles.selectedLessonButton}
+              style={level === '고급' ? styles.selectedLevelButton : styles.levelButton}
               onPress={() => setLevel('고급')}
             >
               <Text style={styles. levelButtonText}>고급</Text>
@@ -214,21 +226,33 @@ const LessonSignUpScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity style={styles.dateinput} onPress={openCalendarModal}>
-            <Text>
-              {startday
-                ? `시작일: ${startday}`
-                : '시작일과 종료일 선택'}
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.mulfont1}>~</Text>
-          <TouchableOpacity style={styles.dateinput} onPress={openCalendarModal}>
-            <Text>
-              {endday
-                ? `종료일: ${endday}`
-                : '시작일과 종료일 선택'}
-            </Text>
-          </TouchableOpacity>
+          <TextInput
+            style={styles.input4}
+            placeholder="강습 소개"
+            value={lessonIntroduce}
+            onChangeText={(text) => setLessonIntroduce(text)}
+            multiline={true}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <View style={styles.dateContainer}>
+            <TouchableOpacity style={styles.dateinput} onPress={openCalendarModal}>
+              <Text>
+                {startday
+                  ? `시작일: ${startday}`
+                  : '시작일과 종료일 선택'}
+              </Text>
+            </TouchableOpacity>
+            <Text style={styles.mulfont1}>~</Text>
+            <TouchableOpacity style={styles.dateinput} onPress={openCalendarModal}>
+              <Text>
+                {endday
+                  ? `종료일: ${endday}`
+                  : '시작일과 종료일 선택'}
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Modal visible={isCalendarModalVisible} animationType="slide">
             <Calendar
               markedDates={{
@@ -249,13 +273,13 @@ const LessonSignUpScreen = () => {
         <View style={styles.inputContainer}>
           <View style={styles.inputContainer2_1}>
             <TouchableOpacity
-              style={ampm === '오전' ? styles.levelButtonSelected : styles.selectedDivButton}
+              style={ampm === '오전' ? styles.selectedDivButton : styles.divButton}
               onPress={() => setAmPm('오전')}
             >
               <Text style={styles. levelButtonText}>오전</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={ampm === '오후' ? styles.levelButtonSelected : styles.selectedDivButton}
+              style={ampm === '오후' ? styles.selectedDivButton : styles.divButton}
               onPress={() => setAmPm('오후')}
             >
               <Text style={styles. levelButtonText}>오후</Text>
@@ -288,29 +312,35 @@ const LessonSignUpScreen = () => {
 
         </View>
 
-
         <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
           <Text style={styles.registerButtonText}>등록하기</Text>
         </TouchableOpacity>
 
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  rootContainer:{
+    flex: 1, 
+    justifyContent: 'flex-start',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom:370,
     padding: 40,
-    marginBottom:150,
+    paddingTop:120,
     ...Platform.select({
       web: {
         alignSelf:'center'
       },
     }),
+    // marginLeft:10,
+    // marginRight:10
   },
   backgroundImage: {
     position: 'absolute',
@@ -325,7 +355,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 20,
-    marginTop: 90,
     marginLeft:13,
     color: 'black', 
     fontFamily: 'DMSerifText1',
@@ -370,12 +399,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  selectedLessonButton: {
-    width: 40, 
+  levelButton: {
+    width: '30%', 
     height: 40,
     marginBottom: 16,
-    marginLeft: 7,
     backgroundColor: 'transparent',
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginRight:6,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  divButton: {
+    width: '40%', 
+    height: 40,
+    marginBottom: 16,
+    backgroundColor: 'transparent',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginRight:10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedLevelButton: {
+    width: '30%', 
+    height: 40,
+    marginBottom: 16,
+    marginRight:6,
+    backgroundColor: 'skyblue',
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
@@ -383,23 +436,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedDivButton: {
-    width: 40, 
+    width: '40%', 
     height: 40,
     marginBottom: 16,
-    marginLeft:7,
-    backgroundColor: 'transparent',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  
-  levelButtonSelected: {
-    width: 40, 
-    height: 40,
-    marginBottom: 16,
-    marginLeft: 7,
+    marginRight:10,
     backgroundColor: 'skyblue',
     borderColor: 'gray',
     borderWidth: 1,
@@ -414,49 +454,55 @@ const styles = StyleSheet.create({
   },
 
   input2: {
-    width: '87.2%',
+    width: '100%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 16,
-    marginLeft:19,
     paddingHorizontal: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', 
   },
   input3: {
-    width: '87.2%',
+    width: '100%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 16,
-    marginLeft:16,
+    paddingHorizontal: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+  },
+  input4: {
+    width: '100%',
+    height: 90,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 16,
     paddingHorizontal: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', 
   },
 
   dateinput: {
-    width: '43.6%',
+    width: '43.7%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 12,
-    paddingHorizontal: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', 
     padding:9
   },
   inputContainer1_1: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '38%',
+    width: '50%',
   },
   inputContainer1_2: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '62%',
-    marginLeft:5
+    width: '50%',
   },
   inputContainer2_1: {
     flexDirection: 'row',
@@ -467,7 +513,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '70%',
-    marginLeft:4
   },
   iconContainer: {
     flexDirection: 'row',
@@ -475,18 +520,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width:'100%',
   },
-  iconContainer1: {
+  subjectContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     width:'38%',
   },
+  iconContainer1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '75%',
+  },
   iconContainer2: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width:'62%',
-    marginLeft:2
+    width:'25%',
   },    
   mulfont:{
     fontSize:30,
@@ -500,13 +549,10 @@ const styles = StyleSheet.create({
     marginRight:12,
   },
   topBar: {
-    flexDirection: 'row',
-    alignItems: 'center', 
-    marginTop: 50,
-    marginRight:30,
+    width:'100%'
   },
   inputlesson:{
-    width: '40%',
+    width: '41%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -550,10 +596,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  ageButton: {
+    width: '31%',
+    height: 40,
+    marginBottom: 16,
+    backgroundColor: 'transparent',
+    borderColor: 'gray',
+    marginRight: 6,
+    borderWidth: 1,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedAgeButton: {
+    width: '31%',
+    height: 40,
+    marginBottom: 16,
+    backgroundColor: 'skyblue',
+    borderColor: 'gray',
+    marginRight: 8,
+    borderWidth: 1,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dateContainer:{
+    flexDirection:'row',
+    width:'100%'
+  }
 
 });
 
 export default LessonSignUpScreen;
-
 
 

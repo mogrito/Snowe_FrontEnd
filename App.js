@@ -19,7 +19,7 @@ import { LogContextProvider } from './context/LogContext';
 import EditScreen from './Component/EditScreen';
 import SearchScreen from './Component/SearchScreen';
 import SkiResortListScreen from './Component/SkiResortList';
-import ReservationListScreen from './Component/ReservationList';
+import ReservationScreen from './Component/ReservationScreen';
 import ChangeNickNameScreen from './Component/ChangeNickName';
 import ChangePwScreen from './Component/ChangePw';
 import MyPageScreen from './Component/MyPage';
@@ -120,8 +120,8 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <RootStack.Screen
-          name="ReservationList"
-          component={ReservationListScreen}
+          name="Reservation"
+          component={ReservationScreen}
           options={{ headerShown: false }}
         />
          <RootStack.Screen

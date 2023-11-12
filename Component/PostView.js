@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Alert, Modal, NativeModules } from 'react-native';
+import { View, ScrollView, Text, Image, StyleSheet, TextInput, FlatList,  Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, Alert, Modal, NativeModules } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
+import { getTokenFromLocal } from './TokenUtils';
+
 
 const { StatusBarManager } = NativeModules
 
@@ -9,12 +11,17 @@ const URL = 'http://192.168.25.204:8080';
 
 
 function PostView({ route }) {
-  const { boardId, refreshData} = route.params;
+  const { boardId, image } = route.params;
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [recommendCount, setRecommendCount] = useState('');
+  const [writerId, setWriterId] = useState('');
+  const [loginId, setLoginId] = useState('');
+  // console.log(route.params);
   const navigation = useNavigation();
   const [comments, setComments] = useState([]);
   const [replyComments, setReplyComments] = useState([]);
   const [commentText, setCommentText] = useState('');
-  const loginId = '정훈';
   // 모달 다이얼로그 관련 상태 변수
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editedComment, setEditedComment] = useState('');
@@ -22,17 +29,37 @@ function PostView({ route }) {
   const [commentId, setCommentId] = useState(null); 
   const [boardDetails, setBoardDetails] = useState([]);
   const [statusBarHeight, setStatusBarHeight] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(null);
+  const [isReplyModalVisible, setReplyModalVisible] = useState(false);
+  const [replyText, setReplyText] = useState('');
   
+
+
   useEffect(() => {
   
     fetchBoardDetails(boardId); 
   }, [boardId]);
 
+  useEffect(() => {
+    fetchGetToken();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', () => {
+      // 화면이 focus될 때마다 데이터를 새로고침
+      fetchBoardDetails(boardId);
+    });
+
+    // clean up 함수
+    return unsubscribeFocus;
+  }, [navigation, boardId]);
+
   useEffect(()=>{
     Platform.OS == 'ios' ? StatusBarManager.getHeight((statusBarFrameData) => {
         setStatusBarHeight(statusBarFrameData.height)
       }) : null
-}, []);
+  }, []);
 
 
   const fetchBoardDetails = async (boardId) => {
@@ -40,45 +67,104 @@ function PostView({ route }) {
       const response = await fetch(`${URL}/board/view/${boardId}`); 
       const boardData = await response.json();
       console.log(boardData); // 게시글 정보 확인
+
+      // 게시글 데이터에서 필요한 정보 추출
+      const { title, content, recommendCount, loginId } = boardData;
+
+      // 해당 정보로 상태 업데이트
+      setTitle(title);
+      setContent(content);
+      setRecommendCount(recommendCount);
+      setWriterId(loginId);
+
+
       setBoardDetails(boardData);
+
     } catch (error) {
       console.error(error);
     }
   };
+
+  const fetchGetToken = async () => {
+    try {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+
+      const response = await fetch(`${URL}/board/view/token-check`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json', 
+          'Authorization': authorizationHeader,
+        } 
+      });
+      
+      const tokenData = await response.json();
+      console.log(tokenData); // 게시글 정보 확인
+
+      // 게시글 데이터에서 필요한 정보 추출
+      const loginId = tokenData.nickname;
+      console.log(loginId);
+      setLoginId(loginId);
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // const fetchBoardDetails = async (boardId) => {
+  //   try {
+  //     const response = await fetch(`${URL}/board/view/${boardId}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json', 
+
+  //       },
+
+  //     });
+  
+  //     const boardData = await response.json();
+  //     console.log(boardData); // 게시글 정보 확인
+  //     setBoardDetails(boardData);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
 
   // 게시글 id를 기반으로 댓글 데이터를 가져옴
   useEffect(() => {
     fetchComments(boardId); // 게시글 id를 전달하여 해당 게시글의 댓글을 가져오는 함수
   }, [boardId]);
 
-// 함수 내에서 댓글 및 답글 분류 및 관리
-const fetchComments = async (boardId) => {
-  try {
-    const response = await fetch(`${URL}/comment/list/${boardId}`);
-    const commentData = await response.json();
+  // 함수 내에서 댓글 및 답글 분류 및 관리
+  const fetchComments = async (boardId) => {
+    try {
+      const response = await fetch(`${URL}/comment/list/${boardId}`);
+      const commentData = await response.json();
+      
 
-    console.log(commentData);
-    // 최상위 댓글과 답글을 분류
-    const topLevelComments = commentData.filter(comment => comment.parentCommentId === 0);
-    const replyComments = commentData.filter(comment => comment.parentCommentId !== 0);
+      console.log(commentData);
+      // 최상위 댓글과 답글을 분류
+      const topLevelComments = commentData.filter(comment => comment.parentCommentId === 0);
+      const replyComments = commentData.filter(comment => comment.parentCommentId !== 0);
 
-    console.log(topLevelComments);
-    console.log(replyComments);
+      console.log(topLevelComments);
+      console.log(replyComments);
 
-    setComments(topLevelComments); // 최상위 댓글 상태 업데이트
-    setReplyComments(replyComments); // 답글 상태 업데이트
-  } catch (error) {
-    console.error(error);
-    alert('댓글 불러오기 실패');
-  }
-};
+      setComments(topLevelComments); // 최상위 댓글 상태 업데이트
+      setReplyComments(replyComments); // 답글 상태 업데이트
+    } catch (error) {
+      console.error(error);
+      alert('댓글 불러오기 실패');
+    }
+  };
 
   const onGoBack = () => {
     navigation.pop();
   };
 
   const handleEditPress = () => {
-    if (loginId === loginId) { // 작성자와 로그인 아이디 비교
+    if (writerId === loginId) { // 작성자와 로그인 아이디 비교
       navigation.navigate('게시글 수정', {
         boardId,
         title,
@@ -92,79 +178,90 @@ const fetchComments = async (boardId) => {
   };
 
   const handleDeletePost = async () => {
-    if (Platform.OS === 'web') {
-      const userConfirmed = window.confirm('게시글을 삭제하시겠습니까?');
-      if (userConfirmed) {
-        // 게시글 삭제 로직
-        try {
-          const response = await fetch(`${URL}/board/del/${boardId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-    
-          if (response.ok) {
-            // 게시글 삭제 요청이 성공한 경우 로컬 상태에서도 해당 게시글을 제거
-            // 이를 위해 게시글 목록을 가져오는 API를 다시 호출하거나
-            // 로컬 상태에서 해당 게시글을 제거하는 방법을 사용할 수 있습니다.
-    
-            // 게시글 삭제 후, 이전 화면으로 돌아가기
-            alert('게시글 삭제 성공');
-            navigation.pop();
-          } else {
-            console.error('게시글 삭제 실패:', response.status);
-            alert('게시글 삭제 실패');
+    if(writerId === loginId){
+      if (Platform.OS === 'web') {
+        const userConfirmed = window.confirm('게시글을 삭제하시겠습니까?');
+        if (userConfirmed) {
+          // 게시글 삭제 로직
+          try {
+            const token = await getTokenFromLocal();
+            const authorizationHeader = `Bearer ${token}`;
+
+            const response = await fetch(`${URL}/board/del/${boardId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': authorizationHeader,
+              },
+            });
+      
+            if (response.ok) {
+              alert('게시글 삭제 성공');
+              navigation.pop();
+            } else {
+              console.error('게시글 삭제 실패:', response.status);
+              alert('게시글 삭제 실패');
+            }
+          } catch (error) {
+            console.error('게시글 삭제 중 오류 발생:', error);
+            alert('게시글 삭제 중 오류 발생');
           }
-        } catch (error) {
-          console.error('게시글 삭제 중 오류 발생:', error);
-          alert('게시글 삭제 중 오류 발생');
-        }
-      } 
-    } else {
-      Alert.alert(
-        '삭제 확인',
-        '게시글을 삭제하시겠습니까?',
-        [
-          {
-            text: '취소',
-            style: 'cancel',
-          },
-          {
-            text: '확인',
-            onPress: async () => {
-              try {
-                const response = await fetch(`${URL}/board/del/${boardId}`, {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                });
-  
-                if (response.ok) {
-                  // 게시글 삭제 요청이 성공한 경우 로컬 상태에서도 해당 게시글을 제거
-  
-                  // 게시글 삭제 후, 이전 화면으로 돌아가기
-                  alert('게시글 삭제 성공');
-                  navigation.pop();
-                } else {
-                  console.error('게시글 삭제 실패:', response.status);
-                  alert('게시글 삭제 실패');
-                }
-              } catch (error) {
-                console.error('게시글 삭제 중 오류 발생:', error);
-                alert('게시글 삭제 중 오류 발생');
-              }
+        } 
+      } else {
+        Alert.alert(
+          '삭제 확인',
+          '게시글을 삭제하시겠습니까?',
+          [
+            {
+              text: '취소',
+              style: 'cancel',
             },
-          },
-        ],
-        { cancelable: false }
-      );
+            {
+              text: '확인',
+              onPress: async () => {
+                try {
+                  const token = await getTokenFromLocal();
+                  const authorizationHeader = `Bearer ${token}`;
+
+                  const response = await fetch(`${URL}/board/del/${boardId}`, {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': authorizationHeader,
+                    },
+                  });
+    
+                  if (response.ok) {
+                    // 게시글 삭제 요청이 성공한 경우 로컬 상태에서도 해당 게시글을 제거
+    
+                    // 게시글 삭제 후, 이전 화면으로 돌아가기
+                    alert('게시글 삭제 성공');
+                    navigation.pop();
+                  } else {
+                    console.error('게시글 삭제 실패:', response.status);
+                    alert('게시글 삭제 실패');
+                  }
+                } catch (error) {
+                  console.error('게시글 삭제 중 오류 발생:', error);
+                  alert('게시글 삭제 중 오류 발생');
+                }
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+    }
+    else {
+      // 작성자와 로그인한 사용자의 아이디가 다른 경우 수정할 수 없음
+      alert('게시글을 삭제할 수 있는 권한이 없습니다.');
     }
   };
 
   const addComment = async (comment) => {
     try {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
       // 새 댓글 데이터 생성
       const newComment = { content:commentText , boardId: boardId, loginId: loginId };
   
@@ -172,7 +269,8 @@ const fetchComments = async (boardId) => {
       const response = await fetch(`http://192.168.25.204:8080/board/view/${boardId}/comment`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
+          'Authorization': authorizationHeader, 
         },
         body: JSON.stringify(newComment), 
       });
@@ -215,7 +313,7 @@ const fetchComments = async (boardId) => {
   
   const editComment = async (commentId, editedContent) => {
     try {
-      const response = await fetch(`http://192.168.25.204:8080/comment/edit/${commentId}`, {
+      const response = await fetch(`${URL}/comment/edit/${commentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -275,7 +373,7 @@ const fetchComments = async (boardId) => {
   };
     const deleteComment = async (commentId, boardId) => {
       try {
-        const response = await fetch(`http://192.168.25.204:8080/comment/del/${commentId}/${boardId}`, {
+        const response = await fetch(`${URL}/comment/del/${commentId}/${boardId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -298,9 +396,69 @@ const fetchComments = async (boardId) => {
       }
     };
 
-  const onReplyButtonPress = () => {
-    // "답글" 버튼이 눌렸을 때 수행할 동작 추가
+    const onReplyButtonPress = () => {
+
+    };
+
+    // const onReplyButtonPress = (commentId) => {
+    //   const selectedComment = commentss.find(comment => comment.commentId === commentId);
+    //   setSelectedComment(selectedComment);
+    //   setReplyModalVisible(true);
+    // };
+
+  //좋아요 기능
+  const Like = async () => {
+    try {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+
+      const response = await fetch(`${URL}/board/recommend/${boardId}`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
+        },
+        body: JSON.stringify({ boardId: boardId }),
+      });
+  
+      if (response.ok) {
+        // 서버 응답이 성공한 경우, 새로운 recommendCount로 로컬 상태를 업데이트
+        const updatedBoardDetails = { ...boardDetails, recommendCount: boardDetails.recommendCount + 1 };
+        setBoardDetails(updatedBoardDetails);
+        setRecommendCount(updatedBoardDetails.recommendCount);
+
+        alert('개추완료');
+      } else {
+        // 요청이 실패한 경우 처리
+        console.error('추천 요청 실패');
+        alert('추천 할 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('추천 요청 중 오류:', error);
+    }
   };
+
+  const handleLike = async () => {
+    if (Platform.OS === 'web') {
+      const userConfirmed = window.confirm('이 글을 추천하시겠습니까?');
+      if (userConfirmed) {
+        await Like();
+      }
+    } else {
+      await Like();
+    }
+  };
+
+  // const submitReply = () => {
+  //   // replyText에 대한 필요한 유효성 검사를 수행합니다.
+  //   // 그런 다음 서버에 답글을 전송하거나 로컬 상태를 업데이트할 수 있습니다.
+  //   // 여기서는 예를 들어 replyComments 상태에 새 답글을 추가합니다.
+  //   const newReply = { content: replyText, parentCommentId: selectedCommentId, loginId: loginId };
+  //   setReplyComments([...replyComments, newReply]);
+  
+  //   // 답글 모달을 닫습니다
+  //   setReplyModalVisible(false);
+  // };
 
 return (
   <SafeAreaView style={styles.container}>
@@ -313,12 +471,12 @@ return (
         />
       </View>
       <View>
-        <Text style={styles.headerTitle}>{boardDetails.title}</Text>
+        <Text style={styles.headerTitle}>{title}</Text>
       </View>
       <View style={styles.headerButton}>
         <TransparentCircleButton
           onPress={handleDeletePost}
-          name="delete-forever"
+          name="delete"
           color="#ef5350"             
         />
         <TransparentCircleButton
@@ -328,61 +486,100 @@ return (
         />
       </View>
     </View>
-    <Text style={styles.contentText}>{boardDetails.content}</Text>     
-    {/* <Text style={styles.writerText}>{writer}</Text> */}
+    <View>
+      <Text style={styles.contentText}>{content}</Text>  
+    </View>  
+    <View>
+      <FlatList
+        data={image}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <Image 
+            source={{ uri: item.url }} 
+            style={{ width: 200, height: 300, alignSelf: 'center' }}
+            resizeMode='contain' 
+          />
+        )}
+      />
+    </View>
+
     <View style={styles.borderLine}></View>
-    <View style={styles.commentListContainer}>
-    <FlatList
-      data={comments}
-      keyExtractor={(item, index) => `comment-${index}`}
-      renderItem={({ item }) => (
-        <View style={styles.commentContainer}>
-          <View style={styles.commentHeader}>
-            <Text style={styles.commentAuthor}>{item.loginId}</Text>
-            {item.loginId === loginId && (
-              <View style={styles.actionButtons}>
-                <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
-                  <Text style={styles.actionButtonText}>수정</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
-                  <Text style={styles.actionButtonText}>삭제</Text>
-                </TouchableOpacity>
+    <View style={styles.like}>
+      <TouchableOpacity 
+        onPress={handleLike}           
+        style={styles.likeButton}>
+            <Text>
+              👍 추천 {recommendCount}
+            </Text>
+      </TouchableOpacity>
+    </View>
+
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      style={{ flex: 1}}
+      keyboardVerticalOffset={statusBarHeight-50}
+    >
+      <ScrollView style={styles.commentListContainer}>
+        <FlatList
+          data={comments}
+          keyExtractor={(item, index) => `comment-${index}`}
+          renderItem={({ item }) => (
+            <View style={styles.commentContainer}>
+              <View style={styles.commentHeader}>
+                <Text style={styles.commentAuthor}>{item.loginId}</Text>
+                {item.loginId === loginId && (
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
+                      <Text style={styles.actionButtonText}>수정</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
+                      <Text style={styles.actionButtonText}>삭제</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+              <View style={styles.commentItem}>
+                <Text style={styles.commentText}>{item.content}</Text>
+                <View>
+                  <TouchableOpacity onPress={onReplyButtonPress}>
+                    <Text style={styles.replyButtonWithBorder}>답글</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
+        />
+        {/* <View>
+          <FlatList
+            data={replyCommentss}
+            keyExtractor={(item, index) => `reply-${index}`}
+            renderItem={({ item }) => (
+              <View style={styles.commentContainer}>
+                답글에 대한 UI를 표시하는 코드 
+                <Text style={styles.commentText}>{item.content}</Text>
               </View>
             )}
-          </View>
-          <View style={styles.commentItem}>
-            <Text style={styles.commentText}>{item.content}</Text>
-            <View>
-              <TouchableOpacity onPress={onReplyButtonPress}>
-                <Text style={styles.replyButtonWithBorder}>답글</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      )}
-    />
-    </View>
-    <KeyboardAvoidingView
-      behavior={"padding"}
-      style={{flex : 1}}
-      keyboardVerticalOffset={statusBarHeight+44}
-    >
-      <TextInput
-        placeholder="댓글을 입력하세요"
-        onChangeText={(text) => setCommentText(text)}
-        multiline
-        value={commentText}
-        style={styles.commentInput}
-      />
-      <TouchableOpacity
-        style={styles.commentButton}
-        onPress={() => {
-          addComment(commentText);
-        }}
-      >
-        <Text style={styles.commentButtonText}>댓글 남기기</Text>
-      </TouchableOpacity>
+          />
+        </View> */}
+      </ScrollView>
+      <View style={styles.commentInputWithButton}>
+        <TextInput
+          placeholder="댓글을 입력하세요"
+          onChangeText={(text) => setCommentText(text)}
+          value={commentText}
+          style={styles.commentInput}
+        />
+        <TouchableOpacity
+          style={styles.postButton}
+          onPress={() => {
+            addComment(commentText)
+          }}
+        >
+          <Text style={styles.postButtonText}>게시</Text>
+        </TouchableOpacity>
+      </View>
     </KeyboardAvoidingView>
+    {/* 댓글모달 */}
     <Modal
         animationType="slide"
         transparent={true}
@@ -408,7 +605,66 @@ return (
           </View>
         </View>
       </View>
-    </Modal>  
+    </Modal> 
+    {/* {/* 답글모달
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isReplyModalVisible}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View>
+            <Text>?????{selectedComment}</Text>
+          </View>
+          <Text style={styles.editCommentTitle}>댓글에 답글 작성</Text>
+          {selectedComment && (
+            <View>
+              <Text style={styles.selectedCommentText}>{selectedComment.content}</Text>
+            </View>
+          )}
+          <TextInput
+            multiline
+            placeholder="답글을 작성하세요"
+            value={replyText}
+            onChangeText={(text) => setReplyText(text)}
+            style={styles.editCommentInput}
+          />
+           답글 목록을 나열하는 FlatList 추가 
+           각 답글에 대한 작성자와 내용을 표시하고, 필요에 따라 수정 및 삭제 버튼을 추가 
+          <FlatList
+            data={replyComments.filter(reply => reply.parentCommentId === selectedComment?.commentId)}
+            keyExtractor={(item, index) => `reply-${index}`}
+            renderItem={({ item }) => (
+              <View style={styles.commentContainer}>
+                 작성자와 내용 표시 
+                <Text style={styles.commentAuthor}>{item.loginId}</Text>
+                <Text style={styles.commentText}>{item.content}</Text>
+                 수정 및 삭제 버튼 
+                {item.loginId === loginId && (
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
+                      <Text style={styles.actionButtonText}>수정</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
+                      <Text style={styles.actionButtonText}>삭제</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            )}
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={submitReply} style={[styles.editCommentButton, styles.saveButton]}>
+              <Text style={styles.commentButtonText}>저장</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setReplyModalVisible(false)} style={[styles.editCommentButton, styles.cancelButton]}>
+              <Text style={styles.commentButtonText}>취소</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>   */}
   </SafeAreaView>
 );
 }
@@ -439,6 +695,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginBottom: 8,
+    height:95
   },
   contentText: {
     fontSize: 18,
@@ -450,10 +707,11 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   borderLine: {
-    borderTopWidth: 2,
-    borderTopColor: '#000',
-    marginTop: '20%',
-    marginBottom: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#7290F2',
+    marginTop: '5%',
+    marginBottom: 5,
+    flexDirection:'row',
   },
   commentItem: {
     backgroundColor: '#f5f5f5',
@@ -467,18 +725,11 @@ const styles = StyleSheet.create({
   commentView:{
     padding:10,
   },  
-  commentInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 8,
-  },
-  commentButton: {
-    backgroundColor: '#009688',
-    borderRadius: 8,
-    padding: 12,
+  commentButtonView: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
   },
   commentButtonText: {
     color: '#fff',
@@ -496,6 +747,7 @@ const styles = StyleSheet.create({
   },
   commentListContainer:{
     padding:5,
+    height:300
   },
   centeredView: {
     flex: 1,
@@ -507,7 +759,7 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 30,
+    padding: 50,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -561,6 +813,46 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     marginLeft: 10, // "수정/삭제" 버튼 사이의 간격 추가
+  },
+  commentInputWithButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 8,
+    margin: 8,
+  },
+  commentInput: {
+    flex: 1,
+  },
+  postButton: {
+    borderRadius: 8,
+    padding: 8,
+    marginLeft: 8,
+  },
+  postButtonText: {
+    color: '#009688',
+    width: 25
+  },
+  like: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  likedButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'red',
+    padding: 10,
+  },
+  likeButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'black',
+    padding: 10,
+    backgroundColor:'white',
+    marginLeft:10
   },
 });
 

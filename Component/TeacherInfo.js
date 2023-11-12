@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import Swiper from 'react-native-swiper';
+// import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -85,13 +85,14 @@ const TeacherInfoScreen = () => {
               <View style={styles.textContainer}>
                 <View style={styles.headerimage}>
                   <Text style={styles.itemText}>{item.name}</Text>
-                  <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
-                    <Text style={styles.skilevel}>{item.classLevel}</Text>
-                  </View>
+
                 </View>
                 <Text style={styles.subjectText}>{item.introduce}</Text>
               </View>
-              <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
+              <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
+                    <Text style={styles.skilevel}>{item.classLevel}</Text>
+                    <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
+                  </View>
               <TouchableOpacity style={styles.cancelButton} onPress={() => onShowDetails(item)}>
                 <Text style={styles.cancelButtonText}>상세보기</Text>
               </TouchableOpacity>
@@ -113,7 +114,7 @@ const TeacherInfoScreen = () => {
                 <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
-              <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
+              {/* <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/SnoweFirst.jpg')} style={styles.swiperImage} />  
                 </View>
@@ -123,13 +124,13 @@ const TeacherInfoScreen = () => {
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
                 </View>
-               </Swiper> 
-              <Text style={styles.yaks}>약력</Text>
-              {selectedTeacher.yak && selectedTeacher.yak.map((item, index) => (
-                <Text style={styles.yak} key={index}>{item}</Text>
+               </Swiper>  */}
+              <Text style={styles.histories}>약력</Text>
+              {selectedTeacher.history && selectedTeacher.history.map((item, index) => (
+                <Text style={styles.history} key={index}>{item}</Text>
               ))}
                <Text style={styles.carrers}>경력</Text>
-              {selectedTeacher.yak && selectedTeacher.carrer.map((item, index) => (
+              {selectedTeacher.career && selectedTeacher.carrer.map((item, index) => (
                 <Text style={styles.carrer} key={index}>{item}</Text>
               ))}
                <Text style={styles.teams}>소속</Text>
@@ -237,7 +238,9 @@ const styles = StyleSheet.create({
   },
   skilevel: {
     marginRight: 0,
-    fontSize: 15,
+    fontSize: 13,
+    color:'red',
+    marginLeft:1
   },
   categori: {
     flexDirection: 'row',
@@ -252,15 +255,13 @@ const styles = StyleSheet.create({
   subjectImage: {
     width: 30,
     height: 30,
-    marginRight: 50,
+    marginLeft:1
   },
 
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
-
   },
   modalContent: {
     backgroundColor: 'white',
@@ -268,6 +269,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
     height: '100%',
+    backgroundColor: '#C7DBF7'
   },
   modalTeacherImage: {
     width: 100,
@@ -301,7 +303,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
-  yaks: {
+  histories: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 15,
@@ -316,7 +318,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 30,
   },
-  yak: {
+  history: {
     marginTop:10,
   },
   carrer: {
@@ -349,8 +351,8 @@ const styles = StyleSheet.create({
     width: 'auto',
     marginLeft:5,
     marginTop:-1,
-
-
+    padding:3,
+    marginRight:10
   },
 });
 

@@ -64,7 +64,7 @@ const TeacherReserveScreen = () => {
     console.log(date.dateString)
     
     try {
-      const response = await fetch(`http://localhost:8080/lesson?lessonDate=${date.dateString}`, {
+      const response = await fetch(`http://192.168.25.204:8080/lesson?lessonDate=${date.dateString}`, {
         method: 'GET', // GET 요청으로 변경
         headers: {
           'Authorization': authorizationHeader,

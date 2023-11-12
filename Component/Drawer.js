@@ -55,7 +55,7 @@ export function CustomDrawerContent({ navigation }) {
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account-clock" color={color} size={size} />
         )}
-        onPress={() => navigation.navigate('ReservationList')}
+        onPress={() => navigation.navigate('Reservation')}
       />
        <DrawerItem
         label="강사자격 신청 및 등록"

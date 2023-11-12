@@ -64,10 +64,15 @@ function MainScreen() {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedResortName, setSelectedResortName] = useState('');
+ 
+
 
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
+  console.log(selectedResort);
   const location = selectedResort?.location;
+  const webcam = selectedResort?.webcam;
+  console.log(webcam);
 
 
   const handleUserIconPress = () => {
@@ -90,6 +95,7 @@ function MainScreen() {
       setSelectedResortName(route.params.selectedResortName);
     }
   }, [route.params?.selectedResortName]);
+  
 
 
   useEffect(() => {
