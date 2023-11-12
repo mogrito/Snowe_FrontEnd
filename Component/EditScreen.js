@@ -36,6 +36,7 @@ function EditScreen({ route }) {
       if (response.ok) {
         const data = await response.text();
         console.log('글 수정 완료:', data);
+        alert('수정이 완료되었습니다.');
         navigation.navigate('게시판으로 가기');
       } else {
         console.error('글 수정 실패:', response.status);

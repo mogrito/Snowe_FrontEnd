@@ -85,14 +85,17 @@ const TeacherInfoScreen = () => {
               <View style={styles.textContainer}>
                 <View style={styles.headerimage}>
                   <Text style={styles.itemText}>{item.name}</Text>
-
+                  <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
+                    <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
+                    <Text style={styles.skilevel}>{item.classLevel}</Text>
+                  </View>
                 </View>
                 <Text style={styles.subjectText}>{item.introduce}</Text>
               </View>
               <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
-                    <Text style={styles.skilevel}>{item.classLevel}</Text>
-                    <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
-                  </View>
+                <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
+                <Text style={styles.skilevel}>{item.classLevel}</Text>
+              </View>
               <TouchableOpacity style={styles.cancelButton} onPress={() => onShowDetails(item)}>
                 <Text style={styles.cancelButtonText}>상세보기</Text>
               </TouchableOpacity>
@@ -106,12 +109,18 @@ const TeacherInfoScreen = () => {
         {selectedTeacher && (
           <View style={styles.modalContainer}>
             <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
-                  <TransparentCircleButton onPress={closeModal} name="left" color="#424242" />
-                </TouchableOpacity>
+              <TransparentCircleButton onPress={closeModal} name="left" color="#424242" />
+            </TouchableOpacity>
             <ScrollView style={styles.modalContent}>
               <View style={styles.modalinfoimage}>
                 <Image source={selectedTeacher.image} style={styles.modalTeacherImage} />
-                <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft:40 }}>
+                  <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
+                  <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
+                    <Image source={eachsubject[selectedTeacher.classification]} style={styles.subjectImage} />
+                    <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
+                  </View>
+                </View>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
               {/* <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
@@ -125,6 +134,13 @@ const TeacherInfoScreen = () => {
                   <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
                 </View>
                </Swiper>  */}
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={styles.levels}>수준 : </Text>
+                <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
+                  <Image source={eachsubject[selectedTeacher.classification]} style={styles.subjectImage} />
+                  <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
+                </View>
+              </View>
               <Text style={styles.histories}>약력</Text>
               {selectedTeacher.history && selectedTeacher.history.map((item, index) => (
                 <Text style={styles.history} key={index}>{item}</Text>
@@ -187,6 +203,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginTop:3
   },
   subjectText: {
     fontSize: 16,
@@ -237,10 +254,10 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   skilevel: {
-    marginRight: 0,
-    fontSize: 13,
+    fontSize: 5,
     color:'red',
-    marginLeft:1
+    marginLeft:1,
+    marginBottom:5
   },
   categori: {
     flexDirection: 'row',
@@ -253,9 +270,9 @@ const styles = StyleSheet.create({
 
   },
   subjectImage: {
-    width: 30,
-    height: 30,
-    marginLeft:1
+    width: 18,
+    height: 15,
+    marginLeft:-1
   },
 
   modalContainer: {
@@ -281,7 +298,6 @@ const styles = StyleSheet.create({
   modalItemText: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10,
   },
   modalSubjectText: {
     fontSize: 18,
@@ -302,6 +318,12 @@ const styles = StyleSheet.create({
   modalinfoimage: {
     alignItems: 'center',
 
+  },
+  levels: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 15,
+    paddingBottom:20
   },
   histories: {
     fontSize: 20,
@@ -348,11 +370,14 @@ const styles = StyleSheet.create({
   },
   badge1: {
     borderRadius: 4,
-    width: 'auto',
+    width:20,
     marginLeft:5,
     marginTop:-1,
     padding:3,
-    marginRight:10
+    marginRight:10,
+    height:25
+    // flexDirection: 'row', 
+    // alignItems: 'center'
   },
 });
 
