@@ -27,7 +27,6 @@ function WriteScreen({ route }) {
   const [selectedCategory, setSelectedCategory] = useState('카테고리 선택');
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const [imageUri, setImageUri] = useState(null);
-  const [imageType, setImageType] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   
 
@@ -74,6 +73,19 @@ function WriteScreen({ route }) {
      
       // board지정
       const board = { title: title, content: content, category: category };
+
+      if (!title) {
+        alert('제목을 입력해주세요');
+        return null;
+      }
+      if (!content) {
+        alert('내용을 입력해주세요');
+        return null;
+      }
+      if (!category) {
+        alert('카테고리를 선택해주세요');
+        return null;
+      }
      
       const json = JSON.stringify(board);
       const boardBlob = new Blob([json], {
@@ -81,28 +93,27 @@ function WriteScreen({ route }) {
       });
 
       formData.append('board', boardBlob);
+      
 
-      if (!imageUri){
-        console.log("파일이 없어요");
-        return;
-      }
-    
-      // 이미지 URI를 Blob으로 변환
+      // 파일 
+      const filename = imageUri.split('/').pop();
+      console.log("파일이름 => " + filename);
+
       const response = await fetch(imageUri);
       const imageBlob = await response.blob();
-
-      const type = await fetch(imageType);
-
-      formData.append('image', imageBlob, type);
+    
+      formData.append('image', imageBlob, filename);
 
 
       console.log("board는?? => "+formData.get('board'));
       console.log("파일입니다 ==>> " + formData.get('image'));
       console.log("이미지블롭 : "+imageBlob);
       
+      //요청
       axios.post(`${URL}/board/add`,formData,
         {
-        	headers: {'Authorization': authorizationHeader,
+        	headers: {
+          'Authorization': authorizationHeader,
           'Content-Type':'multipart/form-data'},
         }
       )
@@ -136,14 +147,12 @@ function WriteScreen({ route }) {
     // 이미지를 취소하지 않으면
     if (!result.canceled) {
 
-      const imageMimeType = await ImagePicker.imageMimeType(result.uri);
-      
-      
-      setImageType(imageMimeType);
-      console.log("이미지의 타입은 => " + imageMimeType);
-      setImageUri(result.uri);
+
+       console.log("기본uri => " + result.uri);
+       setImageUri(result.uri);
     }
   };
+
 
   return (
     <SafeAreaView style={styles.block}>
@@ -217,7 +226,7 @@ function WriteScreen({ route }) {
               <Button title="자유게시판" onPress={() => handleSelectCategory('자유게시판', '자유게시판')} />
             </View>
             <View style={styles.buttonContainer}>
-              <Button title="묻고 답하기" onPress={() => handleSelectCategory('묻고 답하기', '묻고 답하기')} />
+              <Button title="묻고 답하기" onPress={() => handleSelectCategory('묻고답하기', '묻고 답하기')} />
             </View>
             <View style={styles.buttonContainer}>
               <Button title="💡꿀팁 공유" onPress={() => handleSelectCategory('꿀팁공유', '💡꿀팁 공유')} />

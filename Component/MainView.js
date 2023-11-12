@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Linking,
   Image,
+  FlatList,
 } from 'react-native';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import {
@@ -21,6 +22,7 @@ import * as Font from 'expo-font';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import { Card, Avatar } from 'react-native-paper';
+import { getTokenFromLocal } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -63,6 +65,10 @@ function MainScreen() {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedResortName, setSelectedResortName] = useState('');
+  const [reservationData, setreservationData] = useState(null);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [hotBoardList, setHotBoardList] = useState([]);
+  const [boardId, setBoardId] = useState('');
 
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
@@ -155,31 +161,92 @@ function MainScreen() {
     dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
   };
   
-  LocaleConfig.defaultLocale = 'ko'; // Set the default locale to Korean
+  LocaleConfig.defaultLocale = 'ko'; 
   
   const timeToString = (time) => {
     const date = new Date(time);
     return date.toISOString().split('T')[0];
   };
   
-    const [items, setItems] = useState({});
+
+  useEffect(() => {
+    async function fetchData() {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+      try {
+        const response = await fetch(`http://localhost:8080/reservation/listOnDate?lessonDate=${date}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': authorizationHeader,
+            'Content-Type': 'application/json',
+          },
+        });
   
-    // Replace this array with your hardcoded data
-    const hardcodedData = [
-      // {
-      //   date: '2023-11-11',
-      //   events: [
-      //     { name: 'Meeting with Team A'},
-      //   ],
-      // },
-      {
-        date: '2023-11-06',
-        events: [
-          { name: 'Meeting with Team B'},
-        ],
-      },
-      // Add more entries as needed
-    ];
+        if (response.ok) {
+          // HTTP 상태 코드가 200 OK인 경우
+          const data = await response.json();
+          if (data && data.length > 0) {
+            setreservationData(data);
+            console.log(reservationData);
+          } else {
+            // 예약 목록이 비어있는 경우
+            setreservationData(null);
+            console.log('서버로부터 빈 응답을 수신했습니다');
+          }
+        } else if (response.status === 204) {
+          // HTTP 상태 코드가 204 No Content인 경우
+          setreservationData(null);
+          console.log('서버로부터 빈 응답(No Content)을 수신했습니다');
+        } else {
+          // 그 외의 상황에서는 오류로 처리
+          setreservationData(null);
+          console.error('데이터 가져오기 중 오류 발생:', response.status);
+        }
+      } catch (error) {
+        // fetch 자체의 오류 처리
+        setreservationData(null);
+        console.log(reservationData);
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      }
+    }
+    fetchData();
+  }, [date]);
+
+  // 핫 게시글 fetch
+  const fetchBoardData = async () => {
+    try {
+      const response = await Promise.race([
+        fetch('http://192.168.25.204:8080/board/hot-List'),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('시간이 초과되었습니다')), 1000)
+        ),
+      ]);
+      const hotBoardData = await response.json();
+
+      console.log("핫보드 데이터입니다 ==>> " + hotBoardData);
+      setHotBoardList(hotBoardData);
+
+      setBoardId(hotBoardData.boardId);
+
+    } catch (error) {
+      console.error(error);
+      alert('글불러오기실패');
+    }
+  }
+  useEffect(() => {
+    fetchBoardData();
+  }, []);
+  // 핫게시글 누를 시
+  const onBoardPress = (board) => {
+    // setSelectedBoard(board);
+    navigation.navigate('PostView', { 
+      boardId: board.boardId, 
+      image: board.image,
+      content: board.content,
+      title:board.title,
+      recommendCount:board.recommendCount
+    }); 
+  };
   
     const loadItems = () => {
       setTimeout(() => {
@@ -283,15 +350,50 @@ function MainScreen() {
             </View>
           </TouchableOpacity>
         </View>
+        
 
-        <View style={{ flex: 1, marginTop: 20 ,width:windowWidth*0.9}}>
-          <Agenda
-            items={items}
-            loadItemsForMonth={loadItems}
-            selected={timeToString(new Date().getTime())}
-            renderItem={renderItem}
-            style={{ borderRadius: 5,height: 250,}} 
-          />
+        <View style={styles.hotboardContainer}>
+          <Text style={styles.hotboardheader}>🔥 인기 게시물</Text>
+          <View style={styles.hotboarditems}>
+          
+          <FlatList
+              data={hotBoardList}
+              keyExtractor={(item) => item.boardId.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.textContainer}
+                  onPress={() => onBoardPress(item)}
+                >
+                  <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View>
+                      <Text>{item.title}</Text>
+                      <View style={styles.textComment}>
+                        <Text>{item.createDate}  댓글 {item.commentCount} · 좋아요 {item.recommendCount} </Text>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
+            
+            />
+
+
+          {/* <TouchableOpacity>
+            <Text style={styles.hotboarditem}>오늘 스키장 같이 가실분?</Text>
+            <Text style={styles.hotboarddate}>10/26</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity>
+            <Text style={styles.hotboarditem1}>하앙</Text>
+            <Text style={styles.hotboarddate1}>10/30</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+            <Text style={styles.hotboarditem2}>정훈아 해줘</Text>
+            <Text style={styles.hotboarddate2}>10/21</Text>
+          </TouchableOpacity> */}
+          
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -307,7 +409,7 @@ const styles = StyleSheet.create({
     position: 'sticky',
     top: 40,
     backgroundColor: '#DBEBF9',
-    paddingVertical: 10,
+    paddingVertical: 7,
     paddingHorizontal: 10,
     zIndex: 1,
   },
@@ -370,7 +472,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '90%',
     height: 110,
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 10,
   },
   SkiInfoIcon: {
@@ -403,20 +505,55 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     marginLeft: 20,
 
-  }
+  },
+  hotboardContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    width: windowWidth * 0.9,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop:10,
+  },
+  hotboarditems:{
+    flex: 1,
+
+  },
+  hotboarditem: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboarditem1: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate1: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboarditem2: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate2: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboardheader: {
+    fontSize: 18,
+    marginBottom: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginLeft:-5,
+  },
 
 
 });
 
 export default MainScreen;
-
-
-
-
-
-
-
-
-
-
-

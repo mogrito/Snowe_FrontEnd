@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useFocusEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList, RefreshControl, Image } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native'; 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -23,6 +23,7 @@ function SocialView(){
   // const [ imageData, setImageData ] = useState(null);
   const [ boardId, setBoardId ] = useState('');
   const [ boardList, setBoardList ] = useState([]);
+  const isFocused = useIsFocused(); // 화면이 포커스되는지 여부를 확인
   
   const onGoBack = () => {
     navigation.goBack();
@@ -77,22 +78,6 @@ function SocialView(){
     }
   }
 
-  //   // 이미지 가져오는 함수
-  //   const fetchImage = async () => {
-  //     try {
-  //       const response = await axios.get(`${URL}/file?boardId=${boardId}`);
-  //       console.log(boardId);
-  //       if (response.status === 200) {
-  //         const imageUrl = URL.createObjectURL(new Blob([response.data]));
-  //         return imageUrl;
-  //       } else {
-  //         return null;
-  //       }
-  //     } catch (error) {
-  //       console.error('이미지 가져오기 오류:', error);
-  //       return null;
-  //     }
-  // };
 
 
   return (
@@ -119,60 +104,48 @@ function SocialView(){
   //여기서부터 탭 화면들
   function FreeBoardScreen() {
     const [refreshing, setRefreshing] = useState(false); // 새로고침 상태
-    const isFocused = useIsFocused(); // 화면이 포커스되는지 여부를 확인
+    
     const [selectedBoard, setSelectedBoard] = useState(null); // 선택한 게시글 저장
     const navigation = useNavigation(); 
     
-    // const [imageUrls, setImageUrls] = useState({});
-    
-    
-    // //이미지 불러오기
-    // useEffect(() => {
-    //   fetchImage();
-    // }, []);
+    const [imageUrls, setImageUrls] = useState({});
 
-    // const fetchImage = async () => {
-    //   try {
-    //     const response = await fetch(`${URL}/file?boardId=${boardId}`);
-    //     if (response.ok) {
-    //       const data = await response.blob();
-    //       const imageUrl = URL.createObjectURL(data);
-    //       return imageUrl;
-    //     } else {
-    //       return null;
-    //     }
-    //   } catch (error) {
-    //     console.error('이미지 가져오기 오류:', error);
-    //     return null;
-    //   }
-    // };
-
-    const refreshBoardData = () => {
+    const refreshBoardData = async () => {
       // 게시글 데이터를 새로고침하는 함수
       setRefreshing(true); // 새로고침 시작
-      fetchBoardData()
-        .then(() => setRefreshing(false)); 
+      try {
+        await fetchBoardData();
+      } finally {
+        setRefreshing(false); // 새로고침 완료
+      }
     };
 
+    useEffect(() => {
+      const focusListener = navigation.addListener('focus', () => {
+        refreshBoardData();
+      });
+  
+      return () => {
+        focusListener();
+      };
+    }, [navigation]);
+
     const onBoardPress = (board) => {
-      setSelectedBoard(board);
+      // setSelectedBoard(board);
       navigation.navigate('PostView', { 
         boardId: board.boardId, 
         image: board.image,
         content: board.content,
-        title:board.title
+        title:board.title,
+        recommendCount:board.recommendCount
       }); 
     };
-
+    //게시글 자세히보기 갔다가 돌아올때 새로고침
     useEffect(() => {
-      if (isFocused) {
-        // 화면이 포커스되면 게시글 데이터를 새로고침
+      if (isFocused && !freeBoardData.length) {
         refreshBoardData();
       }
     }, [isFocused]);
-
-
-
 
     return (
       <View style={styles.container}>
@@ -194,12 +167,12 @@ function SocialView(){
                         <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount} · ❤️ {item.recommendCount} </Text>
                       </View>
                     </View>
-                    {/* <View style={{ flexDirection: 'row' }}>
-                       <Image
+                    <View style={{ flexDirection: 'row' }}>
+                      <Image
                         source={{ uri: imageUrls[item.boardId] }}
                         style={styles.ImageStyle}
-                      /> 
-                    </View> */}
+                      />
+                    </View>
                   </View>
                 </TouchableOpacity>
               )}
@@ -218,21 +191,13 @@ function SocialView(){
 
     const [refreshing, setRefreshing] = useState(false);
 
-    const notice = {
-      id: 'notice',
-      title: '공지',
-      content: '이것은 모든 사용자를 위한 중요한 공지입니다.',
-      date: '2023-10-31T09:00:00Z',
-      loginId: 'admin',
-      comments: 0,
-    };
 
-    const handleNoticePress = () => {
+    const handleNoticePress = (noticeData) => {
       // 공지사항 선택 시 동작
       navigation.navigate('PostView', {
-        boardId: notice.id,
-        title: notice.title,
-        content: notice.content,
+        boardId: noticeData.boardId,
+        title: noticeData.title,
+        content: noticeData.content,
         loginId: 'Admin', 
       });
     };
@@ -241,10 +206,22 @@ function SocialView(){
       // 공지사항 데이터를 새로고침하는 함수
       setRefreshing(true); // 새로고침 시작
       
-      setTimeout(() => {
+      try {
+        fetchBoardData();
+      } finally {
         setRefreshing(false); // 새로고침 완료
-      }, 1000); 
+      }
     };
+
+    useEffect(() => {
+      const focusListener = navigation.addListener('focus', () => {
+        refreshNoticeData();
+      });
+  
+      return () => {
+        focusListener();
+      };
+    }, [navigation]);
 
     return (
       <View style={styles.container}>
@@ -260,13 +237,13 @@ function SocialView(){
                   <Text>📢 {item.title}</Text>
                   <View style={styles.textComment}>
                     <MaterialIcons name='comment' size={10} color='black' />
-                    <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount} · ❤️ {item.recommendCount} </Text>
+                    <Text style={{ padding: 3, fontSize: 10 }}>{item.comments}</Text>
                   </View>
                 </View>                 
-                {/* <Image
+                <Image
                     source={item.image}
                     style={styles.ImageStyle}
-                  /> */}
+                  />
               </View>
             </TouchableOpacity>
           )}
@@ -282,43 +259,38 @@ function SocialView(){
   }
 
   function QnAScreen({ navigation }) {
-    // const [questions, setQuestions] = useState([]);
+  
     const [refreshing, setRefreshing] = useState(false); // 새로고침 상태
-
-    const questions = [
-      {
-        id: '1',
-        title: '다음 개장 날짜 언제인지 아시는 분?',
-        content: 'ㅈㄱㄴ',
-        date: '2023-10-03T12:00:00Z',
-        comments:5,
-        loginId:'원빈',      
-      },
-    ];
-
-    // // 함수: 질문 목록을 불러오는 데이터 요청 (예시로 비워둠)
-    // const fetchQuestions = async () => {
-    //   try {
-    //     // 여기에 질문 데이터를 가져오는 API 호출 또는 다시 데이터 설정하는 로직을 추가
-    //     // ... (질문 데이터 가져오는 비동기 로직)
-    //     // setQuestions(새로운 질문 데이터);
-    //   } catch (error) {
-    //     console.error(error);
-    //     alert('질문 목록을 불러오는 데 실패했습니다.');
-    //   }
-    // };
 
     const refreshQuestionData = () => {
 
       setRefreshing(true); // 새로고침 시작
-      setTimeout(() => {
+      
+      try {
+        fetchBoardData();
+      } finally {
         setRefreshing(false); // 새로고침 완료
-      }, 1000); // 새로고침 완료 후의 시간 설정 (예: 1초 후에 새로고침 완료)
+      }
     };
 
-    // useEffect(() => {
-    //   fetchQuestions();
-    // }, []);
+    useEffect(() => {
+      const focusListener = navigation.addListener('focus', () => {
+        refreshQuestionData();
+      });
+  
+      return () => {
+        focusListener();
+      };
+    }, [navigation]);
+
+    const handleQnAPress = (QnAData) => {
+      navigation.navigate('PostView', {
+        boardId: QnAData.boardId,
+        title: QnAData.title,
+        content: QnAData.content,
+        loginId: 'Admin',
+      });
+    };
 
     return (
       <View style={styles.container}>
@@ -328,10 +300,7 @@ function SocialView(){
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.textContainer}
-              onPress={() => {
-                // 네비게이션을 통해 해당 질문/답변 화면으로 이동
-                navigation.navigate('PostView', { boardId: item.boardId });
-              }}
+              onPress={handleQnAPress}
             >
               <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flex: 1 }}>
@@ -342,10 +311,10 @@ function SocialView(){
                     <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount} · ❤️ {item.recommendCount} </Text>
                   </View>
                 </View>
-                {/* <Image
+                <Image
                   source={item.image}
                   style={styles.ImageStyle}
-                /> */}
+                />
               </View>
             </TouchableOpacity>
             
@@ -365,38 +334,36 @@ function SocialView(){
     const [refreshing, setRefreshing] = useState(false);
     const navigation = useNavigation();
 
-    const [tips] = useState([
-      {
-        id: 'tip1',
-        loginId : '희찬',
-        title: '내얼굴평가좀',
-        image: require('../Images/face.jpg'),
-        content: 'ㅈㄱㄴ',
-        comments: 3,
-        likes:10,
-        liked: false,
-      },
-      {
-        id: 'tip2',
-        loginId: '주성',
-        title: '^^',
-        image: require('../Images/face1.jpg'),
-        content: '^>^',
-        comments: 7,
-        likes: 5,
-        liked: false,
-      },
-      
-    ]);
-
-
     const refreshTipData = () => {
       setRefreshing(true);
       
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 1000);
+      try {
+        fetchBoardData();
+      } finally {
+        setRefreshing(false); // 새로고침 완료
+      }
     };
+
+    useEffect(() => {
+      const focusListener = navigation.addListener('focus', () => {
+        refreshTipData();
+      });
+  
+      return () => {
+        focusListener();
+      };
+    }, [navigation]);
+
+    const handleTipPress = (TipBoardData) => {
+      // 공지사항 선택 시 동작
+      navigation.navigate('PostView', {
+        boardId: TipBoardData.boardId,
+        title: TipBoardData.title,
+        content: TipBoardData.content,
+        loginId: 'Admin', 
+      });
+    };
+
 
     return (
       <View style={styles.container}>
@@ -406,10 +373,7 @@ function SocialView(){
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.textContainer}
-              onPress={() => {
-                // 네비게이션을 통해 해당 질문/답변 화면으로 이동
-                navigation.navigate('PostView', { boardId: item.boardId });
-              }}
+              onPress={handleTipPress}
             >
               <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flex: 1 }}>
@@ -420,10 +384,10 @@ function SocialView(){
                     <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount} · ❤️ {item.recommendCount} </Text>
                   </View>
                 </View>
-                {/* <Image
+                <Image
                   source={item.image}
                   style={styles.ImageStyle}
-                /> */}
+                />
               </View>
             </TouchableOpacity>
             
