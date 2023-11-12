@@ -9,15 +9,16 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Modal,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
 import TransparentCircleButton from './TransparentCircleButton';
-import { TextInputMask } from 'react-native-masked-text'
-
-// 이미지를 import 합니다.
+import { TextInputMask } from 'react-native-masked-text' 
+import { Calendar } from 'react-native-calendars';
 import backgroundImage from '../Images/dr1.png'; 
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { max } from 'date-fns';
 
 
 const LessonSignUpScreen = () => {
@@ -30,6 +31,11 @@ const LessonSignUpScreen = () => {
   const [endlessontime, setEndLessontime] = useState('');
   const [ampm,setAmPm] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
+  const [maxReserveCount, setMaxReserveCount] = useState('');
+  const [isSki, setIsSki] = useState(false);
+  const [isBoard, setIsBoard] = useState(false);
+  const [lessonClass, setLessonClass] = useState('');
+  const [isCalendarModalVisible, setCalendarModalVisible] = useState(false);
   const navigation = useNavigation();
   
   const URL = 'http://192.168.219.103:8080';
@@ -49,7 +55,6 @@ const LessonSignUpScreen = () => {
     loadCustomFont();
   }, []);
 
-
   const handleRegister = async () => {
     try {
       const response = await fetch(`${URL}`, {
@@ -65,6 +70,8 @@ const LessonSignUpScreen = () => {
           startlessontime: startlessontime,
           endlessontime: endlessontime, 
           ampm:ampm,
+          maxReserveCount:parseInt(maxReserveCount),
+          lessonClass:lessonClass,
         }),
       });
 
@@ -81,6 +88,44 @@ const LessonSignUpScreen = () => {
       alert('강습 정보를 입력해주세요');
     }
   };
+  const handleSkiPress = () => {
+    setLessonClass('스키');
+    setIsSki(true);
+    setIsBoard(false);
+  };
+
+  const handleBoardPress = () => {
+    setLessonClass('보드');
+    setIsBoard(true);
+    setIsSki(false);
+  };
+
+
+  const onDayPress = (day) => {
+    if (!startday || (startday && endday)) {
+      // 시작일이 비어 있거나 이미 시작일과 종료일이 선택되어 있을 때
+      setStartday(day.dateString);
+      setEndday('');
+    } else if (day.dateString >= startday) {
+      // 종료일이 시작일 이후이거나 같은 경우
+      setEndday(day.dateString);
+      setCalendarModalVisible(false); // 선택 후 모달 닫기
+    } else {
+      // 선택한 날짜가 시작일보다 이전이면 시작일을 변경
+      setStartday(day.dateString);
+      setEndday('');
+    }
+  };
+
+  const openCalendarModal = () => {
+    setCalendarModalVisible(true);
+  };
+
+  const closeCalendarModal = () => {
+    setCalendarModalVisible(false);
+  };
+
+  
 
   return (
     <KeyboardAvoidingView
@@ -95,98 +140,138 @@ const LessonSignUpScreen = () => {
         {/* 배경 이미지 설정 */}
         <Text style={fontLoaded ? styles.title : {}}>강습 등록</Text>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input2}
-            placeholder="강습명"
-            value={lessonname}
-            onChangeText={(text) => setLessonname(text)}
-          />
-          <View style={styles.inputContainer1}>
+          <View style={styles.iconContainer1}>
             <TouchableOpacity
-              style={level === '초급' ? styles.levelButtonSelected : styles.selectedButton}
+              style={isSki ? styles.skiButtonSelected : styles.selectedButton}
+              onPress={handleSkiPress}
+            >
+              <FontAwesome5 name="skiing" size={20} color={isSki ? 'white' : 'gray'} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={isBoard ? styles.boardButtonSelected : styles.selectedButton}
+              onPress={handleBoardPress}
+            >
+              <FontAwesome5 name="snowboarding" size={20} color={isBoard ? 'white' : 'gray'} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.iconContainer2}>
+            <TextInput
+              style={styles.input3} 
+              placeholder="강습 인원 수"
+              value={maxReserveCount}
+              onChangeText={(text) => setMaxReserveCount(text)}
+              keyboardType="numeric"
+            />
+          </View>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <View style={styles.inputContainer1_1}>
+            <TouchableOpacity
+              style={level === '초급' ? styles.levelButtonSelected : styles.selectedLessonButton}
               onPress={() => setLevel('초급')}
             >
               <Text style={styles. levelButtonText}>초급</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={level === '중급' ? styles.levelButtonSelected : styles.selectedButton}
+              style={level === '중급' ? styles.levelButtonSelected : styles.selectedLessonButton}
               onPress={() => setLevel('중급')}
             >
               <Text style={styles. levelButtonText}>중급</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={level === '고급' ? styles.levelButtonSelected : styles.selectedButton}
+              style={level === '고급' ? styles.levelButtonSelected : styles.selectedLessonButton}
               onPress={() => setLevel('고급')}
             >
               <Text style={styles. levelButtonText}>고급</Text>
             </TouchableOpacity>
           </View>
-        </View>
-
-        <View style={styles.inputContainer2}>
-          <TextInputMask
-            style={styles.dateinput}
-            type={'datetime'}
-            placeholder="시작일 (YYYY-MM-DD)"
-            options={{
-              format: 'YYYY-MM-DD'
-            }}
-            value={startday}
-            onChangeText={(text) => setStartday(text)}
-          />
-             <Text style={styles.mulfont}>~</Text>
-          <TextInputMask
-            style={styles.dateinput1}
-            type={'datetime'}
-            placeholder="종료일 (YYYY-MM-DD)"
-            options={{
-              format: 'YYYY-MM-DD'
-            }}
-            value={endday}
-            onChangeText={(text) => setEndday(text)}
-          />
+          <View style={styles.inputContainer1_2}>
+            <TextInput
+              style={styles.input2}
+              placeholder="강습명"
+              value={lessonname}
+              onChangeText={(text) => setLessonname(text)}
+            />
+          </View>
         </View>
 
         <View style={styles.inputContainer}>
-        <TextInputMask
-            style={styles.inputlesson}
-            type={'datetime'}
-            placeholder="시작 시간"
-            value={startlessontime}
-            options={{
-              format: 'HH:MM'
-            }}
-            onChangeText={(text) => setStartLessontime(text)}
-          />
+          <TouchableOpacity style={styles.dateinput} onPress={openCalendarModal}>
+            <Text>
+              {startday
+                ? `시작일: ${startday}`
+                : '시작일과 종료일 선택'}
+            </Text>
+          </TouchableOpacity>
           <Text style={styles.mulfont1}>~</Text>
-          <TextInputMask
-            style={styles.inputlesson1}
-            type={'datetime'}
-            placeholder="종료 시간"
-            value={endlessontime}
-            options={{
-              format: 'HH:MM'
-            }}
-            onChangeText={(text) => setEndLessontime(text)}
-          />
+          <TouchableOpacity style={styles.dateinput} onPress={openCalendarModal}>
+            <Text>
+              {endday
+                ? `종료일: ${endday}`
+                : '시작일과 종료일 선택'}
+            </Text>
+          </TouchableOpacity>
+          <Modal visible={isCalendarModalVisible} animationType="slide">
+            <Calendar
+              markedDates={{
+                [startday]: { selected: true, startingDay: true, color: 'skyblue' },
+                [endday]: { selected: true, endingDay: true, color: 'skyblue' },
+              }}
+              onDayPress={onDayPress}
+              style={{marginTop:50}}
+            />
+            <TouchableOpacity onPress={closeCalendarModal}>
+              <Text style={{ color: 'blue', textAlign: 'center', marginVertical: 10 }}>
+                달력 닫기
+              </Text>
+            </TouchableOpacity>
+          </Modal>
+        </View>
 
-          <View style={styles.inputContainer1}>
+        <View style={styles.inputContainer}>
+          <View style={styles.inputContainer2_1}>
             <TouchableOpacity
-              style={ampm === '오전' ? styles.levelButtonSelected : styles.selectedButton}
+              style={ampm === '오전' ? styles.levelButtonSelected : styles.selectedDivButton}
               onPress={() => setAmPm('오전')}
             >
               <Text style={styles. levelButtonText}>오전</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={ampm === '오후' ? styles.levelButtonSelected : styles.selectedButton}
+              style={ampm === '오후' ? styles.levelButtonSelected : styles.selectedDivButton}
               onPress={() => setAmPm('오후')}
             >
               <Text style={styles. levelButtonText}>오후</Text>
             </TouchableOpacity>
           </View>
-        </View>
+          <View style={styles.inputContainer2_2}>
+            <TextInputMask
+              style={styles.inputlesson}
+              type={'datetime'}
+              placeholder="시작 시간"
+              value={startlessontime}
+              options={{
+                format: 'HH:MM'
+              }}
+              onChangeText={(text) => setStartLessontime(text)}
+            />
+            <Text style={styles.mulfont1}>~</Text>
+            <TextInputMask
+              style={styles.inputlesson}
+              type={'datetime'}
+              placeholder="종료 시간"
+              value={endlessontime}
+              options={{
+                format: 'HH:MM'
+              }}
+              onChangeText={(text) => setEndLessontime(text)}
+            />
+          </View> 
 
+
+        </View>
 
         <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
           <Text style={styles.registerButtonText}>등록하기</Text>
@@ -205,6 +290,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 40,
     marginBottom:150,
+    ...Platform.select({
+      web: {
+        alignSelf:'center'
+      },
+    }),
   },
   backgroundImage: {
     position: 'absolute',
@@ -220,6 +310,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     marginTop: 90,
+    marginLeft:13,
     color: 'black', 
     fontFamily: 'DMSerifText1',
   },
@@ -241,7 +332,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
   },
- 
   input1: {
     width: '75%',
     height: 40,
@@ -264,12 +354,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  selectedLessonButton: {
+    width: 40, 
+    height: 40,
+    marginBottom: 16,
+    marginLeft: 7,
+    backgroundColor: 'transparent',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedDivButton: {
+    width: 40, 
+    height: 40,
+    marginBottom: 16,
+    marginLeft:7,
+    backgroundColor: 'transparent',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   
   levelButtonSelected: {
     width: 40, 
     height: 40,
     marginBottom: 16,
-    marginLeft: 15,
+    marginLeft: 7,
     backgroundColor: 'skyblue',
     borderColor: 'gray',
     borderWidth: 1,
@@ -284,18 +398,30 @@ const styles = StyleSheet.create({
   },
 
   input2: {
-    width: '52%',
+    width: '87.2%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 16,
+    marginLeft:19,
+    paddingHorizontal: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+  },
+  input3: {
+    width: '87.2%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 16,
+    marginLeft:16,
     paddingHorizontal: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', 
   },
 
   dateinput: {
-    width: '45%',
+    width: '43.6%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -303,85 +429,49 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+    padding:9
   },
-  dateinput1: {
-    width: '45%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-    marginLeft:6,
-  },
-  inputContainer1: {
+  inputContainer1_1: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '48%',
-    marginBottom: 0,
+    width: '38%',
   },
-  inputContainer2: {
+  inputContainer1_2: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
-    marginBottom: 0,
+    width: '62%',
+    marginLeft:5
   },
-  lessontimeContainer: {
+  inputContainer2_1: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
-    marginBottom: 0,
-    marginRight:26,
-
+    width: '30%',
   },
-  timeinput: {
-    width: '%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-    marginLeft:13,
+  inputContainer2_2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '70%',
+    marginLeft:4
   },
-  timeinput1: {
-    width: '29%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-    marginLeft:6,
-  },
-  parttimeButtonSelected:{
-    width: 40, 
-    height: 40,
-    marginBottom: 16,
-    marginLeft: 15,
-    backgroundColor: 'skyblue',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
+  iconContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft:16,
+    width:'100%',
   },
-  parttimeButtonSelected1:{
-    width: 40, 
-    height: 40,
-    marginBottom: 16,
-    marginLeft: 15,
-    backgroundColor: 'skyblue',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
+  iconContainer1: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    width:'38%',
   },
+  iconContainer2: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width:'62%',
+    marginLeft:2
+  },    
   mulfont:{
     fontSize:30,
     marginBottom:15,
@@ -391,12 +481,7 @@ const styles = StyleSheet.create({
     fontSize:30,
     marginBottom:15,
     marginLeft:12,
-  },
-  title1: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
+    marginRight:12,
   },
   topBar: {
     flexDirection: 'row',
@@ -405,7 +490,7 @@ const styles = StyleSheet.create({
     marginRight:30,
   },
   inputlesson:{
-    width: '28%',
+    width: '40%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -424,8 +509,30 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-    marginLeft:10,
-
+  },
+  skiButtonSelected: {
+    width: 40,
+    height: 40,
+    marginBottom: 16,
+    marginLeft: 15,
+    backgroundColor: 'skyblue',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  boardButtonSelected: {
+    width: 40,
+    height: 40,
+    marginBottom: 16,
+    marginLeft: 15,
+    backgroundColor: 'green', // 원하는 색상으로 변경
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
 });
