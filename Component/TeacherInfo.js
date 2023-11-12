@@ -25,6 +25,7 @@ const TeacherInfoScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const navigation = useNavigation();
+  
 
   useEffect(() => {
     async function fetchData() {
