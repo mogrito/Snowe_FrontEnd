@@ -22,6 +22,7 @@ import * as Font from 'expo-font';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import { Card, Avatar } from 'react-native-paper';
+import { getTokenFromLocal } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -64,7 +65,8 @@ function MainScreen() {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedResortName, setSelectedResortName] = useState('');
-
+  const [reservationData, setreservationData] = useState(null);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
   const location = selectedResort?.location;
@@ -163,47 +165,62 @@ function MainScreen() {
     return date.toISOString().split('T')[0];
   };
   
-    const [items, setItems] = useState({});
-  
 
-    const hardcodedData = [
-      // {
-      //   date: '2023-11-11',
-      //   events: [
-      //     { name: 'Meeting with Team A'},
-      //   ],
-      // },
-      {
-        date: '2023-11-11',
-        events: [
-          { name: 'Meeting with Team B'},
-        ],
-      },
-  
-    ];
-  
-    const loadItems = () => {
-      setTimeout(() => {
-        hardcodedData.forEach((dayData) => {
-          const { date, events } = dayData;
-          const strTime = timeToString(new Date(date).getTime());
-  
-          if (!items[strTime]) {
-            items[strTime] = [];
-  
-            events.forEach((event) => {
-              items[strTime].push({
-                name: event.name,
-                height: event.height,
-              });
-            });
-          }
+  useEffect(() => {
+    async function fetchData() {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+      try {
+        const response = await fetch(`http://localhost:8080/reservation/listOnDate?lessonDate=${date}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': authorizationHeader,
+            'Content-Type': 'application/json',
+          },
         });
   
-        const newItems = { ...items };
-        setItems(newItems);
-      }, 1000);
-    };
+        if (response.ok) {
+          const data = await response.json();
+          setreservationData(data.length > 0 ? data : null);
+          console.log(reservationData);
+        } else {
+          // 서버 응답이 ok가 아닌 경우
+          setreservationData(null);
+          console.log('서버로부터 오류 응답을 수신했습니다');
+        }
+      } catch (error) {
+        // 네트워크 오류 또는 JSON 파싱 오류
+        setreservationData(null);
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      }
+    }
+  
+    fetchData();
+  }, [date]);
+
+  
+    // const loadItems = () => {
+    //   setTimeout(() => {
+    //     hardcodedData.forEach((dayData) => {
+    //       const { date, events } = dayData;
+    //       const strTime = timeToString(new Date(date).getTime());
+  
+    //       if (!items[strTime]) {
+    //         items[strTime] = [];
+  
+    //         events.forEach((event) => {
+    //           items[strTime].push({
+    //             name: event.name,
+    //             height: event.height,
+    //           });
+    //         });
+    //       }
+    //     });
+  
+    //     const newItems = { ...items };
+    //     setItems(newItems);
+    //   }, 1000);
+    // };
   
     const renderItem = (item) => {
       return (
@@ -284,14 +301,17 @@ function MainScreen() {
             </View>
           </TouchableOpacity>
         </View>
-
-        <View style={{ flex: 1, marginTop: 10 ,width:windowWidth*0.9}}>
+        <View style={{ flex: 1, marginTop: 10, width: windowWidth * 0.9 }}>
           <Agenda
-            items={items}
-            loadItemsForMonth={loadItems}
-            selected={timeToString(new Date().getTime())}
+            items={{ [date]: reservationData }}
+            selected={date}
             renderItem={renderItem}
-            style={{ borderRadius: 10,height: 290,}} 
+            renderEmptyDate={() => (
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text>예약된 일정이 없습니다</Text>
+              </View>
+            )}
+            style={{ borderRadius: 10, height: 290 }}
           />
         </View>
 

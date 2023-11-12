@@ -65,7 +65,7 @@ const TeacherReserveScreen = () => {
     
     try {
       const response = await fetch(`http://localhost:8080/lesson?lessonDate=${date.dateString}`, {
-        method: 'GET', // GET 요청으로 변경
+        method: 'GET',
         headers: {
           'Authorization': authorizationHeader,
           'Content-Type': 'application/json',
