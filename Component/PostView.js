@@ -450,18 +450,18 @@ return (
             </View>
           )}
         />
-        <View>
+        {/* <View>
           <FlatList
             data={replyCommentss}
             keyExtractor={(item, index) => `reply-${index}`}
             renderItem={({ item }) => (
               <View style={styles.commentContainer}>
-                {/* 답글에 대한 UI를 표시하는 코드 */}
+                답글에 대한 UI를 표시하는 코드 
                 <Text style={styles.commentText}>{item.content}</Text>
               </View>
             )}
           />
-        </View>
+        </View> */}
       </ScrollView>
       <View style={styles.commentInputWithButton}>
         <TextInput
