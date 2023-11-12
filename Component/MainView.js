@@ -19,9 +19,9 @@ import {
 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
-import * as Location from 'expo-location';
 import axios from 'axios';
-import { Card, Avatar } from 'react-native-paper';
+import { Card } from 'react-native-paper';
+
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -65,10 +65,9 @@ function MainScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedResortName, setSelectedResortName] = useState('');
 
+
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
-  const location = selectedResort?.location;
-
 
   const handleUserIconPress = () => {
     navigation.openDrawer();
@@ -122,6 +121,8 @@ function MainScreen() {
     fetchWeather();
   }, [selectedResort]);
 
+  
+
   LocaleConfig.locales['ko'] = {
     monthNames: [
       '1월',
@@ -173,7 +174,7 @@ function MainScreen() {
       //   ],
       // },
       {
-        date: '2023-11-11',
+        date: '2023-11-12',
         events: [
           { name: 'Meeting with Team B'},
         ],
@@ -322,7 +323,7 @@ function MainScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    width: '100%',
+
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -390,7 +391,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     backgroundColor: 'white',
-    width: '90%',
+    width: windowWidth * 0.9,
     height: 110,
     marginTop: 10,
     borderRadius: 10,
