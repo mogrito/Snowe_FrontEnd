@@ -92,20 +92,17 @@ function WriteScreen({ route }) {
 
       formData.append('board', boardBlob);
       
-
+      if (imageUri) {
       // 파일 
       const filename = imageUri.split('/').pop();
       console.log("파일이름 => " + filename);
+      
 
       const response = await fetch(imageUri);
       const imageBlob = await response.blob();
     
       formData.append('image', imageBlob, filename);
-
-
-      console.log("board는?? => "+formData.get('board'));
-      console.log("파일입니다 ==>> " + formData.get('image'));
-      console.log("이미지블롭 : "+imageBlob);
+      }
       
       //요청
       axios.post(`${URL}/board/add`,formData,
