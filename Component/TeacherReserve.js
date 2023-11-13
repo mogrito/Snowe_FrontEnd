@@ -3,8 +3,7 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimen
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
-import { getTokens } from './TokenUtils';
-
+import { getTokenFromLocal } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -16,6 +15,7 @@ const TeacherReserveScreen = () => {
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   
+
   const navigation = useNavigation();
 
 
@@ -65,7 +65,7 @@ const TeacherReserveScreen = () => {
     const authorizationHeader = `Bearer ${token}`;
 
     try {
-      const response = await fetch(`http://192.168.25.204:8080/lesson?lessonDate=${date.dateString}`, {
+      const response = await fetch(`http://192.168.25.204:8080/lesson/list?lessonDate=${date.dateString}`, {
         method: 'GET', // GET 요청으로 변경
         headers: {
           'Content-Type': 'application/json',
@@ -168,8 +168,9 @@ const TeacherReserveScreen = () => {
                     <Text style={styles.teacherName}>{item.name}</Text>
                     <Text style={styles.eduTime}>{item.div}</Text>
                   </View>
+                  <Text style={styles.teacherCount}>{`(${item.lessonTitle}`}</Text>
                   <Text style={styles.teacherCount}>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
-                  <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}반`}</Text>
+                  <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}`}</Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -183,9 +184,9 @@ const TeacherReserveScreen = () => {
           <Text style={styles.reservationTitle}>예약 확인</Text>
           <Image source={{ uri: selectedTeacher?.image }} style={styles.teacherModalImage} />
           <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
-          <Text style={styles.selectedDate}>{`강습 제목: ${selectedTeacher?.title}`}</Text>
+          <Text style={styles.selectedDate}>{`강습 제목: ${selectedTeacher?.lessonTitle}`}</Text>
           <Text style={styles.selectedDate}>{`강습 시작일: ${selectedDate}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.edudate}`}</Text>
+          <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.lessonStart}`}</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.checkReserveButton} onPress={reserveLesson}>
               <Text style={styles.buttonText}>신청</Text>
