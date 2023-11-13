@@ -19,7 +19,6 @@ import {
 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
-import * as Location from 'expo-location';
 import axios from 'axios';
 import { Card, Avatar } from 'react-native-paper';
 import { getTokenFromLocal } from './TokenUtils';
@@ -65,15 +64,17 @@ function MainScreen() {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedResortName, setSelectedResortName] = useState('');
-  const [reservationData, setreservationData] = useState(null);
+  const [reservationData, setreservationData] = useState();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [items, setItems] = useState({});
+  const [agendaItems, setAgendaItems] = useState({});
   const [hotBoardList, setHotBoardList] = useState([]);
   const [boardId, setBoardId] = useState('');
+ 
+
 
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
-  const location = selectedResort?.location;
-
 
   const handleUserIconPress = () => {
     navigation.openDrawer();
@@ -95,25 +96,25 @@ function MainScreen() {
       setSelectedResortName(route.params.selectedResortName);
     }
   }, [route.params?.selectedResortName]);
+  
 
 
   useEffect(() => {
     async function fetchWeather() {
       try {
         const apiKey = '28664d08fe65159df42d4ee6b227bacd';
-
-        if (location) {
-          const lon = location.longitude;
-          const lat = location.latitude;
-
+  
+        if (selectedResort?.location) {
+          const lon = selectedResort.location.longitude;
+          const lat = selectedResort.location.latitude;
+  
           const response = await axios.get(
             `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`
           );
-
+  
           if (response.status === 200) {
             const data = response.data;
             setWeatherData(data);
-            console.log(data);
           } else {
             console.error('날씨 데이터를 가져올 수 없습니다');
           }
@@ -124,9 +125,11 @@ function MainScreen() {
         setIsLoading(false); // 로딩 상태 업데이트
       }
     }
-
+  
     fetchWeather();
-  }, []);
+  }, [selectedResort]);
+
+  
 
   LocaleConfig.locales['ko'] = {
     monthNames: [
@@ -171,125 +174,101 @@ function MainScreen() {
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true); // 로딩 시작
       const token = await getTokenFromLocal();
       const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await fetch(`http://localhost:8080/reservation/listOnDate?lessonDate=${date}`, {
-          method: 'GET',
+        const response = await axios.get(`http://192.168.25.202:8080/reservation/listOnDate?lessonDate=${date}`, {
           headers: {
             'Authorization': authorizationHeader,
-            'Content-Type': 'application/json',
           },
         });
+        if (response.status === 200) {
+          const data = response.data;
+          console.log('Fetched Data:', data);
   
-        if (response.ok) {
-          // HTTP 상태 코드가 200 OK인 경우
-          const data = await response.json();
-          if (data && data.length > 0) {
-            setreservationData(data);
-            console.log(reservationData);
-          } else {
-            // 예약 목록이 비어있는 경우
-            setreservationData(null);
-            console.log('서버로부터 빈 응답을 수신했습니다');
-          }
-        } else if (response.status === 204) {
-          // HTTP 상태 코드가 204 No Content인 경우
-          setreservationData(null);
-          console.log('서버로부터 빈 응답(No Content)을 수신했습니다');
+          // 아젠다 아이템 설정
+          const agendaItem = {};
+          agendaItem[date] = data;
+          setAgendaItems(agendaItem);
+  
+          // items에 agendaItems를 설정
+          setItems(agendaItem);
+          console.log('items: ', items)
         } else {
-          // 그 외의 상황에서는 오류로 처리
           setreservationData(null);
           console.error('데이터 가져오기 중 오류 발생:', response.status);
         }
       } catch (error) {
-        // fetch 자체의 오류 처리
         setreservationData(null);
-        console.log(reservationData);
         console.error('데이터 가져오기 중 오류 발생:', error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
       }
     }
     fetchData();
   }, [date]);
 
-  // 핫 게시글 fetch
-  const fetchBoardData = async () => {
-    try {
-      const response = await Promise.race([
-        fetch('http://192.168.25.204:8080/board/hot-List'),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('시간이 초과되었습니다')), 1000)
-        ),
-      ]);
-      const hotBoardData = await response.json();
-
-      console.log("핫보드 데이터입니다 ==>> " + hotBoardData);
-      setHotBoardList(hotBoardData);
-
-      setBoardId(hotBoardData.boardId);
-
-    } catch (error) {
-      console.error(error);
-      alert('글불러오기실패');
+    // 핫 게시글 fetch
+    const fetchBoardData = async () => {
+      try {
+        const response = await Promise.race([
+          fetch('http://192.168.25.204:8080/board/hot-List'),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('시간이 초과되었습니다')), 1000)
+          ),
+        ]);
+        const hotBoardData = await response.json();
+  
+        console.log("핫보드 데이터입니다 ==>> " + hotBoardData);
+        setHotBoardList(hotBoardData);
+  
+        setBoardId(hotBoardData.boardId);
+  
+      } catch (error) {
+        console.error(error);
+        alert('글불러오기실패');
+      }
     }
-  }
-  useEffect(() => {
-    fetchBoardData();
-  }, []);
-  // 핫게시글 누를 시
-  const onBoardPress = (board) => {
-    // setSelectedBoard(board);
-    navigation.navigate('PostView', { 
-      boardId: board.boardId, 
-      image: board.image,
-      content: board.content,
-      title:board.title,
-      recommendCount:board.recommendCount
-    }); 
-  };
-  
-    const loadItems = () => {
-      setTimeout(() => {
-        hardcodedData.forEach((dayData) => {
-          const { date, events } = dayData;
-          const strTime = timeToString(new Date(date).getTime());
-  
-          if (!items[strTime]) {
-            items[strTime] = [];
-  
-            events.forEach((event) => {
-              items[strTime].push({
-                name: event.name,
-                height: event.height,
-              });
-            });
-          }
-        });
-  
-        const newItems = { ...items };
-        setItems(newItems);
-      }, 1000);
+    useEffect(() => {
+      fetchBoardData();
+    }, []);
+    // 핫게시글 누를 시
+    const onBoardPress = (board) => {
+      // setSelectedBoard(board);
+      navigation.navigate('PostView', { 
+        boardId: board.boardId, 
+        image: board.image,
+        content: board.content,
+        title:board.title,
+        recommendCount:board.recommendCount
+      }); 
     };
+
   
-    const renderItem = (item) => {
-      return (
-        <TouchableOpacity style={{ margin: 5, padding: 10 }}>
-          <Card>
-            <Card.Content>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <Text>{item.name}</Text>
-                <Image source={require('../Images/face.jpg')} style={styles.image}/>  
-              </View>
-            </Card.Content>
-          </Card>
-        </TouchableOpacity>
-      );
-    };
+  const renderItemForFlatList = ({ item }) => (
+    <Card>
+      <Card.Content>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          {item.lessonDate ? ( // lessonDate가 있는 경우 텍스트 표시
+            <>
+              <Text>{item.lessonDate}</Text>
+              <Text>{item.name}</Text>
+              <Text>{item.lessonTitle}</Text>
+            </>
+          ) : (
+            // lessonDate가 없는 경우 안내 메시지 표시
+            <Text>예약 내역이 없습니다.</Text>
+          )}
+        </View>
+      </Card.Content>
+    </Card>
+  );
 
   return (
     <View style={styles.background}>
@@ -350,35 +329,46 @@ function MainScreen() {
             </View>
           </TouchableOpacity>
         </View>
-        
+        <View style={{ flex: 1, marginTop: 10, width: windowWidth * 0.9 }}>
+        <ScrollView>
+          <Agenda
+            items={agendaItems}
+            selected={date}
+            renderItem={renderItemForFlatList}
+            style={{ borderRadius: 10, height: 290 }}
+            onDayPress={(day) => {
+              setDate(day.dateString);
+            }}
+          />
+        </ScrollView>
+        </View>
 
         <View style={styles.hotboardContainer}>
           <Text style={styles.hotboardheader}>🔥 인기 게시물</Text>
           <View style={styles.hotboarditems}>
           
           <FlatList
-    data={hotBoardList}
-    keyExtractor={(item) => item.boardId.toString()}
-    renderItem={({ item }) => (
-      <TouchableOpacity
-        style={styles.boardContainer}
-        onPress={() => onBoardPress(item)}
-      >
-        <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>{item.title}</Text>
-          <Text style={styles.categoryText}>{item.category}</Text>
-        </View>
-        <View style={styles.detailsContainer}>
-          <Text style={styles.dateText}>{item.createDate}</Text>
-          <View style={styles.actionsContainer}>
-            <Text style={styles.infoText}>댓글 {item.commentCount}</Text>
-            <Text style={styles.infoText}>좋아요 {item.recommendCount}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    )}
-  />
-          </View>
+              data={hotBoardList}
+              keyExtractor={(item) => item.boardId.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.textContainer}
+                  onPress={() => onBoardPress(item)}
+                >
+                  <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View>
+                      <Text>{item.title}  </Text>
+                      <View style={styles.textComment}>
+                        <Text>{item.createDate}  댓글 {item.commentCount} · 좋아요 {item.recommendCount} </Text>
+                        <View style={styles.divider}></View>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
+            
+            />
+            </View>
         </View>
       </ScrollView>
     </View>
@@ -387,7 +377,7 @@ function MainScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    width: '100%',
+
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -455,7 +445,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     backgroundColor: 'white',
-    width: '90%',
+    width: windowWidth * 0.9,
     height: 110,
     marginTop: 10,
     borderRadius: 10,
@@ -540,52 +530,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 20,
     marginLeft:-5,
-  },
-
-
-  hotboardContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-  },
-  hotboardheader: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  boardContainer: {
-    marginBottom: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: '#ccc',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  titleText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  categoryText: {
-    color: 'gray',
-  },
-  detailsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  dateText: {
-    color: 'gray',
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-  },
-  infoText: {
-    marginLeft: 8,
-    color: 'gray',
   },
 
 

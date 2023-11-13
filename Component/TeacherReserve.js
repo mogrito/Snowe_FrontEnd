@@ -65,7 +65,7 @@ const TeacherReserveScreen = () => {
     const authorizationHeader = `Bearer ${token}`;
 
     try {
-      const response = await fetch(`http://192.168.25.204:8080/lesson/list?lessonDate=${date.dateString}`, {
+      const response = await fetch(`http://192.168.25.204:8080/member/list?lessonDate=${date.dateString}`, {
         method: 'GET', // GET 요청으로 변경
         headers: {
           'Content-Type': 'application/json',
