@@ -673,7 +673,7 @@ return (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DBEBF9'
+    backgroundColor: '#F6FDFF'
   },
   header: {
     flexDirection: 'row',
@@ -708,8 +708,8 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   borderLine: {
-    borderTopWidth: 1,
-    borderTopColor: '#7290F2',
+    borderTopWidth: 0.6,
+    borderTopColor: 'gray',
     marginTop: '5%',
     marginBottom: 5,
     flexDirection:'row',
@@ -822,10 +822,12 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 8,
+    backgroundColor:'white',
     margin: 8,
   },
   commentInput: {
     flex: 1,
+    height:30,
   },
   postButton: {
     borderRadius: 8,
@@ -848,9 +850,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   likeButton: {
-    borderWidth: 1,
+    borderWidth: 0.6,
     borderRadius: 5,
-    borderColor: 'black',
+    borderColor: 'gray',
     padding: 10,
     backgroundColor:'white',
     marginLeft:10

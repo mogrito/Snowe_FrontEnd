@@ -316,7 +316,7 @@ function TabNavigator({ navigation }) {
         name="SocialView"
         component={SocialView}
         options={{
-          tabBarLabel: '자유게시판',
+          tabBarLabel: '커뮤니티',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
               name="account-group"
