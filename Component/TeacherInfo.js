@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginTop:3
   },
   subjectText: {
     fontSize: 16,
@@ -250,10 +251,8 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   skilevel: {
-    fontSize: 15,
+    fontSize: 12,
     color:'red',
-    margin:4,
-    marginBottom:5
   },
   categori: {
     flexDirection: 'row',
