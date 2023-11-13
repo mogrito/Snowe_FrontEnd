@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useFocusEffect  } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialCommunityIcons,FontAwesome5 } from '@expo/vector-icons';
@@ -215,6 +215,8 @@ function DrawerNavigator() {
 
 
 function TabNavigator() {
+
+
   return (
     <Tab.Navigator
       activeColor="#000000"
