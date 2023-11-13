@@ -369,6 +369,7 @@ function MainScreen() {
                       <Text>{item.title}</Text>
                       <View style={styles.textComment}>
                         <Text>{item.createDate}  댓글 {item.commentCount} · 좋아요 {item.recommendCount} </Text>
+                        <View style={styles.divider}></View>
                       </View>
                     </View>
                   </View>
@@ -495,6 +496,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
 
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
   },
   iconText: {
     marginTop: 10,
