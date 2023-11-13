@@ -2,12 +2,18 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, KeyboardAvoidingView, View, Platform, Button, TextInput, Modal, Text, TouchableOpacity, Pressable, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import WriteHeader from './WriteHeader';
+import ImagePicker2 from './ImagePicker2';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import TransparentCircleButton from './TransparentCircleButton';
-import base64 from 'base64-js';
+import { getTokenFromLocal } from './TokenUtils';
+import axios from 'axios';
+import * as base64 from 'base-64';
 
 const URL = 'http://192.168.25.204:8080';
+
+
 
 function WriteScreen({ route }) {
   const log = route.params?.log;
@@ -15,22 +21,23 @@ function WriteScreen({ route }) {
   const [content, setContent] = useState('');
   const navigation = useNavigation();
   const bodyRef = useRef();
-  const [date] = useState(log ? new Date(log.date) : new Date());
+  const [date, setDate] = useState(log ? new Date(log.date) : new Date());
   const loginId = '정훈';
   const [category, setCategory] = useState(''); // 선택한 카테고리 상태
   const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('게시판 선택');
+  const [selectedCategory, setSelectedCategory] = useState('카테고리 선택');
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-  const [imageUrl, setImageUrl] = useState('');
-  // const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+  const [imageUri, setImageUri] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentTime(new Date().toLocaleTimeString());
-  //   }, 1000);
 
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleTitleChange = (text) => {
     setTitle(text);
@@ -56,85 +63,97 @@ function WriteScreen({ route }) {
 
   const onSave = async () => {
     try {
-      const postData = { title: title, content: content, loginId: loginId, category: category };
+
+      //promise로 뜨는걸 storage에서 뽑아씀
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+
+      console.log("토큰값 : " + authorizationHeader);
 
       const formData = new FormData();
-      formData.append('board', JSON.stringify(postData));
+     
+      // board지정
+      const board = { title: title, content: content, category: category };
 
-      // 이미지가 선택되었는지 확인
-      if (imageUrl) {
-        // Base64 데이터를 Blob으로 변환
-        const byteCharacters = base64.decode(imageUrl.split(',')[1]);
-        const byteArray = new Uint8Array(byteCharacters.length);
-        console.log(byteCharacters);
-
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteArray[i] = byteCharacters.charCodeAt(i);
-        }
-
-        const blob = new Blob([byteArray], { type: 'image/png' });
-
-        console.log('블롭:', blob);
-        const uriParts = imageUrl.split('/');
-        const fileName = uriParts[uriParts.length - 1];
-
-        formData.append('image', blob, fileName);
+      if (!title) {
+        alert('제목을 입력해주세요');
+        return null;
       }
-
-      console.log(formData.get('image', imageUrl));
-      console.log(formData.get('board'));
-      console.log('이미지: ' ,formData.get('image'));
-
-      const response = await fetch(`${URL}/board/add`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      if (!content) {
+        alert('내용을 입력해주세요');
+        return null;
+      }
+      if (!category) {
+        alert('카테고리를 선택해주세요');
+        return null;
+      }
+     
+      const json = JSON.stringify(board);
+      const boardBlob = new Blob([json], {
+        type: 'application/json'
       });
 
-      const data = await response.json();
-      console.log('새 글 작성 완료:', data);
-      navigation.goBack();
-    } catch (error) {
-      console.error('글 작성 중 오류발생:', error);
-    }
-  };
+      formData.append('board', boardBlob);
+      
 
-  const uploadImage = async () => {
-    if (!status?.granted) {
-      const permission = await requestPermission();
-      if(!permission.granted){
-        return null;
-      } 
-    }
-    //이미지 업로드 기능
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 1,
-      aspect: [1, 1]
-    });
+      // 파일 
+      const filename = imageUri.split('/').pop();
+      console.log("파일이름 => " + filename);
 
-      const selectedImageUri = result.uri;
-
-      // file:// 를 제거하고 실제 파일 경로만 얻기
-      const realFilePath = selectedImageUri.replace("file://", "");
-      console.log("실제 파일 경로:", realFilePath);
+      const response = await fetch(imageUri);
+      const imageBlob = await response.blob();
     
-    if(result.canceled){
-      console.log('이미지 선택이 취소되었습니다');
-      return null;
+      formData.append('image', imageBlob, filename);
+
+
+      console.log("board는?? => "+formData.get('board'));
+      console.log("파일입니다 ==>> " + formData.get('image'));
+      console.log("이미지블롭 : "+imageBlob);
+      
+      //요청
+      axios.post(`${URL}/board/add`,formData,
+        {
+        	headers: {
+          'Authorization': authorizationHeader,
+          'Content-Type':'multipart/form-data'},
+        }
+      )
+
+      console.log('새 글 작성 완료:', formData);
+      navigation.goBack();
+      } catch (error) {
+        // 에러 처리
+        console.error('글 작성 중 오류발생:', error);
     }
-    console.log(result);
-    setImageUrl(result.uri);
-    console.log(result.uri); 
-    // console.log(result.filename); 
-  // 추출한 uri에서 파일 이름을 가져오는 방법
-  // const uriComponents = result.uri.split('/');
-  // const filename = uriComponents[uriComponents.length - 1];
-  // console.log('이미지 파일 이름:', filename);
+    };
+  
+
+
+  // 카메라에서 이미지를 가져올 함수
+  const uploadImage = async () => {
+    // 권한요청
+    if(!status?.granted) {
+      const permission = await requestPermission();
+      if(!permission.granted) {
+        return null;
+      }
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    // 이미지를 취소하지 않으면
+    if (!result.canceled) {
+
+
+       console.log("기본uri => " + result.uri);
+       setImageUri(result.uri);
+    }
   };
+
 
   return (
     <SafeAreaView style={styles.block}>

@@ -65,6 +65,7 @@ function PostView({ route }) {
   const fetchBoardDetails = async (boardId) => {
     try {
       const response = await fetch(`${URL}/board/view/${boardId}`); 
+      console.log(boardId);
       const boardData = await response.json();
       console.log(boardData); // 게시글 정보 확인
 

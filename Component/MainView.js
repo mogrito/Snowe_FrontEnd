@@ -309,22 +309,28 @@ function MainScreen() {
           <Text style={styles.hotboardheader}>🔥 인기 게시물</Text>
           <View style={styles.hotboarditems}>
           
-          <TouchableOpacity>
-            <Text style={styles.hotboarditem}>오늘 스키장 같이 가실분?</Text>
-            <Text style={styles.hotboarddate}>10/26</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity>
-            <Text style={styles.hotboarditem1}>하앙</Text>
-            <Text style={styles.hotboarddate1}>10/30</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <Text style={styles.hotboarditem2}>정훈아 해줘</Text>
-            <Text style={styles.hotboarddate2}>10/21</Text>
-          </TouchableOpacity>
-          
-          </View>
+          <FlatList
+              data={hotBoardList}
+              keyExtractor={(item) => item.boardId.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.textContainer}
+                  onPress={() => onBoardPress(item)}
+                >
+                  <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View>
+                      <Text>{item.title}</Text>
+                      <View style={styles.textComment}>
+                        <Text>{item.createDate}  댓글 {item.commentCount} · 좋아요 {item.recommendCount} </Text>
+                        <View style={styles.divider}></View>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
+            
+            />
+            </View>
         </View>
       </ScrollView>
     </View>
@@ -427,6 +433,10 @@ const styles = StyleSheet.create({
 
 
   },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  },
   iconText: {
     marginTop: 10,
   },
@@ -488,14 +498,3 @@ const styles = StyleSheet.create({
 });
 
 export default MainScreen;
-
-
-
-
-
-
-
-
-
-
-

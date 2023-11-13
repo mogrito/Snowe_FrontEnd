@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 
-const URL = "http://localhost:8080/member"; // API 엔드포인트 URL
+const URL = "http://192.168.25.204:8080/member"; // API 엔드포인트 URL
 const onGoBack = () => {
   navigation.goBack();
 };
