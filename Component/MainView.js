@@ -20,8 +20,8 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import axios from 'axios';
-import { Card } from 'react-native-paper';
-
+import { Card, Avatar } from 'react-native-paper';
+import { getTokenFromLocal } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -64,8 +64,10 @@ function MainScreen() {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedResortName, setSelectedResortName] = useState('');
-
-
+  const [reservationData, setreservationData] = useState();
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [items, setItems] = useState({});
+  const [agendaItems, setAgendaItems] = useState({});
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
 
@@ -163,67 +165,68 @@ function MainScreen() {
     return date.toISOString().split('T')[0];
   };
   
-    const [items, setItems] = useState({});
-  
 
-    const hardcodedData = [
-      // {
-      //   date: '2023-11-11',
-      //   events: [
-      //     { name: 'Meeting with Team A'},
-      //   ],
-      // },
-      {
-        date: '2023-11-12',
-        events: [
-          { name: 'Meeting with Team B'},
-        ],
-      },
-  
-    ];
-  
-    const loadItems = () => {
-      setTimeout(() => {
-        hardcodedData.forEach((dayData) => {
-          const { date, events } = dayData;
-          const strTime = timeToString(new Date(date).getTime());
-  
-          if (!items[strTime]) {
-            items[strTime] = [];
-  
-            events.forEach((event) => {
-              items[strTime].push({
-                name: event.name,
-                height: event.height,
-              });
-            });
-          }
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true); // 로딩 시작
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+      try {
+        const response = await axios.get(`http://192.168.25.202:8080/reservation/listOnDate?lessonDate=${date}`, {
+          headers: {
+            'Authorization': authorizationHeader,
+          },
         });
+        if (response.status === 200) {
+          const data = response.data;
+          console.log('Fetched Data:', data);
   
-        const newItems = { ...items };
-        setItems(newItems);
-      }, 1000);
-    };
+          // 아젠다 아이템 설정
+          const agendaItem = {};
+          agendaItem[date] = data;
+          setAgendaItems(agendaItem);
   
-    const renderItem = (item) => {
-      return (
-        <TouchableOpacity style={{ margin: 5, padding: 10 }}>
-          <Card>
-            <Card.Content>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <Text>{item.name}</Text>
-                <Image source={require('../Images/face.jpg')} style={styles.image}/>  
-              </View>
-            </Card.Content>
-          </Card>
-        </TouchableOpacity>
-      );
-    };
+          // items에 agendaItems를 설정
+          setItems(agendaItem);
+          console.log('items: ', items)
+        } else {
+          setreservationData(null);
+          console.error('데이터 가져오기 중 오류 발생:', response.status);
+        }
+      } catch (error) {
+        setreservationData(null);
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
+      }
+    }
+    fetchData();
+  }, [date]);
+
+  
+  const renderItemForFlatList = ({ item }) => (
+    <Card>
+      <Card.Content>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          {item.lessonDate ? ( // lessonDate가 있는 경우 텍스트 표시
+            <>
+              <Text>{item.lessonDate}</Text>
+              <Text>{item.name}</Text>
+              <Text>{item.lessonTitle}</Text>
+            </>
+          ) : (
+            // lessonDate가 없는 경우 안내 메시지 표시
+            <Text>예약 내역이 없습니다.</Text>
+          )}
+        </View>
+      </Card.Content>
+    </Card>
+  );
 
   return (
     <View style={styles.background}>
@@ -284,15 +287,18 @@ function MainScreen() {
             </View>
           </TouchableOpacity>
         </View>
-
-        <View style={{ flex: 1, marginTop: 10 ,width:windowWidth*0.9}}>
+        <View style={{ flex: 1, marginTop: 10, width: windowWidth * 0.9 }}>
+        <ScrollView>
           <Agenda
-            items={items}
-            loadItemsForMonth={loadItems}
-            selected={timeToString(new Date().getTime())}
-            renderItem={renderItem}
-            style={{ borderRadius: 10,height: 290,}} 
+            items={agendaItems}
+            selected={date}
+            renderItem={renderItemForFlatList}
+            style={{ borderRadius: 10, height: 290 }}
+            onDayPress={(day) => {
+              setDate(day.dateString);
+            }}
           />
+        </ScrollView>
         </View>
 
         <View style={styles.hotboardContainer}>
