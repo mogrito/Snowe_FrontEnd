@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 
-const URL = "http://192.168.25.204:8080/member"; // API 엔드포인트 URL
+const URL = "http://localhost:8080/member"; // API 엔드포인트 URL
 const onGoBack = () => {
   navigation.goBack();
 };
@@ -23,7 +23,6 @@ export const getTokens = async (requestData, navigation) => {
         'accessToken': data.token,
       }));
       console.log(await AsyncStorage.getItem('Tokens'));
-      navigation.navigate('MainView');
     } else if (response.status === 401) {
       alert("사용자 정보가 없습니다");
     } else {
@@ -32,6 +31,9 @@ export const getTokens = async (requestData, navigation) => {
   } catch (error) {
     console.error(error);
     alert("알 수 없는 오류");
+  } finally {
+    // MainView의 useEffect를 다시 실행하도록 navigation을 이용하여 이동
+    navigation.navigate('MainView');
   }
 };
 
@@ -56,7 +58,7 @@ export const checkTokenAndNavigate = async (navigation) => {
 
   if (!token) {
     // 토큰이 없으면 로그인 화면으로 이동
-    navigation.navigate('Login');
+    navigation.pop();
   }
 };
 

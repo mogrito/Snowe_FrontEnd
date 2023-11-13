@@ -1,11 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { MaterialCommunityIcons,FontAwesome,Foundation } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome, Foundation } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { checkTokenAndNavigate } from './TokenUtils';
+import { useNavigation } from '@react-navigation/native';
 import { getTokenFromLocal } from './TokenUtils';
+
 export function CustomDrawerContent({ navigation }) {
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedRole = await AsyncStorage.getItem('role');
+        setUserRole(storedRole || 'Guest');
+        console.log('AsyncStorage에서 저장된 역할:', storedRole);
+      } catch (error) {
+        console.error('AsyncStorage에서 역할을 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    const fetchUserRole = async () => {
+      try {
+        const token = await getTokenFromLocal();
+        console.log(token);
+        const response = await fetch('http://192.168.25.204:8080/member/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          AsyncStorage.setItem('role', data.role);
+          fetchData(); // AsyncStorage에서 역할을 업데이트한 후 역할을 가져오기
+        } else {
+          throw new Error('사용자 역할을 가져오는 데 실패했습니다.');
+        }
+      } catch (error) {
+        console.error(error);
+        AsyncStorage.setItem('role', 'Guest');
+        fetchData(); // AsyncStorage에서 역할을 업데이트한 후 역할을 가져오기
+      }
+    };
+
+    const unsubscribeFocus = navigation.addListener('focus', () => {
+      fetchUserRole();
+    });
+
+    // 컴포넌트가 언마운트될 때 이벤트 리스너 정리
+    return () => {
+      unsubscribeFocus();
+    };
+  }, [navigation]);
+
 
   return (
     <DrawerContentScrollView>
@@ -21,27 +70,20 @@ export function CustomDrawerContent({ navigation }) {
         </TouchableOpacity>
       </View>
       <DrawerItem
-        label="마이페이지"
+        label={userRole === 'TEACHER' ? '강사 마이페이지' : (userRole === 'Guest' || userRole === null) ? '마이페이지' : '마이페이지'}
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         )}
-        onPress={async () => {
-          const token = await getTokenFromLocal();
-          console.log(token);
-          if (token) {
+        onPress={() => {
+          console.log(userRole);
+          if (userRole === 'TEACHER') {
+            navigation.navigate('TeacherMyPage');
+          } else if (userRole === 'USER') {
             navigation.navigate('MyPage');
-          }
-          else{
+          } else if (userRole === 'Guest' || userRole === null) {
             navigation.navigate('Login');
           }
         }}
-      />
-      <DrawerItem
-        label="강사 마이페이지"
-        icon={({ color, size }) => (
-          <MaterialCommunityIcons name="account" color={color} size={size} />
-        )}
-        onPress={() => navigation.navigate('TeacherMyPage')}
       />
       <DrawerItem
         label="스키장 리스트"
@@ -57,14 +99,14 @@ export function CustomDrawerContent({ navigation }) {
         )}
         onPress={() => navigation.navigate('Reservation')}
       />
-       <DrawerItem
+      <DrawerItem
         label="강사자격 신청 및 등록"
         icon={({ color, size }) => (
           <FontAwesome name="id-card-o" color={color} size={size} />
         )}
         onPress={() => navigation.navigate('TeacherVerify')}
       />
-       <DrawerItem
+      <DrawerItem
         label="강습 등록"
         icon={({ color, size }) => (
           <Foundation name="page-edit" color={color} size={size} />
