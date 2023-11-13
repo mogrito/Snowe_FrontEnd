@@ -18,7 +18,7 @@ import backgroundImage from '../Images/dr1.png';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { max } from 'date-fns';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
+import { getTokenFromLocal } from './TokenUtils';
 
 const LessonSignUpScreen = () => {
 
@@ -39,7 +39,7 @@ const LessonSignUpScreen = () => {
   const [lessonIntroduce, setLessonIntroduce] = useState('');
   const navigation = useNavigation();
   
-  const URL = 'http://192.168.219.103:8080';
+  const URL = 'http://192.168.25.204:8080';
   
   const onGoBack = () => {
     navigation.goBack();
@@ -57,7 +57,8 @@ const LessonSignUpScreen = () => {
   }, []);
 
   const handleRegister = async () => {
-
+    const token = await getTokenFromLocal();
+    const authorizationHeader = `Bearer ${token}`;
     if (!lessonname) {
       alert('강습명을 입력해 주세요.');
       return;
@@ -103,6 +104,7 @@ const LessonSignUpScreen = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
         },
         body: JSON.stringify({
           lessonTitle: lessonname,
@@ -167,6 +169,7 @@ const LessonSignUpScreen = () => {
 
   const closeCalendarModal = () => {
     setCalendarModalVisible(false);
+
   };
 
   
@@ -292,6 +295,7 @@ const LessonSignUpScreen = () => {
               </Text>
             </TouchableOpacity>
           </View>
+          
           <Modal visible={isCalendarModalVisible} animationType="slide">
             <Calendar
               markedDates={{
@@ -299,12 +303,14 @@ const LessonSignUpScreen = () => {
                 [endday]: { selected: true, endingDay: true, color: 'skyblue' },
               }}
               onDayPress={onDayPress}
-              style={{marginTop:50}}
+              style={{marginTop:70}}
             />
-            <TouchableOpacity onPress={closeCalendarModal}>
-              <Text style={{ color: 'blue', textAlign: 'center', marginVertical: 10 }}>
-                달력 닫기
+            <TouchableOpacity style={styles.closemodalbutton} onPress={closeCalendarModal}>
+            
+              <Text style={{ color: 'black', textAlign: 'center', marginVertical: 10,marginTop:10, }}>
+                닫기
               </Text>
+
             </TouchableOpacity>
           </Modal>
         </View>
@@ -402,7 +408,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginLeft:13,
     color: 'black', 
-    fontFamily: 'DMSerifText1',
+    fontWeight:'bold',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -481,10 +487,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedDivButton: {
-    width: '30%',
+    width: '28%',
     height: 40,
     marginBottom: 16,
-    marginRight:10,
+    marginRight: 7,
     backgroundColor: 'skyblue',
     borderColor: 'gray',
     borderWidth: 1,
@@ -649,7 +655,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: 'skyblue',
     borderColor: 'gray',
-    marginRight: 8,
+    marginRight: 6,
     borderWidth: 1,
     borderRadius: 5,
     justifyContent: 'center',
@@ -658,7 +664,17 @@ const styles = StyleSheet.create({
   dateContainer:{
     flexDirection:'row',
     width:'100%'
-  }
+  },
+  closemodalbutton: {
+    width: '20%',
+    height: 40,
+    backgroundColor: 'skyblue',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center', // Align button in the center horizontally
+    marginTop: 5, // Adjust the top margin as needed
+  },
 
 });
 
