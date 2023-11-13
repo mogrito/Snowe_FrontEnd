@@ -160,8 +160,7 @@ function SocialView(){
                       <Text style={styles.loginId}>{item.loginId}</Text>
                       <Text>{item.title}</Text>
                       <View style={styles.textComment}>
-                        <MaterialIcons name='comment' size={10} color='black' />
-                        <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount} · ❤️ {item.recommendCount} </Text>
+                        <Text style={{ padding: 3, fontSize: 10 }}>💬 {item.commentCount} · 조회 {item.viewCount} · 👍 {item.recommendCount} </Text>
                       </View>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
@@ -303,8 +302,7 @@ function SocialView(){
                   <Text style={styles.loginId}>{item.loginId}</Text>
                   <Text>{item.title}</Text>
                   <View style={styles.textComment}>
-                    <MaterialIcons name='comment' size={10} color='black' />
-                    <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount} · ❤️ {item.recommendCount} </Text>
+                    <Text style={{ padding: 3, fontSize: 10 }}>💬 {item.commentCount} · 조회 {item.viewCount} · 👍 {item.recommendCount} </Text>
                   </View>
                 </View>
                 <Image
@@ -374,8 +372,7 @@ function SocialView(){
                   <Text style={styles.loginId}>{item.loginId}</Text>
                   <Text>{item.title}</Text>
                   <View style={styles.textComment}>
-                    <MaterialIcons name='comment' size={10} color='black' />
-                    <Text style={{ padding: 3, fontSize: 10 }}>{item.commentCount} · 조회 {item.viewCount} · ❤️ {item.recommendCount} </Text>
+                    <Text style={{ padding: 3, fontSize: 10 }}>💬 {item.commentCount} · 조회 {item.viewCount} · 👍 {item.recommendCount} </Text>
                   </View>
                 </View>
                 <Image

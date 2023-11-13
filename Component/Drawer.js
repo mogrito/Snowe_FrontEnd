@@ -19,7 +19,7 @@ export function CustomDrawerContent({ navigation }) {
         const storedName = await AsyncStorage.getItem('name');
         setUserRole(storedRole || 'Guest');
         setUserName(storedName || null);
-        console.log('AsyncStorage에서 저장된 역할:', storedRole);
+        // console.log('AsyncStorage에서 저장된 역할:', storedRole);
       } catch (error) {
         console.error('AsyncStorage에서 역할을 가져오는 중 오류 발생:', error);
       }
