@@ -35,6 +35,7 @@ import TeacherChangeCarrerScreen from './Component/TeacherChangeCarrer';
 import TeacherChangeMySelfScreen from './Component/TeacherChangeMySelf';
 import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TeacherLessonListScreen from './Component/TeacherLessonList';
 
 
 
@@ -195,6 +196,12 @@ export default function App() {
           options={{ headerShown: false }}
           
         />
+        <RootStack.Screen
+          name="TeacherLessonList"
+          component={TeacherLessonListScreen}
+          options={{ headerShown: false }}
+          
+        />
         </RootStack.Navigator>
       </LogContextProvider>
     </NavigationContainer>
@@ -225,7 +232,7 @@ function TabNavigator({ navigation }) {
     try {
       const storedRole = await AsyncStorage.getItem('role');
       setUserRole(storedRole || 'Guest');
-      console.log('AsyncStorage에서 저장된 역할:', storedRole);
+      // console.log('AsyncStorage에서 저장된 역할:', storedRole);
     } catch (error) {
       console.error('AsyncStorage에서 역할을 가져오는 중 오류 발생:', error);
     }

@@ -145,6 +145,7 @@ const TeacherReserveScreen = () => {
           monthFormat={'yyyy년 MM월'}
         
         />
+        
         {selectedDate && (
           <FlatList
           data={filteredTeachers}
@@ -158,14 +159,20 @@ const TeacherReserveScreen = () => {
                 onPress={() => handleTeacherPress(item)}
               >
                 <View style={styles.teacherInfo}>
-                  <Image source={{ uri: item.image }} style={styles.teacherImage} />
-                  <View>
+                  <View style={styles.teacherImageView}>
+                    <Image source={{ uri: item.image }} style={styles.teacherImage} />
+                  </View>
+                  <View style={styles.nameDivView}>
                     <Text style={styles.teacherName}>{item.name}</Text>
                     <Text style={styles.eduTime}>{item.div}</Text>
                   </View>
-                  <Text style={styles.teacherCount}>{`(${item.lessonTitle}`}</Text>
-                  <Text style={styles.teacherCount}>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
-                  <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}`}</Text>
+                  <View style={styles.lessonInfoView}>
+                    <Text style={{fontWeight: 'bold', fontSize:17}}>{`${item.lessonTitle}`}</Text>
+                    <Text>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
+                  </View>
+                  <View style={styles.lessonLevelView}>
+                    <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}`}</Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             )}
@@ -229,11 +236,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   teacherName: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 'bold',
   },
   teacherSubject: {
-    fontSize: 20,
+    fontSize: 18,
     color: 'black',
   },
   teacherList: {
@@ -260,12 +267,12 @@ const styles = StyleSheet.create({
   teacherInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    width:'100%'
   },
   teacherImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginRight: 10,
   },
   teacherCount: {
     left: 200,
@@ -341,9 +348,21 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight:'bold'
   },
+  teacherImageView:{
+    width:'15%'
+  },
+  nameDivView:{
+    width:'15%',
+  },
+  lessonInfoView:{
+    width:'50%',
+    alignItems: 'center'
+  },
+  lessonLevelView:{
+    width:'20%'
+  },
 });
 
 export default TeacherReserveScreen;
-
 
 

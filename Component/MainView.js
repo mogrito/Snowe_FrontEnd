@@ -357,7 +357,7 @@ function MainScreen() {
                 >
                   <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
                     <View>
-                      <Text>{item.title}</Text>
+                      <Text>{item.title}  </Text>
                       <View style={styles.textComment}>
                         <Text>{item.createDate}  댓글 {item.commentCount} · 좋아요 {item.recommendCount} </Text>
                         <View style={styles.divider}></View>

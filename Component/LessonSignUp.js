@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  KeyboardAvoidingView,
-  ScrollView,
   Platform,
   Modal,
 } from 'react-native';
@@ -62,6 +60,49 @@ const LessonSignUpScreen = () => {
     const token = await getTokenFromLocal();
     const authorizationHeader = `Bearer ${token}`;
     
+    try {
+      const response = await fetch(`${URL}/lesson/add`, {
+
+    if (!lessonname) {
+      alert('강습명을 입력해 주세요.');
+      return;
+    }
+  
+    if (!startday || !endday) {
+      alert('시작일과 종료일을 선택해주세요.');
+      return;
+    }
+  
+    if (!level) {
+      alert('강습 난이도를 선택해 주세요.');
+      return;
+    }
+  
+    if (!age) {
+      alert('강습 연령대를 선택해 주세요.');
+      return;
+    }
+  
+    if (!startlessontime || !endlessontime || !ampm) {
+      alert('강습 시간이 올바르게 입력되지 않았습니다. 확인해주세요.');
+      return;
+    }
+  
+    if (!maxReserveCount) {
+      alert('강습 최대 인원이 입력되지 않았습니다. 입력해주세요.');
+      return;
+    }
+  
+    if (!lessonClass) {
+      alert('강습 분류를 선택해주세요.');
+      return;
+    }
+  
+    if (!lessonIntroduce) {
+      alert('강습 소개를 입력해주세요.');
+      return;
+    }
+
     try {
       const response = await fetch(`${URL}/lesson/add`, {
         method: 'POST',
@@ -280,13 +321,19 @@ const LessonSignUpScreen = () => {
               style={ampm === '오전' ? styles.selectedDivButton : styles.divButton}
               onPress={() => setAmPm('오전')}
             >
-              <Text style={styles. levelButtonText}>오전</Text>
+              <Text style={styles.levelButtonText}>오전</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={ampm === '오후' ? styles.selectedDivButton : styles.divButton}
               onPress={() => setAmPm('오후')}
             >
-              <Text style={styles. levelButtonText}>오후</Text>
+              <Text style={styles.levelButtonText}>오후</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={ampm === '야간' ? styles.selectedDivButton : styles.divButton}
+              onPress={() => setAmPm('야간')}
+            >
+              <Text style={styles.levelButtonText}>야간</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.inputContainer2_2}>
@@ -337,7 +384,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom:370,
     padding: 40,
-    paddingTop:120,
+    paddingTop:200,
     ...Platform.select({
       web: {
         alignSelf:'center'
@@ -416,14 +463,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   divButton: {
-    width: '40%', 
+    width: '28%', 
     height: 40,
     marginBottom: 16,
     backgroundColor: 'transparent',
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
-    marginRight:10,
+    marginRight:7,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -440,7 +487,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedDivButton: {
-    width: '40%', 
+    width: '30%',
     height: 40,
     marginBottom: 16,
     marginRight:10,
@@ -511,12 +558,12 @@ const styles = StyleSheet.create({
   inputContainer2_1: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '30%',
+    width: '40%',
   },
   inputContainer2_2: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '70%',
+    width: '60%',
   },
   iconContainer: {
     flexDirection: 'row',
@@ -556,7 +603,7 @@ const styles = StyleSheet.create({
     width:'100%'
   },
   inputlesson:{
-    width: '41%',
+    width: '39%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -565,16 +612,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', 
 
-  },
-  inputlesson1:{
-    width: '28%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
   },
   skiButtonSelected: {
     width: 40,

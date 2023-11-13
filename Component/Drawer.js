@@ -19,7 +19,7 @@ export function CustomDrawerContent({ navigation }) {
         const storedName = await AsyncStorage.getItem('name');
         setUserRole(storedRole || 'Guest');
         setUserName(storedName || null);
-        console.log('AsyncStorage에서 저장된 역할:', storedRole);
+        // console.log('AsyncStorage에서 저장된 역할:', storedRole);
       } catch (error) {
         console.error('AsyncStorage에서 역할을 가져오는 중 오류 발생:', error);
       }
@@ -104,13 +104,24 @@ export function CustomDrawerContent({ navigation }) {
         )}
         onPress={() => navigation.navigate('SkiResortList')}
       />
-      <DrawerItem
-        label="예약 목록"
-        icon={({ color, size }) => (
-          <MaterialCommunityIcons name="account-clock" color={color} size={size} />
-        )}
-        onPress={() => navigation.navigate('Reservation')}
-      />
+      {userRole === 'TEACHER' && (
+        <DrawerItem
+          label="강습 목록"
+          icon={({ color, size }) => (
+            <MaterialCommunityIcons name="account-clock" color={color} size={size} />
+          )}
+          onPress={() => navigation.navigate('TeacherLessonList')}
+        />
+      )}
+      {(userRole === 'USER' || userRole === 'Guest') && (
+        <DrawerItem
+          label="예약 목록"
+          icon={({ color, size }) => (
+            <MaterialCommunityIcons name="account-clock" color={color} size={size} />
+          )}
+          onPress={() => navigation.navigate('Reservation')}
+        />
+    )}
       <DrawerItem
         label="강사자격 신청 및 등록"
         icon={({ color, size }) => (

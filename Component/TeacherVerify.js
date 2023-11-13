@@ -21,7 +21,7 @@ const TeacherVerifyScreen = () => {
     const [introduce, setIntroduce] = useState('');
     const [history, setHistory] = useState('');
     const [career, setCareer] = useState('');
-    const [team, setTeam] = useState('해당 소속 : ');
+    const [team, setTeam] = useState('');
 
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
