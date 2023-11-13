@@ -87,16 +87,12 @@ const TeacherInfoScreen = () => {
                 <View style={styles.headerimage}>
                   <Text style={styles.itemText}>{item.name}</Text>
                   <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
-                    <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
                     <Text style={styles.skilevel}>{item.classLevel}</Text>
                   </View>
                 </View>
                 <Text style={styles.subjectText}>{item.introduce}</Text>
               </View>
-              <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
-                <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
-                <Text style={styles.skilevel}>{item.classLevel}</Text>
-              </View>
+              <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
               <TouchableOpacity style={styles.cancelButton} onPress={() => onShowDetails(item)}>
                 <Text style={styles.cancelButtonText}>상세보기</Text>
               </TouchableOpacity>
@@ -204,7 +200,6 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop:3
   },
   subjectText: {
     fontSize: 16,
@@ -255,9 +250,9 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   skilevel: {
-    fontSize: 5,
+    fontSize: 15,
     color:'red',
-    marginLeft:1,
+    margin:4,
     marginBottom:5
   },
   categori: {
@@ -371,14 +366,13 @@ const styles = StyleSheet.create({
   },
   badge1: {
     borderRadius: 4,
-    width:20,
     marginLeft:5,
     marginTop:-1,
     padding:3,
     marginRight:10,
-    height:25
-    // flexDirection: 'row', 
-    // alignItems: 'center'
+    height:25,
+    flexDirection: 'row', 
+    alignItems: 'center'
   },
 });
 
