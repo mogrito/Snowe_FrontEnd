@@ -19,7 +19,6 @@ import {
 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
-import * as Location from 'expo-location';
 import axios from 'axios';
 import { Card, Avatar } from 'react-native-paper';
 import { getTokenFromLocal } from './TokenUtils';
@@ -71,8 +70,6 @@ function MainScreen() {
   const [agendaItems, setAgendaItems] = useState({});
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
-  const location = selectedResort?.location;
-
 
   const handleUserIconPress = () => {
     navigation.openDrawer();
@@ -100,19 +97,18 @@ function MainScreen() {
     async function fetchWeather() {
       try {
         const apiKey = '28664d08fe65159df42d4ee6b227bacd';
-
-        if (location) {
-          const lon = location.longitude;
-          const lat = location.latitude;
-
+  
+        if (selectedResort?.location) {
+          const lon = selectedResort.location.longitude;
+          const lat = selectedResort.location.latitude;
+  
           const response = await axios.get(
             `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`
           );
-
+  
           if (response.status === 200) {
             const data = response.data;
             setWeatherData(data);
-            console.log(data);
           } else {
             console.error('날씨 데이터를 가져올 수 없습니다');
           }
@@ -123,9 +119,11 @@ function MainScreen() {
         setIsLoading(false); // 로딩 상태 업데이트
       }
     }
-
+  
     fetchWeather();
-  }, []);
+  }, [selectedResort]);
+
+  
 
   LocaleConfig.locales['ko'] = {
     monthNames: [
@@ -331,7 +329,7 @@ function MainScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    width: '100%',
+
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -399,7 +397,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     backgroundColor: 'white',
-    width: '90%',
+    width: windowWidth * 0.9,
     height: 110,
     marginTop: 10,
     borderRadius: 10,
