@@ -25,17 +25,26 @@ const ReservationScreen = () => {
   //예약 데이터 들고오기 
   useEffect(() => {
     const fetchData = async () => {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await fetch('your-api-endpoint');
-        const result = await response.json();
-        setReservatedataData(result);
+        const response = await axios.get('http://192.168.25.204:8080/member/me', {
+          headers: {
+            'Authorization': authorizationHeader,
+          },
+        });
+    
+        const responseData = response.data;
+        setReservatedataData(responseData);       
+    
       } catch (error) {
-        console.error('Error fetching data:', error);
+        // 오류 처리
+        console.error('API 요청 중 오류 발생:', error);
       }
     };
-
     fetchData();
   }, []);
+
 
   //취소버튼을 누르면 item.id, item.teacherId 를 onCancel로 보내고 cancelReservation에 값을 전달하고 cancelReservation를 통해 DB로 보냄
   

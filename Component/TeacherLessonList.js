@@ -19,27 +19,35 @@ const TeacherLessonListScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
-  const [reservatedata, setReservatedataData] = useState([]); //예약 데이터 
+  const [teacherlessondata, setteacherlessondataData] = useState([]); //강사 강습 데이터 
 
 
-  //예약 데이터 들고오기 
+  //강습 데이터 들고오기 
   useEffect(() => {
     const fetchData = async () => {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await fetch('your-api-endpoint');
-        const result = await response.json();
-        setReservatedataData(result);
+        const response = await axios.get('http://192.168.25.204:8080/member/me', {
+          headers: {
+            'Authorization': authorizationHeader,
+          },
+        });
+    
+        const responseData = response.data;
+        setteacherlessondataData(responseData);       
+    
       } catch (error) {
-        console.error('Error fetching data:', error);
+        // 오류 처리
+        console.error('API 요청 중 오류 발생:', error);
       }
     };
-
     fetchData();
   }, []);
 
   //취소버튼을 누르면 item.id, item.teacherId 를 onCancel로 보내고 cancelReservation에 값을 전달하고 cancelReservation를 통해 DB로 보냄
   
-  const cancelReservation = async (reservationId, teacherId) => {
+  const cancelReservation = async (teacherlessonId, teacherId) => {
     try {
       // 서버에 예약 취소를 요청합니다.
       const response = await fetch('취소 API 엔드포인트', {
@@ -48,14 +56,14 @@ const TeacherLessonListScreen = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          reservationId,
+          teacherlessonId,
           teacherId,
         }),
       });
 
       if (response.ok) {
         // 취소가 성공하면 상태를 업데이트하여 취소된 예약을 제거합니다.
-        setReservatedataData((prevData) => prevData.filter(item => item.id !== reservationId));
+        setteacherlessondataData((prevData) => prevData.filter(item => item.id !== reservationId));
       } else {
         console.error('예약 취소 중 오류 발생');
       }
@@ -74,11 +82,11 @@ const TeacherLessonListScreen = () => {
   };
 
   const currentDate = new Date();
-  const beforeLessons = reservatedata.filter((item) => new Date(item.edustartdate) > currentDate);
-  const duringLessons = reservatedata.filter(
-    (item) => new Date(reservatedata.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate)
+  const beforeLessons = teacherlessondata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const duringLessons = teacherlessondata.filter(
+    (item) => new Date(teacherlessondata.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate)
   );
-  const afterLessons = reservatedata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const afterLessons = teacherlessondata.filter((item) => new Date(item.edustartdate) > currentDate);
 
   return (
     <View style={styles.container}>
