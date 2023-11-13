@@ -11,6 +11,7 @@ const TeacherReserveScreen = () => {
   const isFocused = useIsFocused();
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [lessonEndDate, setLessonEndDate] = useState('');
   const [teacherData, setTeacherData] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -70,6 +71,8 @@ const TeacherReserveScreen = () => {
       const data = await response.json();
       console.log(data);
       setFilteredTeachers(data);
+      setLessonEndDate(data);
+
     } catch (error) {
       console.error('선생님 데이터 가져오기 오류:', error);
     }
@@ -145,21 +148,21 @@ const TeacherReserveScreen = () => {
           monthFormat={'yyyy년 MM월'}
         
         />
-        <View style={styles.teacherItem}>
+        <View style={styles.sampleTeacherItem}>
           <View style={styles.teacherInfo}>
             <View style={styles.teacherImageView}>
-              <Text style={styles.teacherImage}>이미지</Text>
+              <Text>이미지</Text>
             </View>
             <View style={styles.nameDivView}>
               <Text style={styles.teacherName}>이름</Text>
-              <Text style={styles.eduTime}>{item.div}</Text>
+              <Text style={styles.eduTime}>강습시간</Text>
             </View>
             <View style={styles.lessonInfoView}>
-              <Text style={{fontWeight: 'bold', fontSize:17}}>{`${item.lessonTitle}`}</Text>
-              <Text>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
+              <Text style={{fontWeight: 'bold', fontSize:17}}>강습명</Text>
+              <Text style={{fontSize:10}}>(현재 강습인원수 / 최대 강습인원수)</Text>
             </View>
             <View style={styles.lessonLevelView}>
-              <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}`}</Text>
+              <Text>종목/수준</Text>
             </View>
           </View>
         </View>
@@ -189,7 +192,7 @@ const TeacherReserveScreen = () => {
                     <Text>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
                   </View>
                   <View style={styles.lessonLevelView}>
-                    <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}`}</Text>
+                    <Text style={styles.teacherSubject}>{`${item.lessonClass}/${item.lessonLevel}`}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -206,6 +209,7 @@ const TeacherReserveScreen = () => {
           <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
           <Text style={styles.selectedDate}>{`강습 제목: ${selectedTeacher?.lessonTitle}`}</Text>
           <Text style={styles.selectedDate}>{`강습 시작일: ${selectedDate}`}</Text>
+          <Text style={styles.selectedDate}>{`강습 종료일: ${selectedTeacher?.lessonEndDate}`}</Text>
           <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.lessonStart}`}</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.checkReserveButton} onPress={reserveLesson}>
@@ -252,6 +256,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 15,
+  },
+  sampleTeacherItem: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginTop:15
   },
   teacherName: {
     fontSize: 17,
@@ -367,7 +377,7 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   },
   teacherImageView:{
-    width:'15%'
+    width:'15%',
   },
   nameDivView:{
     width:'15%',
@@ -377,8 +387,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   lessonLevelView:{
-    width:'20%'
+    width:'20%',
+    alignItems: 'center'
   },
+
 });
 
 export default TeacherReserveScreen;
