@@ -22,29 +22,24 @@ const TeacherReserveScreen = () => {
 
   // 예약 신청을 서버에 업데이트하는 함수
   const reserveLesson = async () => {
+    const token = await getTokenFromLocal();
+    const authorizationHeader = `Bearer ${token}`;
     if (selectedTeacher) {
       try {
         // 서버로 예약 데이터 전송
-        const response = await fetch('API 적어주시공', {
+        const response = await fetch('http://192.168.25.204:8080/reservation/reserve', {
           method: 'POST',
           headers: {
-            // 토큰값
             'Content-Type': 'application/json',
+            'Authorization': authorizationHeader,
           },
           body: JSON.stringify({
-            teacherId: selectedTeacher.id,
-            date: selectedDate,
-            //필요한 DB컬럼 추가해용  
+            teacherId: selectedTeacher.loginId,
+            lessonId: selectedTeacher.lessonId,
           }),
         });
 
         if (response.ok) {
-          // 서버에서 응답이 성공적으로 오면 로컬 상태 업데이트
-          const updatedTeacherData = teacherData.map((teacher) =>
-            teacher.id === selectedTeacher.id
-              ? { ...teacher, count: teacher.count + 1 }
-              : teacher
-          );
           setTeacherData(updatedTeacherData);
           setModalVisible(false); // 모달 닫기
         } else {
@@ -65,7 +60,7 @@ const TeacherReserveScreen = () => {
     const authorizationHeader = `Bearer ${token}`;
 
     try {
-      const response = await fetch(`http://192.168.25.204:8080/lesson/list?lessonDate=${date.dateString}`, {
+      const response = await fetch(`http://192.168.25.204:8080/member/list?lessonDate=${date.dateString}`, {
         method: 'GET', // GET 요청으로 변경
         headers: {
           'Content-Type': 'application/json',
@@ -150,6 +145,7 @@ const TeacherReserveScreen = () => {
           monthFormat={'yyyy년 MM월'}
         
         />
+        
         {selectedDate && (
           <FlatList
           data={filteredTeachers}
@@ -163,14 +159,20 @@ const TeacherReserveScreen = () => {
                 onPress={() => handleTeacherPress(item)}
               >
                 <View style={styles.teacherInfo}>
-                  <Image source={{ uri: item.image }} style={styles.teacherImage} />
-                  <View>
+                  <View style={styles.teacherImageView}>
+                    <Image source={{ uri: item.image }} style={styles.teacherImage} />
+                  </View>
+                  <View style={styles.nameDivView}>
                     <Text style={styles.teacherName}>{item.name}</Text>
                     <Text style={styles.eduTime}>{item.div}</Text>
                   </View>
-                  <Text style={styles.teacherCount}>{`(${item.lessonTitle}`}</Text>
-                  <Text style={styles.teacherCount}>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
-                  <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}`}</Text>
+                  <View style={styles.lessonInfoView}>
+                    <Text style={{fontWeight: 'bold', fontSize:17}}>{`${item.lessonTitle}`}</Text>
+                    <Text>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
+                  </View>
+                  <View style={styles.lessonLevelView}>
+                    <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}`}</Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             )}
@@ -234,11 +236,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   teacherName: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 'bold',
   },
   teacherSubject: {
-    fontSize: 20,
+    fontSize: 18,
     color: 'black',
   },
   teacherList: {
@@ -265,12 +267,12 @@ const styles = StyleSheet.create({
   teacherInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    width:'100%'
   },
   teacherImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginRight: 10,
   },
   teacherCount: {
     left: 200,
@@ -345,6 +347,19 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight:'bold'
+  },
+  teacherImageView:{
+    width:'15%'
+  },
+  nameDivView:{
+    width:'15%',
+  },
+  lessonInfoView:{
+    width:'50%',
+    alignItems: 'center'
+  },
+  lessonLevelView:{
+    width:'20%'
   },
 });
 
