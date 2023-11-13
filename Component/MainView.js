@@ -68,6 +68,7 @@ function MainScreen() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [items, setItems] = useState({});
   const [agendaItems, setAgendaItems] = useState({});
+  const [hotBoardList, setHotBoardList] = useState([]);
  
 
 
