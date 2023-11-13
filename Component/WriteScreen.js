@@ -19,12 +19,12 @@ function WriteScreen({ route }) {
   const navigation = useNavigation();
   const bodyRef = useRef();
   const [date, setDate] = useState(log ? new Date(log.date) : new Date());
-  const loginId = '정훈';
   const [category, setCategory] = useState(''); // 선택한 카테고리 상태
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('카테고리 선택');
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-  const [imageUri, setImageUri] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [role, setRole] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   
 
@@ -92,13 +92,13 @@ function WriteScreen({ route }) {
 
       formData.append('board', boardBlob);
       
-      if (imageUri) {
+      if (imageUrl) {
       // 파일 
-      const filename = imageUri.split('/').pop();
+      const filename = imageUrl.split('/').pop();
       console.log("파일이름 => " + filename);
       
 
-      const response = await fetch(imageUri);
+      const response = await fetch(imageUrl);
       const imageBlob = await response.blob();
     
       formData.append('image', imageBlob, filename);
@@ -109,7 +109,8 @@ function WriteScreen({ route }) {
         {
         	headers: {
           'Authorization': authorizationHeader,
-          'Content-Type':'multipart/form-data'},
+          'Content-Type':'multipart/form-data'
+          },
         }
       )
 
@@ -144,7 +145,36 @@ function WriteScreen({ route }) {
 
 
        console.log("기본uri => " + result.uri);
-       setImageUri(result.uri);
+       setImageUrl(result.uri);
+    }
+  };
+  useEffect(() => {
+    fetchGetToken();
+  }, []);
+
+  const fetchGetToken = async () => {
+    try {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+
+      const response = await fetch(`${URL}/board/view/token-check`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json', 
+          'Authorization': authorizationHeader,
+        } 
+      });
+      
+      const tokenData = await response.json();
+      console.log(tokenData); // 게시글 정보 확인
+
+      // 게시글 데이터에서 필요한 정보 추출
+      const role = tokenData.role;
+      console.log(role);
+      setRole(role);
+
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -199,7 +229,7 @@ function WriteScreen({ route }) {
        {/* <View style={{ flex: 1, alignItems: 'left', justifyContent: 'center' }}> */}
           <TouchableOpacity onPress={uploadImage}>
             <MaterialIcons name='add-a-photo' size={30} color="black" />
-            <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />
+            <Image source={{ uri: imageUrl }} style={{ width: 200, height: 200 }} />
           </TouchableOpacity>
         {/* </View> */}
 
@@ -213,14 +243,14 @@ function WriteScreen({ route }) {
           <View style={styles.modalContent}>
             <Text>검색 대상을 선택하세요:</Text>
             <View style={styles.buttonContainer}>
-              {loginId !== 'admin' && (
+              {role !== 'ADMIN' && (
                 <Button 
                   title="공지사항" 
                   onPress={() => handleSelectCategory('공지사항', '공지사항')} 
                   disabled={true} // 비활성화
                 />
               )}
-              {loginId === 'admin' && (
+              {role === 'ADMIN' && (
                 <Button 
                   title="공지사항" 
                   onPress={() => handleSelectCategory('공지사항', '공지사항')} 

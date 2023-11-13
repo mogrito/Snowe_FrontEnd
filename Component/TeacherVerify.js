@@ -14,6 +14,7 @@ import TransparentCircleButton from './TransparentCircleButton';
 import backgroundImage from '../Images/dr1.png'; 
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { getTokenFromLocal } from './TokenUtils';
 
 
 
@@ -31,7 +32,7 @@ const TeacherVerifyScreen = () => {
     const [nickname, setNickname] = useState('');
     const [fontLoaded, setFontLoaded] = useState(false);
     const navigation = useNavigation();
-    const URL = 'http://192.168.219.103:8080';
+    const URL = 'http://192.168.25.204:8080';
     const [imageUrl, setImageUrl] = useState('');
     const [licenseImageUrl, setLicenseImageUrl] = useState('');
     const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
@@ -56,11 +57,14 @@ const TeacherVerifyScreen = () => {
     // 변수명, API DB에 맞게 변경해야함
     const handleRegister = async () => {
       try {
+        const token = await getTokenFromLocal();
+        const authorizationHeader = `Bearer ${token}`;
 
-        const response = await fetch(`${URL}/member/members`, {
+        const response = await fetch(`${URL}/member/apply`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': authorizationHeader,
           },
           body: JSON.stringify({
             introduce: introduce, // 한줄소개
@@ -108,18 +112,19 @@ const TeacherVerifyScreen = () => {
       aspect: [1, 1],
       multiple: true,
     });
-
-      const selectedImageUri = result.uri;
-
-      // file:// 를 제거하고 실제 파일 경로만 얻기
-      const realFilePath = selectedImageUri.replace("file://", "");
-      console.log("실제 파일 경로:", realFilePath);
     
     if(result.canceled){
       console.log('이미지 선택이 취소되었습니다');
       return null;
     }
-    console.log(result);
+
+    if (!result.canceled) {
+
+
+      console.log("기본uri => " + result.uri);
+      setImageUrl(result.uri);
+   }
+
     setImageUrl(result.uri);
     console.log(result.uri); 
   };
@@ -140,20 +145,15 @@ const TeacherVerifyScreen = () => {
       aspect: [1, 1],
       multiple: true,
     });
-
-      const selectedImageUri = result.uri;
-
-      // file:// 를 제거하고 실제 파일 경로만 얻기
-      const realFilePath = selectedImageUri.replace("file://", "");
-      console.log("실제 파일 경로:", realFilePath);
     
     if(result.canceled){
       console.log('이미지 선택이 취소되었습니다');
       return null;
     }
-    console.log(result);
+
     setLicenseImageUrl(result.uri);
     console.log(result.uri); 
+
   };
 
 

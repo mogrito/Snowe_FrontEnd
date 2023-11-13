@@ -92,7 +92,10 @@ export function CustomDrawerContent({ navigation }) {
             navigation.navigate('TeacherMyPage');
           } else if (userRole === 'USER') {
             navigation.navigate('MyPage');
-          } else if (userRole === 'Guest' || userRole === null) {
+          }else if(userRole === 'ADMIN') {
+            navigation.navigate('MyPage');
+          }
+           else if (userRole === 'Guest' || userRole === null) {
             navigation.navigate('Login');
           }
         }}
