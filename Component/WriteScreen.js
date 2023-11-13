@@ -2,14 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, KeyboardAvoidingView, View, Platform, Button, TextInput, Modal, Text, TouchableOpacity, Pressable, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import WriteHeader from './WriteHeader';
-import ImagePicker2 from './ImagePicker2';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import TransparentCircleButton from './TransparentCircleButton';
 import { getTokenFromLocal } from './TokenUtils';
 import axios from 'axios';
-import * as base64 from 'base-64';
 
 const URL = 'http://192.168.25.204:8080';
 

@@ -68,6 +68,8 @@ function MainScreen() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [items, setItems] = useState({});
   const [agendaItems, setAgendaItems] = useState({});
+  const [hotBoardList, setHotBoardList] = useState([]);
+  const [boardId, setBoardId] = useState('');
  
 
 
@@ -206,6 +208,42 @@ function MainScreen() {
     }
     fetchData();
   }, [date]);
+
+    // 핫 게시글 fetch
+    const fetchBoardData = async () => {
+      try {
+        const response = await Promise.race([
+          fetch('http://192.168.25.204:8080/board/hot-List'),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('시간이 초과되었습니다')), 1000)
+          ),
+        ]);
+        const hotBoardData = await response.json();
+  
+        console.log("핫보드 데이터입니다 ==>> " + hotBoardData);
+        setHotBoardList(hotBoardData);
+  
+        setBoardId(hotBoardData.boardId);
+  
+      } catch (error) {
+        console.error(error);
+        alert('글불러오기실패');
+      }
+    }
+    useEffect(() => {
+      fetchBoardData();
+    }, []);
+    // 핫게시글 누를 시
+    const onBoardPress = (board) => {
+      // setSelectedBoard(board);
+      navigation.navigate('PostView', { 
+        boardId: board.boardId, 
+        image: board.image,
+        content: board.content,
+        title:board.title,
+        recommendCount:board.recommendCount
+      }); 
+    };
 
   
   const renderItemForFlatList = ({ item }) => (
