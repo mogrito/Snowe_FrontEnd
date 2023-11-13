@@ -60,9 +60,6 @@ const LessonSignUpScreen = () => {
     const token = await getTokenFromLocal();
     const authorizationHeader = `Bearer ${token}`;
     
-    try {
-      const response = await fetch(`${URL}/lesson/add`, {
-
     if (!lessonname) {
       alert('강습명을 입력해 주세요.');
       return;
