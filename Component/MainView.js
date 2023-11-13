@@ -329,13 +329,13 @@ function MainScreen() {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{ flex: 1, marginTop: 10, width: windowWidth * 0.9 }}>
+        <View style={{ flex: 1, marginTop: 5, width: windowWidth * 0.9 }}>
         <ScrollView>
           <Agenda
             items={agendaItems}
             selected={date}
             renderItem={renderItemForFlatList}
-            style={{ borderRadius: 10, height: 290 }}
+            style={{ borderRadius: 10, height: 290, marginTop:15, }}
             onDayPress={(day) => {
               setDate(day.dateString);
             }}
@@ -346,7 +346,6 @@ function MainScreen() {
         <View style={styles.hotboardContainer}>
           <Text style={styles.hotboardheader}>🔥 인기 게시물</Text>
           <View style={styles.hotboarditems}>
-          
           <FlatList
               data={hotBoardList}
               keyExtractor={(item) => item.boardId.toString()}
@@ -355,13 +354,14 @@ function MainScreen() {
                   style={styles.textContainer}
                   onPress={() => onBoardPress(item)}
                 >
-                  <View style={{ flexDirection:'row',alignItems: 'center', justifyContent: 'space-between' }}>
-                    <View>
-                      <Text>{item.title}  {item.category}</Text>
-                      <View style={styles.textComment}>
-                        <Text>{item.createDate}  댓글 {item.commentCount} · 좋아요 {item.recommendCount} </Text>
-                        <View style={styles.divider}></View>
-                      </View>
+                  <View style={styles.headerContainer}>
+                    <View style={styles.textComment}>
+                      <Text style={styles.boardtitle}>{item.title}</Text>
+                      <Text style={styles.boardcategory}>{item.category}</Text>
+                    </View>
+                    <View style={styles.textComment1}>
+                      <Text style={styles.datestyle}>{item.createDate}</Text>
+                      <Text> 👍 {item.recommendCount}  💬 {item.commentCount}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -399,18 +399,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
     right: 10,
   },
-  calendar: {
-    width: windowWidth * 0.9,
-    marginTop: 20,
-    borderRadius: 10,
-  },
+
   background: {
     flex: 1,
     backgroundColor: '#DBEBF9',
   },
   body: {
     alignItems: 'center',
-    paddingTop: 50,
+    paddingTop: 60,
   },
   weatherContainer: {
     width: windowWidth * 0.9,
@@ -447,7 +443,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: windowWidth * 0.9,
     height: 110,
-    marginTop: 10,
+    marginTop: 20,
     borderRadius: 10,
   },
   SkiInfoIcon: {
@@ -494,15 +490,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    marginTop:10,
+    marginTop:20,
   },
   hotboarditems:{
-    flex: 1,
-
+    flex:1,
+    width:'100%',
+    marginBottom:40,
   },
   hotboarditem: {
     fontSize: 16,
-    marginBottom: 3, // Adjust this margin value to add space
+    marginBottom: 10, // Adjust this margin value to add space
   },
   hotboarddate: {
     fontSize: 13,
@@ -510,7 +507,7 @@ const styles = StyleSheet.create({
   },
   hotboarditem1: {
     fontSize: 16,
-    marginBottom: 3, // Adjust this margin value to add space
+    marginBottom: 10, // Adjust this margin value to add space
   },
   hotboarddate1: {
     fontSize: 13,
@@ -518,7 +515,7 @@ const styles = StyleSheet.create({
   },
   hotboarditem2: {
     fontSize: 16,
-    marginBottom: 3, // Adjust this margin value to add space
+    marginBottom: 10, // Adjust this margin value to add space
   },
   hotboarddate2: {
     fontSize: 13,
@@ -531,6 +528,34 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft:-5,
   },
+  textComment: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', 
+    alignItems: 'flex-start', 
+  },
+  textComment1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', 
+    alignItems: 'flex-start', 
+    marginTop:5,
+  },
+  headerContainer: {
+    marginTop: 20,
+    justifyContent: 'space-between', 
+  },
+  boardcategory:{
+    fontWeight:'bold',
+    marginBottom:1,
+  },
+  textContainer:{
+    width:'100%',
+
+  }
+  ,
+  datestyle:{
+    fontSize:13,
+    color:'gray'
+  }
 
 
 });
