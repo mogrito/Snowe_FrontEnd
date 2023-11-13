@@ -47,7 +47,7 @@ const MyPageScreen = () => {
   };
 
   const onGoBack = () => {
-    navigation.navigate('MainView');
+    navigation.pop();
   };
 
   const DeleteUserPage = () => {
