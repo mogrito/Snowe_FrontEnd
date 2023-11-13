@@ -20,7 +20,7 @@ import backgroundImage from '../Images/dr1.png';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { max } from 'date-fns';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
+import { getTokenFromLocal } from './TokenUtils';
 
 const LessonSignUpScreen = () => {
 
@@ -41,7 +41,7 @@ const LessonSignUpScreen = () => {
   const [lessonIntroduce, setLessonIntroduce] = useState('');
   const navigation = useNavigation();
   
-  const URL = 'http://192.168.219.103:8080';
+  const URL = 'http://192.168.25.204:8080';
   
   const onGoBack = () => {
     navigation.goBack();
@@ -59,11 +59,15 @@ const LessonSignUpScreen = () => {
   }, []);
 
   const handleRegister = async () => {
+    const token = await getTokenFromLocal();
+    const authorizationHeader = `Bearer ${token}`;
+    
     try {
-      const response = await fetch(`${URL}`, {
+      const response = await fetch(`${URL}/lesson/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
         },
         body: JSON.stringify({
           lessonTitle: lessonname,
