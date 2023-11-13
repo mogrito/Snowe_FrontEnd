@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 
-const URL = "http://localhost:8080/member"; // API 엔드포인트 URL
+const URL = "http://192.168.25.202:8080/member"; // API 엔드포인트 URL
 const onGoBack = () => {
   navigation.goBack();
 };
@@ -23,7 +23,6 @@ export const getTokens = async (requestData, navigation) => {
         'accessToken': data.token,
       }));
       console.log(await AsyncStorage.getItem('Tokens'));
-      navigation.navigate('MainView');
     } else if (response.status === 401) {
       alert("사용자 정보가 없습니다");
     } else {
@@ -32,6 +31,9 @@ export const getTokens = async (requestData, navigation) => {
   } catch (error) {
     console.error(error);
     alert("알 수 없는 오류");
+  } finally {
+    // MainView의 useEffect를 다시 실행하도록 navigation을 이용하여 이동
+    navigation.navigate('MainView');
   }
 };
 
@@ -60,34 +62,34 @@ export const checkTokenAndNavigate = async (navigation) => {
   }
 };
 
-// 토큰값 검증
-export const verifyTokens = async () => {
-  const token = await getTokenFromLocal();
-  const authorizationHeader = `Bearer ${token}`;
-  try {
-    const response = await axios.get('http://192.168.25.202:8080/member/test', {
-      headers: {
-        'Authorization': authorizationHeader,
-      },
-    });
-    // user API에 요청 -> 토큰을 검증
-    if (response.status === 200) {
-      console.log('유효');
-    } else {
-      // 토큰이 없거나 만료된 경우 로그인 페이지로 이동
-      navigation.reset({ routes: [{ name: "Login" }] });
-    }
-  } catch (error) {
-    // 오류 처리
-    console.error('API 요청 중 오류 발생:', error);
-  }
-};
+// // 토큰값 검증
+// export const verifyTokens = async () => {
+//   const token = await getTokenFromLocal();
+//   const authorizationHeader = `Bearer ${token}`;
+//   try {
+//     const response = await axios.get('http://192.168.25.202:8080/member/test', {
+//       headers: {
+//         'Authorization': authorizationHeader,
+//       },
+//     });
+//     // user API에 요청 -> 토큰을 검증
+//     if (response.status === 200) {
+//       console.log('유효');
+//     } else {
+//       // 토큰이 없거나 만료된 경우 로그인 페이지로 이동
+//       navigation.reset({ routes: [{ name: "Login" }] });
+//     }
+//   } catch (error) {
+//     // 오류 처리
+//     console.error('API 요청 중 오류 발생:', error);
+//   }
+// };
 
 export const getInfo = async () => {
   const token = await getTokenFromLocal();
   const authorizationHeader = `Bearer ${token}`;
   try {
-    const response = await axios.get('http://localhost:8080/member/me', {
+    const response = await axios.get('http://192.168.25.204:8080/member/me', {
       headers: {
         'Authorization': authorizationHeader,
       },

@@ -18,7 +18,7 @@ const MyPageScreen = () => {
   });
 
   useEffect(() => {
-    // checkTokenAndNavigate(navigation);
+     checkTokenAndNavigate(navigation);
 
     async function fetchData() {
       try {
@@ -42,8 +42,13 @@ const MyPageScreen = () => {
   }, [data]);
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('Tokens');
-    navigation.navigate('MainView');
+    try {
+      await AsyncStorage.removeItem('Tokens');
+      await AsyncStorage.removeItem('role');
+      navigation.navigate('MainView');
+    } catch (error) {
+      console.error('AsyncStorage에서 아이템을 제거하는 중 오류 발생:', error);
+    }
   };
 
   const onGoBack = () => {

@@ -18,9 +18,7 @@ const TeacherReserveScreen = () => {
   
   const navigation = useNavigation();
 
-  // useEffect(() => {
-  //   verifyTokens(navigation);
-  // },);
+
 
   // 예약 신청을 서버에 업데이트하는 함수
   const reserveLesson = async () => {
@@ -63,12 +61,14 @@ const TeacherReserveScreen = () => {
 
   const handleDateSelect = async (date) => {
     setSelectedDate(date.dateString);
-    
+    const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
     try {
-      const response = await fetch(`http://192.168.25.204:8080/lesson?lessonDate=${date.dateString}`, {
-        method: 'GET', // GET 요청으로 변경
+      const response = await fetch(`http://localhost:8080/lesson?lessonDate=${date.dateString}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
         },
       });
       const data = await response.json();

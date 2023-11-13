@@ -19,9 +19,9 @@ import {
 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
-import * as Location from 'expo-location';
 import axios from 'axios';
 import { Card, Avatar } from 'react-native-paper';
+import { getTokenFromLocal } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -64,11 +64,12 @@ function MainScreen() {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedResortName, setSelectedResortName] = useState('');
-
+  const [reservationData, setreservationData] = useState();
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [items, setItems] = useState({});
+  const [agendaItems, setAgendaItems] = useState({});
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
-  const location = selectedResort?.location;
-
 
   const handleUserIconPress = () => {
     navigation.openDrawer();
@@ -96,19 +97,18 @@ function MainScreen() {
     async function fetchWeather() {
       try {
         const apiKey = '28664d08fe65159df42d4ee6b227bacd';
-
-        if (location) {
-          const lon = location.longitude;
-          const lat = location.latitude;
-
+  
+        if (selectedResort?.location) {
+          const lon = selectedResort.location.longitude;
+          const lat = selectedResort.location.latitude;
+  
           const response = await axios.get(
             `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`
           );
-
+  
           if (response.status === 200) {
             const data = response.data;
             setWeatherData(data);
-            console.log(data);
           } else {
             console.error('날씨 데이터를 가져올 수 없습니다');
           }
@@ -119,9 +119,11 @@ function MainScreen() {
         setIsLoading(false); // 로딩 상태 업데이트
       }
     }
-
+  
     fetchWeather();
-  }, []);
+  }, [selectedResort]);
+
+  
 
   LocaleConfig.locales['ko'] = {
     monthNames: [
@@ -163,67 +165,68 @@ function MainScreen() {
     return date.toISOString().split('T')[0];
   };
   
-    const [items, setItems] = useState({});
-  
 
-    const hardcodedData = [
-      // {
-      //   date: '2023-11-11',
-      //   events: [
-      //     { name: 'Meeting with Team A'},
-      //   ],
-      // },
-      {
-        date: '2023-11-11',
-        events: [
-          { name: 'Meeting with Team B'},
-        ],
-      },
-  
-    ];
-  
-    const loadItems = () => {
-      setTimeout(() => {
-        hardcodedData.forEach((dayData) => {
-          const { date, events } = dayData;
-          const strTime = timeToString(new Date(date).getTime());
-  
-          if (!items[strTime]) {
-            items[strTime] = [];
-  
-            events.forEach((event) => {
-              items[strTime].push({
-                name: event.name,
-                height: event.height,
-              });
-            });
-          }
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true); // 로딩 시작
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+      try {
+        const response = await axios.get(`http://192.168.25.202:8080/reservation/listOnDate?lessonDate=${date}`, {
+          headers: {
+            'Authorization': authorizationHeader,
+          },
         });
+        if (response.status === 200) {
+          const data = response.data;
+          console.log('Fetched Data:', data);
   
-        const newItems = { ...items };
-        setItems(newItems);
-      }, 1000);
-    };
+          // 아젠다 아이템 설정
+          const agendaItem = {};
+          agendaItem[date] = data;
+          setAgendaItems(agendaItem);
   
-    const renderItem = (item) => {
-      return (
-        <TouchableOpacity style={{ margin: 5, padding: 10 }}>
-          <Card>
-            <Card.Content>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <Text>{item.name}</Text>
-                <Image source={require('../Images/face.jpg')} style={styles.image}/>  
-              </View>
-            </Card.Content>
-          </Card>
-        </TouchableOpacity>
-      );
-    };
+          // items에 agendaItems를 설정
+          setItems(agendaItem);
+          console.log('items: ', items)
+        } else {
+          setreservationData(null);
+          console.error('데이터 가져오기 중 오류 발생:', response.status);
+        }
+      } catch (error) {
+        setreservationData(null);
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
+      }
+    }
+    fetchData();
+  }, [date]);
+
+  
+  const renderItemForFlatList = ({ item }) => (
+    <Card>
+      <Card.Content>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          {item.lessonDate ? ( // lessonDate가 있는 경우 텍스트 표시
+            <>
+              <Text>{item.lessonDate}</Text>
+              <Text>{item.name}</Text>
+              <Text>{item.lessonTitle}</Text>
+            </>
+          ) : (
+            // lessonDate가 없는 경우 안내 메시지 표시
+            <Text>예약 내역이 없습니다.</Text>
+          )}
+        </View>
+      </Card.Content>
+    </Card>
+  );
 
   return (
     <View style={styles.background}>
@@ -284,15 +287,40 @@ function MainScreen() {
             </View>
           </TouchableOpacity>
         </View>
-
-        <View style={{ flex: 1, marginTop: 20 ,width:windowWidth*0.9}}>
+        <View style={{ flex: 1, marginTop: 10, width: windowWidth * 0.9 }}>
+        <ScrollView>
           <Agenda
-            items={items}
-            loadItemsForMonth={loadItems}
-            selected={timeToString(new Date().getTime())}
-            renderItem={renderItem}
-            style={{ borderRadius: 5,height: 250,}} 
+            items={agendaItems}
+            selected={date}
+            renderItem={renderItemForFlatList}
+            style={{ borderRadius: 10, height: 290 }}
+            onDayPress={(day) => {
+              setDate(day.dateString);
+            }}
           />
+        </ScrollView>
+        </View>
+
+        <View style={styles.hotboardContainer}>
+          <Text style={styles.hotboardheader}>🔥 인기 게시물</Text>
+          <View style={styles.hotboarditems}>
+          
+          <TouchableOpacity>
+            <Text style={styles.hotboarditem}>오늘 스키장 같이 가실분?</Text>
+            <Text style={styles.hotboarddate}>10/26</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity>
+            <Text style={styles.hotboarditem1}>하앙</Text>
+            <Text style={styles.hotboarddate1}>10/30</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+            <Text style={styles.hotboarditem2}>정훈아 해줘</Text>
+            <Text style={styles.hotboarddate2}>10/21</Text>
+          </TouchableOpacity>
+          
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -301,14 +329,14 @@ function MainScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    width: '100%',
+
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'sticky',
     top: 40,
     backgroundColor: '#DBEBF9',
-    paddingVertical: 10,
+    paddingVertical: 7,
     paddingHorizontal: 10,
     zIndex: 1,
   },
@@ -369,9 +397,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     backgroundColor: 'white',
-    width: '90%',
+    width: windowWidth * 0.9,
     height: 110,
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 10,
   },
   SkiInfoIcon: {
@@ -404,7 +432,53 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     marginLeft: 20,
 
-  }
+  },
+  hotboardContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    width: windowWidth * 0.9,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop:10,
+  },
+  hotboarditems:{
+    flex: 1,
+
+  },
+  hotboarditem: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboarditem1: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate1: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboarditem2: {
+    fontSize: 16,
+    marginBottom: 3, // Adjust this margin value to add space
+  },
+  hotboarddate2: {
+    fontSize: 13,
+    marginBottom: 25,
+  },
+  hotboardheader: {
+    fontSize: 18,
+    marginBottom: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginLeft:-5,
+  },
 
 
 });
