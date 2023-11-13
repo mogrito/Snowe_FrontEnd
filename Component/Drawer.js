@@ -104,13 +104,24 @@ export function CustomDrawerContent({ navigation }) {
         )}
         onPress={() => navigation.navigate('SkiResortList')}
       />
-      <DrawerItem
-        label="예약 목록"
-        icon={({ color, size }) => (
-          <MaterialCommunityIcons name="account-clock" color={color} size={size} />
-        )}
-        onPress={() => navigation.navigate('Reservation')}
-      />
+      {userRole === 'TEACHER' && (
+        <DrawerItem
+          label="강습 목록"
+          icon={({ color, size }) => (
+            <MaterialCommunityIcons name="account-clock" color={color} size={size} />
+          )}
+          onPress={() => navigation.navigate('TeacherLessonList')}
+        />
+      )}
+      {(userRole === 'USER' || userRole === 'Guest') && (
+        <DrawerItem
+          label="예약 목록"
+          icon={({ color, size }) => (
+            <MaterialCommunityIcons name="account-clock" color={color} size={size} />
+          )}
+          onPress={() => navigation.navigate('Reservation')}
+        />
+    )}
       <DrawerItem
         label="강사자격 신청 및 등록"
         icon={({ color, size }) => (

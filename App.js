@@ -35,6 +35,7 @@ import TeacherChangeCarrerScreen from './Component/TeacherChangeCarrer';
 import TeacherChangeMySelfScreen from './Component/TeacherChangeMySelf';
 import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TeacherLessonListScreen from './Component/TeacherLessonList';
 
 
 
@@ -192,6 +193,12 @@ export default function App() {
          <RootStack.Screen
           name="TeacherChangeTeam"
           component={TeacherChangeTeamScreen}
+          options={{ headerShown: false }}
+          
+        />
+        <RootStack.Screen
+          name="TeacherLessonList"
+          component={TeacherLessonListScreen}
           options={{ headerShown: false }}
           
         />
