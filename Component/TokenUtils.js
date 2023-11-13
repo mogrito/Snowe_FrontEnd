@@ -58,7 +58,7 @@ export const checkTokenAndNavigate = async (navigation) => {
 
   if (!token) {
     // 토큰이 없으면 로그인 화면으로 이동
-    navigation.pop();
+    navigation.navigate('Login');
   }
 };
 
