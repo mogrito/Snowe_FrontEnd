@@ -239,7 +239,7 @@ function TabNavigator({ navigation }) {
   };
 
   useEffect(() => {
-    const pollInterval = setInterval(fetchData, 10);
+    const pollInterval = setInterval(fetchData, 100);
 
     const unsubscribe = navigation.addListener('focus', () => {
       fetchData();
