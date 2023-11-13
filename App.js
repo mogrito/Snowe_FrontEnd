@@ -232,14 +232,14 @@ function TabNavigator({ navigation }) {
     try {
       const storedRole = await AsyncStorage.getItem('role');
       setUserRole(storedRole || 'Guest');
-      // console.log('AsyncStorage에서 저장된 역할:', storedRole);
+      
     } catch (error) {
       console.error('AsyncStorage에서 역할을 가져오는 중 오류 발생:', error);
     }
   };
 
   useEffect(() => {
-    const pollInterval = setInterval(fetchData, 10);
+    const pollInterval = setInterval(fetchData, 100);
 
     const unsubscribe = navigation.addListener('focus', () => {
       fetchData();
