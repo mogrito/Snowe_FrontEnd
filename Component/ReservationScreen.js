@@ -15,7 +15,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 const Tab = createMaterialTopTabNavigator();
 
-const ReservationListScreen = () => {
+const ReservationScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
@@ -344,4 +344,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReservationListScreen;
+export default ReservationScreen;

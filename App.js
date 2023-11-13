@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useFocusEffect  } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
@@ -20,7 +20,7 @@ import { LogContextProvider } from './context/LogContext';
 import EditScreen from './Component/EditScreen';
 import SearchScreen from './Component/SearchScreen';
 import SkiResortListScreen from './Component/SkiResortList';
-import ReservationListScreen from './Component/ReservationList';
+import ReservationScreen from './Component/ReservationScreen';
 import ChangeNickNameScreen from './Component/ChangeNickName';
 import ChangePwScreen from './Component/ChangePw';
 import MyPageScreen from './Component/MyPage';
@@ -118,83 +118,83 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <RootStack.Screen
-            name="SkiResortList"
-            component={SkiResortListScreen}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="ReservationList"
-            component={ReservationListScreen}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="MyPage"
-            component={MyPageScreen}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="ChangePw"
-            component={ChangePwScreen}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="ChangeNickName"
-            component={ChangeNickNameScreen}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="DeleteUser"
-            component={DeleteUserScreen}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="NoticeInfo"
-            component={NoticeScreen}
-            options={{ headerShown: false }}
-
-          />
-          <RootStack.Screen
-            name="TeacherVerify"
-            component={TeacherVerifyScreen}
-            options={{ headerShown: false }}
-
-          />
-          <RootStack.Screen
-            name="LessonSignUp"
-            component={LessonSignUpScreen}
-            options={{ headerShown: false }}
-
-          />
-          <RootStack.Screen
-            name="TeacherMyPage"
-            component={TeacherMyPageScreen}
-            options={{ headerShown: false }}
-
-          />
-          <RootStack.Screen
-            name="TeacherChangeBrief"
-            component={TeacherChangeBreifScreen}
-            options={{ headerShown: false }}
-
-          />
-          <RootStack.Screen
-            name="TeacherChangeCarrer"
-            component={TeacherChangeCarrerScreen}
-            options={{ headerShown: false }}
-
-          />
-          <RootStack.Screen
-            name="TeacherChangeMySelf"
-            component={TeacherChangeMySelfScreen}
-            options={{ headerShown: false }}
-
-          />
-          <RootStack.Screen
-            name="TeacherChangeTeam"
-            component={TeacherChangeTeamScreen}
-            options={{ headerShown: false }}
-
-          />
+          name="SkiResortList"
+          component={SkiResortListScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="Reservation"
+          component={ReservationScreen}
+          options={{ headerShown: false }}
+        />
+         <RootStack.Screen
+          name="MyPage"
+          component={MyPageScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="ChangePw"
+          component={ChangePwScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="ChangeNickName"
+          component={ChangeNickNameScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="DeleteUser"
+          component={DeleteUserScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="NoticeInfo"
+          component={NoticeScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherVerify"
+          component={TeacherVerifyScreen}
+          options={{ headerShown: false }}
+          
+        />
+        <RootStack.Screen
+          name="LessonSignUp"
+          component={LessonSignUpScreen}
+          options={{ headerShown: false }}
+          
+        />
+        <RootStack.Screen
+          name="TeacherMyPage"
+          component={TeacherMyPageScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeBrief"
+          component={TeacherChangeBreifScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeCarrer"
+          component={TeacherChangeCarrerScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeMySelf"
+          component={TeacherChangeMySelfScreen}
+          options={{ headerShown: false }}
+          
+        />
+         <RootStack.Screen
+          name="TeacherChangeTeam"
+          component={TeacherChangeTeamScreen}
+          options={{ headerShown: false }}
+          
+        />
         </RootStack.Navigator>
       </LogContextProvider>
     </NavigationContainer>

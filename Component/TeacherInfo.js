@@ -30,7 +30,7 @@ const TeacherInfoScreen = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`http://localhost:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
+        const response = await fetch(`http://192.168.25.204:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
         if (!response.ok) {
           throw Error('서버에서 데이터를 가져오지 못했습니다.');
         }
@@ -87,12 +87,16 @@ const TeacherInfoScreen = () => {
                 <View style={styles.headerimage}>
                   <Text style={styles.itemText}>{item.name}</Text>
                   <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
+                    <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
                     <Text style={styles.skilevel}>{item.classLevel}</Text>
                   </View>
                 </View>
                 <Text style={styles.subjectText}>{item.introduce}</Text>
               </View>
-              <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
+              <View style={[styles.badge1, { backgroundColor: levelColors[item.classLevel] }]}>
+                <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
+                <Text style={styles.skilevel}>{item.classLevel}</Text>
+              </View>
               <TouchableOpacity style={styles.cancelButton} onPress={() => onShowDetails(item)}>
                 <Text style={styles.cancelButtonText}>상세보기</Text>
               </TouchableOpacity>
@@ -106,12 +110,18 @@ const TeacherInfoScreen = () => {
         {selectedTeacher && (
           <View style={styles.modalContainer}>
             <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
-                  <TransparentCircleButton onPress={closeModal} name="left" color="#424242" />
-                </TouchableOpacity>
+              <TransparentCircleButton onPress={closeModal} name="left" color="#424242" />
+            </TouchableOpacity>
             <ScrollView style={styles.modalContent}>
               <View style={styles.modalinfoimage}>
                 <Image source={selectedTeacher.image} style={styles.modalTeacherImage} />
-                <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft:40 }}>
+                  <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
+                  <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
+                    <Image source={eachsubject[selectedTeacher.classification]} style={styles.subjectImage} />
+                    <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
+                  </View>
+                </View>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
               {/* <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
@@ -124,13 +134,20 @@ const TeacherInfoScreen = () => {
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
                 </View>
-               </Swiper> */}
-              <Text style={styles.yaks}>약력</Text>
-              {selectedTeacher.yak && selectedTeacher.yak.map((item, index) => (
-                <Text style={styles.yak} key={index}>{item}</Text>
+               </Swiper>  */}
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={styles.levels}>수준 : </Text>
+                <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
+                  <Image source={eachsubject[selectedTeacher.classification]} style={styles.subjectImage} />
+                  <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
+                </View>
+              </View>
+              <Text style={styles.histories}>약력</Text>
+              {selectedTeacher.history && selectedTeacher.history.map((item, index) => (
+                <Text style={styles.history} key={index}>{item}</Text>
               ))}
                <Text style={styles.carrers}>경력</Text>
-              {selectedTeacher.yak && selectedTeacher.carrer.map((item, index) => (
+              {selectedTeacher.career && selectedTeacher.carrer.map((item, index) => (
                 <Text style={styles.carrer} key={index}>{item}</Text>
               ))}
                <Text style={styles.teams}>소속</Text>
@@ -187,6 +204,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginTop:3
   },
   subjectText: {
     fontSize: 16,
@@ -237,8 +255,10 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   skilevel: {
-    marginRight: 0,
-    fontSize: 15,
+    fontSize: 5,
+    color:'red',
+    marginLeft:1,
+    marginBottom:5
   },
   categori: {
     flexDirection: 'row',
@@ -251,17 +271,15 @@ const styles = StyleSheet.create({
 
   },
   subjectImage: {
-    width: 30,
-    height: 30,
-    marginRight: 50,
+    width: 18,
+    height: 15,
+    marginLeft:-1
   },
 
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
-
   },
   modalContent: {
     backgroundColor: 'white',
@@ -269,6 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
     height: '100%',
+    backgroundColor: '#C7DBF7'
   },
   modalTeacherImage: {
     width: 100,
@@ -280,7 +299,6 @@ const styles = StyleSheet.create({
   modalItemText: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10,
   },
   modalSubjectText: {
     fontSize: 18,
@@ -302,7 +320,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
-  yaks: {
+  levels: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 15,
+    paddingBottom:20
+  },
+  histories: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 15,
@@ -317,7 +341,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 30,
   },
-  yak: {
+  history: {
     marginTop:10,
   },
   carrer: {
@@ -331,27 +355,30 @@ const styles = StyleSheet.create({
     width: 190,
     height: 190,
   },
-  // swiperSlide: {
-  //   flex: 1,
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
+  swiperSlide: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     
-  // },
-  // swiperImage: {
-  //   width: '100%',
-  //   height: '110%',
-  //   marginTop:40
-  // },
+  },
+  swiperImage: {
+    width: '100%',
+    height: '110%',
+    marginTop:40
+  },
   headerimage:{
     flexDirection:'row'
   },
   badge1: {
     borderRadius: 4,
-    width: 'auto',
+    width:20,
     marginLeft:5,
     marginTop:-1,
-
-
+    padding:3,
+    marginRight:10,
+    height:25
+    // flexDirection: 'row', 
+    // alignItems: 'center'
   },
 });
 

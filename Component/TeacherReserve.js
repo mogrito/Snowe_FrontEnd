@@ -62,10 +62,11 @@ const TeacherReserveScreen = () => {
   const handleDateSelect = async (date) => {
     setSelectedDate(date.dateString);
     const token = await getTokenFromLocal();
-      const authorizationHeader = `Bearer ${token}`;
+    const authorizationHeader = `Bearer ${token}`;
+
     try {
-      const response = await fetch(`http://localhost:8080/lesson?lessonDate=${date.dateString}`, {
-        method: 'GET',
+      const response = await fetch(`http://192.168.25.204:8080/lesson?lessonDate=${date.dateString}`, {
+        method: 'GET', // GET 요청으로 변경
         headers: {
           'Content-Type': 'application/json',
           'Authorization': authorizationHeader,

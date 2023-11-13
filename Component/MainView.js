@@ -68,6 +68,9 @@ function MainScreen() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [items, setItems] = useState({});
   const [agendaItems, setAgendaItems] = useState({});
+ 
+
+
   // SkiReosrtList.js에서 param값 받기
   const selectedResort = route.params?.selectedResort;
 
@@ -91,6 +94,7 @@ function MainScreen() {
       setSelectedResortName(route.params.selectedResortName);
     }
   }, [route.params?.selectedResortName]);
+  
 
 
   useEffect(() => {

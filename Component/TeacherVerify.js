@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Platform
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as Font from 'expo-font';
@@ -62,10 +63,10 @@ const TeacherVerifyScreen = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            loginId: introduce, // 한줄소개
-            password: history, // 약력
-            name: career, // 경력
-            birthday: team, // 소속
+            introduce: introduce, // 한줄소개
+            history: history, // 약력
+            career: career, // 경력
+            team: team, // 소속
 
           }),
         });
@@ -158,18 +159,17 @@ const TeacherVerifyScreen = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.backButton}>
-        <TransparentCircleButton
-          onPress={onGoBack}
-          name="left"
-          color="#424242"
-        />
-
-      </View>
       <Image source={backgroundImage} style={styles.backgroundImage} />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.container}
       >
+        <View style={styles.backButton}>
+          <TransparentCircleButton
+            onPress={onGoBack}
+            name="left"
+            color="#424242"
+          />
+        </View>
         {/* 배경 이미지 설정 */}
         <Text style={fontLoaded ? styles.title : {}}>강사 신청</Text>
 
@@ -250,6 +250,11 @@ const TeacherVerifyScreen = () => {
       alignItems: 'center',
       padding: 40,
       marginBottom:100,
+      ...Platform.select({
+        web: {
+          alignSelf:'center'
+        },
+      }),
     },
     backgroundImage: {
       position: 'absolute',
@@ -264,7 +269,6 @@ const TeacherVerifyScreen = () => {
       fontSize: 30,
       fontWeight: 'bold',
       marginBottom: 20,
-      marginTop: 90,
       color: 'black', 
       fontFamily: 'DMSerifText1',
     },
@@ -307,10 +311,8 @@ const TeacherVerifyScreen = () => {
       fontWeight: 'bold',
     },
     backButton: {
-      marginTop:50,
-      marginLeft:20,
+      width:'100%'
     },
-
     imageView: {
       alignItems: 'center',
       justifyContent: 'center',
