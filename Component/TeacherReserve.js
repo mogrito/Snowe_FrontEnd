@@ -150,7 +150,25 @@ const TeacherReserveScreen = () => {
           monthFormat={'yyyy년 MM월'}
         
         />
-        
+        <View style={styles.teacherItem}>
+          <View style={styles.teacherInfo}>
+            <View style={styles.teacherImageView}>
+              <Text style={styles.teacherImage}>이미지</Text>
+            </View>
+            <View style={styles.nameDivView}>
+              <Text style={styles.teacherName}>이름</Text>
+              <Text style={styles.eduTime}>{item.div}</Text>
+            </View>
+            <View style={styles.lessonInfoView}>
+              <Text style={{fontWeight: 'bold', fontSize:17}}>{`${item.lessonTitle}`}</Text>
+              <Text>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
+            </View>
+            <View style={styles.lessonLevelView}>
+              <Text style={styles.teacherSubject}>{`${item.lessonClass}${item.lessonLevel}`}</Text>
+            </View>
+          </View>
+        </View>
+
         {selectedDate && (
           <FlatList
           data={filteredTeachers}
