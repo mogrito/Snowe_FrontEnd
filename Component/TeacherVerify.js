@@ -8,7 +8,7 @@ import {
   Image,
   Platform
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import * as Font from 'expo-font';
 import TransparentCircleButton from './TransparentCircleButton';
 import backgroundImage from '../Images/dr1.png'; 
@@ -16,8 +16,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getTokenFromLocal } from './TokenUtils';
 import { FontAwesome5 } from '@expo/vector-icons';
-
-
+import ModalSelector from 'react-native-modal-selector';
+import { hasStartedLocationUpdatesAsync } from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TeacherVerifyScreen = () => {
     const [introduce, setIntroduce] = useState('');
@@ -36,13 +37,93 @@ const TeacherVerifyScreen = () => {
     const [lessonClass, setLessonClass] = useState('');
     const [selectedLevel, setSelectedLevel] = useState('');
     const [showLevelButtons, setShowLevelButtons] = useState(false);
+    const [selectedResortName, setSelectedResortName] = useState('');
+    
+    console.log('선택된스키장: ', selectedResortName);
+
+    const skiResorts = [
+      { 
+        key: '1', 
+        label: '지산 포레스트 리조트 스키장', 
+      },
+      { 
+        key: '2', 
+        label: '휘닉스 평창 스노우 파크', 
+      },
+      { 
+        key: '3', 
+        label: '알펜시아 리조트 스키장', 
+      },
+      { 
+        key: '4', 
+        label: '엘리시안 강촌스키장', 
+      },
+      { 
+        key: '5', 
+        label: '무주 덕유산 리조트스키장', 
+      },
+      { 
+        key: '6', 
+        label: '오크밸리 스키장', 
+      },
+      { 
+        key: '7', 
+        label: '에덴밸리 리조트스키장', 
+      },
+      { 
+        key: '8', 
+        label: '모나 용평리조트 스키장', 
+      },
+      { 
+        key: '9', 
+        label: '웰리힐리파크 스노우파크', 
+      },
+      { 
+        key: '10', 
+        label: '오투 리조트 스키장', 
+      },
+      { 
+        key: '11', 
+        label: '비발디파크 스키장', 
+      },
+      { 
+        key: '12', 
+        label: '곤지암 리조트 스키장', 
+      },
+      { 
+        key: '13', 
+        label: '하이원 리조트 스키장', 
+      },
+    ];
+
+    const handleSelect = (option) => {
+      setSelectedResortName(option.label);
+    };
+
+    console.log('이거야: ', selectedResortName);
 
 
     
     const onGoBack = () => {
       navigation.pop();
     };
-  
+
+    //스키장 이름 갖고오는거
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const resortName = await AsyncStorage.getItem('selectedResortName');
+          console.log('resortName:',resortName);
+          console.log('storage:',await AsyncStorage.getItem('selectedResortName'));
+          setSelectedResortName(resortName);
+        } catch (error) {
+          console.error('Error fetching data from AsyncStorage:', error);
+        }
+      };
+
+      fetchData();
+    }, []);
+
     useEffect(() => {
       async function loadCustomFont() {
         await Font.loadAsync({
@@ -103,6 +184,9 @@ const TeacherVerifyScreen = () => {
             history: history, // 약력
             career: career, // 경력
             team: team, // 소속
+            resortName:selectedResortName,//선택된 스키장
+            lessonClass:lessonClass,//종목
+            selectedLevel:selectedLevel,//레벨
 
           }),
         });
@@ -124,7 +208,11 @@ const TeacherVerifyScreen = () => {
       setIntroduce('');
       setHistory('');
       setCareer('');
-      setTeam('');      
+      setTeam('');    
+      setLessonClass('');
+      setSelectedLevel('');
+      setSelectedResortName('');
+      setShowLevelButtons(false);  
 
     };
 
@@ -151,7 +239,6 @@ const TeacherVerifyScreen = () => {
     }
 
     if (!result.canceled) {
-
 
       console.log("기본uri => " + result.uri);
       setImageUrl(result.uri);
@@ -191,7 +278,7 @@ const TeacherVerifyScreen = () => {
 
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex:1}}>
       <Image source={backgroundImage} style={styles.backgroundImage} />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.container}
@@ -245,6 +332,18 @@ const TeacherVerifyScreen = () => {
           </TouchableOpacity>
         </View>
       )}
+
+        <View style={styles.skiResortInput}>
+          <ModalSelector
+            data={skiResorts}
+            onChange={(option) => handleSelect(option)}
+            initValue={selectedResortName || '스키장 선택'}
+          >
+            <TouchableOpacity>
+            <Text>{selectedResortName || '스키장 선택'}</Text>
+            </TouchableOpacity>
+          </ModalSelector>
+        </View>
 
         <TextInput
           style={styles.input1}
@@ -372,6 +471,17 @@ const TeacherVerifyScreen = () => {
       borderRadius: 5,
       marginBottom: 12,
       paddingHorizontal: 8,
+      backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+    },
+    skiResortInput:{
+      width: '100%',
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      marginBottom: 12,
+      padding:10,
+      paddingLeft:8,
       backgroundColor: 'rgba(255, 255, 255, 0.8)', 
     },
     inputContainer: {

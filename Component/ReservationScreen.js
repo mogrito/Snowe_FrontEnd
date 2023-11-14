@@ -12,6 +12,8 @@ import {
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { getTokenFromLocal } from './TokenUtils';
+import axios from 'axios';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -35,6 +37,7 @@ const ReservationScreen = () => {
         });
     
         const responseData = response.data;
+        console.log('responseData : ', responseData);
         setReservatedataData(responseData);       
     
       } catch (error) {

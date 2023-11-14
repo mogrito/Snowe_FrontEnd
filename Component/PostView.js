@@ -3,6 +3,7 @@ import { View, ScrollView, Text, Image, StyleSheet, TextInput, FlatList,  Keyboa
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { getTokenFromLocal } from './TokenUtils';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 const { StatusBarManager } = NativeModules
@@ -19,6 +20,8 @@ function PostView({ route }) {
   const [loginId, setLoginId] = useState('');
   const [category, setCategory] = useState('');
   const [createDate, setCreateDate] = useState('');
+  const [commentCount, setCommentCount] = useState('');
+  const [viewCount, setViewCount] = useState('');
   // console.log(route.params);
   const navigation = useNavigation();
   const [comments, setComments] = useState([]);
@@ -31,7 +34,6 @@ function PostView({ route }) {
   const [commentId, setCommentId] = useState(null); 
   const [boardDetails, setBoardDetails] = useState([]);
   const [statusBarHeight, setStatusBarHeight] = useState(0);
-  const [liked, setLiked] = useState(false);
   const [selectedComment, setSelectedComment] = useState(null);
   const [isReplyModalVisible, setReplyModalVisible] = useState(false);
   const [replyText, setReplyText] = useState('');
@@ -72,7 +74,7 @@ function PostView({ route }) {
       console.log(boardData); // 게시글 정보 확인
 
       // 게시글 데이터에서 필요한 정보 추출
-      const { title, content, recommendCount, loginId, category, createDate } = boardData;
+      const { title, content, recommendCount, loginId, category, createDate, commentCount, viewCount} = boardData;
 
       // 해당 정보로 상태 업데이트
       setTitle(title);
@@ -81,6 +83,10 @@ function PostView({ route }) {
       setWriterId(loginId);
       setCategory(category);
       setCreateDate(createDate);
+      setCommentCount(commentCount);
+      setViewCount(viewCount);
+      console.log('viewCount : ', viewCount );
+      console.log('commentCount : ', commentCount );
 
 
       setBoardDetails(boardData);
@@ -482,240 +488,258 @@ function PostView({ route }) {
   // };
 
 return (
-  <SafeAreaView style={styles.container}>
-    <View style={styles.header}>
-      <View style={styles.headerButton}>
-        <TransparentCircleButton
-          onPress={onGoBack}
-          name="left"
-          color="#424242"
-        />
+  <View style={styles.rootContainer}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+    >
+      <View style={styles.header}>
+        <View style={styles.headerButton}>
+          <TransparentCircleButton
+            onPress={onGoBack}
+            name="left"
+            color="#424242"
+          />
+        </View>
+        <View>
+          <Text style={styles.categoryText}>{category}</Text>
+        </View>
+        <View style={styles.headerButton}>
+          <TransparentCircleButton
+            onPress={handleDeletePost}
+            name="delete"
+            color="#ef5350"             
+          />
+          <TransparentCircleButton
+            onPress={handleEditPress}
+            name="edit"
+            color="#424242"
+          />
+        </View>
       </View>
       <View>
-        <Text style={styles.headerTitle}>{createDate}</Text>
-      </View>
-      <View style={styles.headerButton}>
-        <TransparentCircleButton
-          onPress={handleDeletePost}
-          name="delete"
-          color="#ef5350"             
-        />
-        <TransparentCircleButton
-          onPress={handleEditPress}
-          name="edit"
-          color="#424242"
-        />
-      </View>
-    </View>
-    <View>
-      <Text style={styles.title}>{title}</Text> 
-      <Text style={styles.contentText}>{content}</Text> 
-      <Text style={styles.contentText}>{content}</Text>
-      <Text style={styles.contentText}>{content}</Text>  
-    </View>  
-    <View>
-      <FlatList
-        data={image}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <Image 
-            source={{ uri: item.url }} 
-            style={{ width: 200, height: 300, alignSelf: 'center' }}
-            resizeMode='contain' 
-          />
-        )}
-      />
-    </View>
-
-    <View style={styles.borderLine}></View>
-    <View style={styles.like}>
-      <TouchableOpacity 
-        onPress={handleLike}           
-        style={styles.likeButton}>
-            <Text>
-              👍 추천 {recommendCount}
-            </Text>
-      </TouchableOpacity>
-    </View>
-
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : null}
-      style={{ flex: 1}}
-      keyboardVerticalOffset={statusBarHeight-50}
-    >
-      <ScrollView style={styles.commentListContainer}>
+        <View style={styles.titleBorderLineView}>
+          <Text style={styles.titleText}>{title}</Text>
+          <Text style={styles.createDateText}>{createDate}</Text>
+        </View> 
+        <View style={styles.writerIdBorderLineView}>
+          <Text style={styles.writerIdText}>{writerId}</Text>  
+          <View style={styles.etcView}>
+            <Text style={styles.writerIdText}>조회 수 {viewCount}  추천 수 {recommendCount}  댓글 {commentCount}</Text>
+          </View>
+        </View>
+        <View style={styles.contentView}>
+          <Text style={styles.contentText}>{content}</Text>    
+        </View>
+      </View>  
+      <View>
         <FlatList
-          data={comments}
-          keyExtractor={(item, index) => `comment-${index}`}
+          data={image}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <View style={styles.commentContainer}>
-              <View style={styles.commentHeader}>
-                <Text style={styles.commentAuthor}>{item.loginId}</Text>
-                {item.loginId === loginId && (
-                  <View style={styles.actionButtons}>
-                    <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
-                      <Text style={styles.actionButtonText}>수정</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
-                      <Text style={styles.actionButtonText}>삭제</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              </View>
-              <View style={styles.commentItem}>
-                <Text style={styles.commentText}>{item.content}</Text>
-                <View>
-                  <TouchableOpacity onPress={onReplyButtonPress}>
-                    <Text style={styles.replyButtonWithBorder}>답글</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
+            <Image 
+              source={{ uri: item.url }} 
+              style={{ width: 200, height: 300, alignSelf: 'center' }}
+              resizeMode='contain' 
+            />
           )}
         />
-        {/* <View>
-          <FlatList
-            data={replyCommentss}
-            keyExtractor={(item, index) => `reply-${index}`}
-            renderItem={({ item }) => (
-              <View style={styles.commentContainer}>
-                답글에 대한 UI를 표시하는 코드 
-                <Text style={styles.commentText}>{item.content}</Text>
-              </View>
-            )}
-          />
-        </View> */}
-      </ScrollView>
-      <View style={styles.commentInputWithButton}>
-        <TextInput
-          placeholder="댓글을 입력하세요"
-          onChangeText={(text) => setCommentText(text)}
-          value={commentText}
-          style={styles.commentInput}
-        />
-        <TouchableOpacity
-          style={styles.postButton}
-          onPress={() => {
-            addComment(commentText)
-          }}
-        >
-          <Text style={styles.postButtonText}>게시</Text>
+      </View>
+
+      <View style={styles.borderLine}></View>
+      <View style={styles.like}>
+        <TouchableOpacity 
+          onPress={handleLike}           
+          style={styles.likeButton}>
+              <Text>
+                👍 추천 {recommendCount}
+              </Text>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
-    {/* 댓글모달 */}
-    <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isEditModalVisible}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.editCommentTitle}>댓글 수정하기</Text>
-          <TextInput
-            multiline
-            placeholder="Edit your comment"
-            value={editedComment}
-            onChangeText={(text) => setEditedComment(text)}
-            style={styles.editCommentInput}
-          />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={saveEditedComment} style={[styles.editCommentButton, styles.saveButton]}>
-            <Text style={styles.commentButtonText}>저장</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={closeEditCommentModal} style={[styles.editCommentButton, styles.cancelButton]}>
-              <Text style={styles.commentButtonText}>취소</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal> 
-    {/* {/* 답글모달
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isReplyModalVisible}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <View>
-            <Text>?????{selectedComment}</Text>
-          </View>
-          <Text style={styles.editCommentTitle}>댓글에 답글 작성</Text>
-          {selectedComment && (
-            <View>
-              <Text style={styles.selectedCommentText}>{selectedComment.content}</Text>
-            </View>
-          )}
-          <TextInput
-            multiline
-            placeholder="답글을 작성하세요"
-            value={replyText}
-            onChangeText={(text) => setReplyText(text)}
-            style={styles.editCommentInput}
-          />
-           답글 목록을 나열하는 FlatList 추가 
-           각 답글에 대한 작성자와 내용을 표시하고, 필요에 따라 수정 및 삭제 버튼을 추가 
+
+      <View
+        // behavior={Platform.OS === 'ios' ? 'padding' : null}
+        style={{ flex: 1}}
+        // keyboardVerticalOffset={statusBarHeight-50}
+      >
+        <View style={styles.commentListContainer}>
           <FlatList
-            data={replyComments.filter(reply => reply.parentCommentId === selectedComment?.commentId)}
-            keyExtractor={(item, index) => `reply-${index}`}
+            data={comments}
+            keyExtractor={(item, index) => `comment-${index}`}
             renderItem={({ item }) => (
               <View style={styles.commentContainer}>
-                 작성자와 내용 표시 
-                <Text style={styles.commentAuthor}>{item.loginId}</Text>
-                <Text style={styles.commentText}>{item.content}</Text>
-                 수정 및 삭제 버튼 
-                {item.loginId === loginId && (
-                  <View style={styles.actionButtons}>
-                    <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
-                      <Text style={styles.actionButtonText}>수정</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
-                      <Text style={styles.actionButtonText}>삭제</Text>
+                <View style={styles.commentHeader}>
+                  <Text style={styles.commentAuthor}>{item.loginId}</Text>
+                  {item.loginId === loginId && (
+                    <View style={styles.actionButtons}>
+                      <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
+                        <Text style={styles.actionButtonText}>수정</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
+                        <Text style={styles.actionButtonText}>삭제</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+                <View style={styles.commentItem}>
+                  <Text style={styles.commentText}>{item.content}</Text>
+                  <View>
+                    <TouchableOpacity onPress={onReplyButtonPress}>
+                      <Text style={styles.replyButtonWithBorder}>답글</Text>
                     </TouchableOpacity>
                   </View>
-                )}
+                </View>
               </View>
             )}
           />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={submitReply} style={[styles.editCommentButton, styles.saveButton]}>
-              <Text style={styles.commentButtonText}>저장</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setReplyModalVisible(false)} style={[styles.editCommentButton, styles.cancelButton]}>
-              <Text style={styles.commentButtonText}>취소</Text>
-            </TouchableOpacity>
-          </View>
+          {/* <View>
+            <FlatList
+              data={replyCommentss}
+              keyExtractor={(item, index) => `reply-${index}`}
+              renderItem={({ item }) => (
+                <View style={styles.commentContainer}>
+                  답글에 대한 UI를 표시하는 코드 
+                  <Text style={styles.commentText}>{item.content}</Text>
+                </View>
+              )}
+            />
+          </View> */}
+        </View>
+        <View style={styles.commentInputWithButton}>
+          <TextInput
+            placeholder="댓글을 입력하세요"
+            onChangeText={(text) => setCommentText(text)}
+            value={commentText}
+            style={styles.commentInput}
+          />
+          <TouchableOpacity
+            style={styles.postButton}
+            onPress={() => {
+              addComment(commentText)
+            }}
+          >
+            <Text style={styles.postButtonText}>게시</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </Modal>   */}
-  </SafeAreaView>
+      {/* 댓글모달 */}
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isEditModalVisible}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.editCommentTitle}>댓글 수정하기</Text>
+            <TextInput
+              multiline
+              placeholder="Edit your comment"
+              value={editedComment}
+              onChangeText={(text) => setEditedComment(text)}
+              style={styles.editCommentInput}
+            />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={saveEditedComment} style={[styles.editCommentButton, styles.saveButton]}>
+              <Text style={styles.commentButtonText}>저장</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={closeEditCommentModal} style={[styles.editCommentButton, styles.cancelButton]}>
+                <Text style={styles.commentButtonText}>취소</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal> 
+      {/* {/* 답글모달
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isReplyModalVisible}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View>
+              <Text>?????{selectedComment}</Text>
+            </View>
+            <Text style={styles.editCommentTitle}>댓글에 답글 작성</Text>
+            {selectedComment && (
+              <View>
+                <Text style={styles.selectedCommentText}>{selectedComment.content}</Text>
+              </View>
+            )}
+            <TextInput
+              multiline
+              placeholder="답글을 작성하세요"
+              value={replyText}
+              onChangeText={(text) => setReplyText(text)}
+              style={styles.editCommentInput}
+            />
+            답글 목록을 나열하는 FlatList 추가 
+            각 답글에 대한 작성자와 내용을 표시하고, 필요에 따라 수정 및 삭제 버튼을 추가 
+            <FlatList
+              data={replyComments.filter(reply => reply.parentCommentId === selectedComment?.commentId)}
+              keyExtractor={(item, index) => `reply-${index}`}
+              renderItem={({ item }) => (
+                <View style={styles.commentContainer}>
+                  작성자와 내용 표시 
+                  <Text style={styles.commentAuthor}>{item.loginId}</Text>
+                  <Text style={styles.commentText}>{item.content}</Text>
+                  수정 및 삭제 버튼 
+                  {item.loginId === loginId && (
+                    <View style={styles.actionButtons}>
+                      <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
+                        <Text style={styles.actionButtonText}>수정</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
+                        <Text style={styles.actionButtonText}>삭제</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              )}
+            />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={submitReply} style={[styles.editCommentButton, styles.saveButton]}>
+                <Text style={styles.commentButtonText}>저장</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setReplyModalVisible(false)} style={[styles.editCommentButton, styles.cancelButton]}>
+                <Text style={styles.commentButtonText}>취소</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>   */}
+    </KeyboardAwareScrollView>
+  </View>
 );
 }
 
 const styles = StyleSheet.create({
+  rootContainer:{
+    flex:1,
+    backgroundColor : '#F6FDFF'
+  },
   container: {
     flex: 1,
-    backgroundColor: '#F6FDFF'
+    marginTop:50,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 5,
   },
   headerButton: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: 20,
+  createDateText: {
+    fontSize: 14,
     textAlign: 'center',
-    color: '#424242',
-    left:20,
+    color: '#555',
+    padding: 10,
+    paddingTop:13
   },
   commentContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'white',
     padding: 12,
     borderRadius: 8,
     marginBottom: 8,
@@ -726,32 +750,45 @@ const styles = StyleSheet.create({
     padding:10,
     color: '#555',
   },
-  title: {
+  categoryText: {
     fontSize: 20,
+    textAlign: 'center',
+    color: '#424242',
+    left:17,
+    fontWeight:'bold'
+  },
+  titleText: {
+    fontSize: 20,
+    padding: 10,
+    color:'#555',
+    fontWeight: 'bold',
+  },
+  writerIdText: {
+    fontSize: 13,
     padding:10,
     color: '#555',
-    fontWeight: 'bold',
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: 'black'
   },
-  writerText: {
-    textAlign: 'center',
-    fontSize: 14,
+  etcView: {
+    flexDirection:'row',
   },
   borderLine: {
-    borderTopWidth: 0.6,
-    borderTopColor: 'gray',
-    marginTop: '5%',
-    marginBottom: 5,
-    flexDirection:'row',
+    borderBottomWidth: 0.6, // 아래에 테두리 두께
+    borderColor: '#bbb', // 테두리 색상
+    paddingTop:50
   },
-  titleBorderLine: {
-    borderTopWidth: 0.6,
-    borderTopColor: '#555',
-    marginTop: '5%',
-    marginBottom: 5,
+  titleBorderLineView: {
+    borderBottomWidth: 0.6, // 아래에 테두리 두께
+    borderTopWidth: 0.6, // 위에 테두리 두께
+    borderColor: '#bbb', // 테두리 색상
+    backgroundColor:'#E4F7FF',
     flexDirection:'row',
+    justifyContent:'space-between'
+  },
+  writerIdBorderLineView: {
+    borderBottomWidth: 0.6, // 아래에 테두리 두께
+    borderColor: '#bbb', // 테두리 색상
+    flexDirection:'row',
+    justifyContent:'space-between'
   },
   commentItem: {
     backgroundColor: '#f5f5f5',
@@ -863,6 +900,7 @@ const styles = StyleSheet.create({
     padding: 8,
     backgroundColor:'white',
     margin: 8,
+    alignSelf:'flex-end'
   },
   commentInput: {
     flex: 1,
