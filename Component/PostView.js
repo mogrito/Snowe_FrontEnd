@@ -17,6 +17,8 @@ function PostView({ route }) {
   const [recommendCount, setRecommendCount] = useState('');
   const [writerId, setWriterId] = useState('');
   const [loginId, setLoginId] = useState('');
+  const [category, setCategory] = useState('');
+  const [createDate, setCreateDate] = useState('');
   // console.log(route.params);
   const navigation = useNavigation();
   const [comments, setComments] = useState([]);
@@ -70,13 +72,15 @@ function PostView({ route }) {
       console.log(boardData); // 게시글 정보 확인
 
       // 게시글 데이터에서 필요한 정보 추출
-      const { title, content, recommendCount, loginId } = boardData;
+      const { title, content, recommendCount, loginId, category, createDate } = boardData;
 
       // 해당 정보로 상태 업데이트
       setTitle(title);
       setContent(content);
       setRecommendCount(recommendCount);
       setWriterId(loginId);
+      setCategory(category);
+      setCreateDate(createDate);
 
 
       setBoardDetails(boardData);
@@ -488,7 +492,7 @@ return (
         />
       </View>
       <View>
-        <Text style={styles.headerTitle}>{title}</Text>
+        <Text style={styles.headerTitle}>{createDate}</Text>
       </View>
       <View style={styles.headerButton}>
         <TransparentCircleButton
@@ -504,6 +508,9 @@ return (
       </View>
     </View>
     <View>
+      <Text style={styles.title}>{title}</Text> 
+      <Text style={styles.contentText}>{content}</Text> 
+      <Text style={styles.contentText}>{content}</Text>
       <Text style={styles.contentText}>{content}</Text>  
     </View>  
     <View>
@@ -716,16 +723,32 @@ const styles = StyleSheet.create({
   },
   contentText: {
     fontSize: 18,
-    padding:10
+    padding:10,
+    color: '#555',
+  },
+  title: {
+    fontSize: 20,
+    padding:10,
+    color: '#555',
+    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderColor: 'black'
   },
   writerText: {
     textAlign: 'center',
     fontSize: 14,
-    color: '#555',
   },
   borderLine: {
     borderTopWidth: 0.6,
     borderTopColor: 'gray',
+    marginTop: '5%',
+    marginBottom: 5,
+    flexDirection:'row',
+  },
+  titleBorderLine: {
+    borderTopWidth: 0.6,
+    borderTopColor: '#555',
     marginTop: '5%',
     marginBottom: 5,
     flexDirection:'row',
