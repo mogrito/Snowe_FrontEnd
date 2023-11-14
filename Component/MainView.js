@@ -178,7 +178,7 @@ function MainScreen() {
       const token = await getTokenFromLocal();
       const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await axios.get(`http://192.168.25.202:8080/reservation/listOnDate?lessonDate=${date}`, {
+        const response = await axios.get(`http://192.168.25.204:8080/reservation/listOnDate?lessonDate=${date}`, {
           headers: {
             'Authorization': authorizationHeader,
           },

@@ -117,6 +117,7 @@ const TeacherReserveScreen = () => {
       );
     } else {
       setSelectedTeacher(teacher);
+      console.log(teacher);
       setModalVisible(true);
     }
   };
@@ -145,6 +146,7 @@ const TeacherReserveScreen = () => {
           markedDates={{
             [selectedDate]: { selected: true, selectedColor: 'skyblue' }, // Highlight the selected date
           }}
+          minDate={new Date()}
           monthFormat={'yyyy년 MM월'}
         
         />
@@ -209,8 +211,11 @@ const TeacherReserveScreen = () => {
           <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
           <Text style={styles.selectedDate}>{`강습 제목: ${selectedTeacher?.lessonTitle}`}</Text>
           <Text style={styles.selectedDate}>{`강습 시작일: ${selectedDate}`}</Text>
-          <Text style={styles.selectedDate}>{`강습 종료일: ${selectedTeacher?.lessonEndDate}`}</Text>
+          <Text style={styles.selectedDate}>{`강습 종료일: ${selectedTeacher?.lessonDateEnd}`}</Text>
           <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.lessonStart}`}</Text>
+          <Text style={styles.selectedTime}>{`강습 종료시간: ${selectedTeacher?.lessonEnd}`}</Text>
+          <Text style={styles.selectedTime}>{`강습 소개: ${selectedTeacher?.lessonIntroduce}`}</Text>
+          <Text style={styles.selectedTime}>{`강습 인원: ${selectedTeacher?.lessonStart}`}</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.checkReserveButton} onPress={reserveLesson}>
               <Text style={styles.buttonText}>신청</Text>
