@@ -20,7 +20,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import axios from 'axios';
-import { Card, Avatar } from 'react-native-paper';
+import { Card } from 'react-native-paper';
 import { getTokenFromLocal } from './TokenUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -35,20 +35,20 @@ const weatherConditionTranslations = {
   Mist: '짙은 안개',
 };
 
-function getWeatherIconName(weatherCondition) {
+function getWeatherImage(weatherCondition) {
   switch (weatherCondition) {
     case 'Clear':
-      return 'weather-sunny';
+      return require('../Images/sunny.png');
     case 'Clouds':
-      return 'weather-cloudy';
+      return require('../Images/cloud.png');
     case 'Rain':
-      return 'weather-rainy';
+      return require('../Images/rain.png');
     case 'Snow':
-      return 'weather-snowy';
+      return require('../Images/snow.png');
     case 'Haze':
-      return 'weather-hazy';
+      return require('../Images/fog.png');
     case 'Mist':
-      return 'weather-fog';
+      return require('../Images/fog.png');
     default:
       return 'question';
   }
@@ -69,9 +69,9 @@ function MainScreen() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [items, setItems] = useState({});
   const [agendaItems, setAgendaItems] = useState({});
-const [hotBoardList, setHotBoardList] = useState([]);
+  const [hotBoardList, setHotBoardList] = useState([]);
   const [boardId, setBoardId] = useState('');
- 
+
 
 
   // SkiReosrtList.js에서 param값 받기
@@ -84,7 +84,7 @@ const [hotBoardList, setHotBoardList] = useState([]);
   useEffect(() => {
     async function loadCustomFont() {
       await Font.loadAsync({
-        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
+        BalooRegular: require('../assets/fonts/BalooRegular.ttf'),
       });
       setFontLoaded(true);
     }
@@ -106,15 +106,15 @@ const [hotBoardList, setHotBoardList] = useState([]);
       console.log(await AsyncStorage.getItem("selectedResortName"))
       try {
         const apiKey = '28664d08fe65159df42d4ee6b227bacd';
-  
+
         if (selectedResort?.location) {
           const lon = selectedResort.location.longitude;
           const lat = selectedResort.location.latitude;
-  
+
           const response = await axios.get(
             `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`
           );
-  
+
           if (response.status === 200) {
             const data = response.data;
             setWeatherData(data);
@@ -128,11 +128,11 @@ const [hotBoardList, setHotBoardList] = useState([]);
         setIsLoading(false); // 로딩 상태 업데이트
       }
     }
-  
+
     fetchWeather();
   }, [selectedResort]);
 
-  
+
 
   LocaleConfig.locales['ko'] = {
     monthNames: [
@@ -166,14 +166,14 @@ const [hotBoardList, setHotBoardList] = useState([]);
     dayNames: ['일', '월', '화', '수', '목', '금', '토'],
     dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
   };
-  
-  LocaleConfig.defaultLocale = 'ko'; 
-  
+
+  LocaleConfig.defaultLocale = 'ko';
+
   const timeToString = (time) => {
     const date = new Date(time);
     return date.toISOString().split('T')[0];
   };
-  
+
 
   useEffect(() => {
     async function fetchData() {
@@ -189,12 +189,12 @@ const [hotBoardList, setHotBoardList] = useState([]);
         if (response.status === 200) {
           const data = response.data;
           console.log('Fetched Data:', data);
-  
+
           // 아젠다 아이템 설정
           const agendaItem = {};
           agendaItem[date] = data;
           setAgendaItems(agendaItem);
-  
+
           // items에 agendaItems를 설정
           setItems(agendaItem);
           console.log('items: ', items)
@@ -212,43 +212,43 @@ const [hotBoardList, setHotBoardList] = useState([]);
     fetchData();
   }, [date]);
 
-    // 핫 게시글 fetch
-    const fetchBoardData = async () => {
-      try {
-        const response = await Promise.race([
-          fetch('http://192.168.25.204:8080/board/hot-List'),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('시간이 초과되었습니다')), 1000)
-          ),
-        ]);
-        const hotBoardData = await response.json();
-  
-        console.log("핫보드 데이터입니다 ==>> " + hotBoardData);
-        setHotBoardList(hotBoardData);
-  
-        setBoardId(hotBoardData.boardId);
-  
-      } catch (error) {
-        console.error(error);
-        alert('글불러오기실패');
-      }
-    }
-    useEffect(() => {
-      fetchBoardData();
-    }, []);
-    // 핫게시글 누를 시
-    const onBoardPress = (board) => {
-      // setSelectedBoard(board);
-      navigation.navigate('PostView', { 
-        boardId: board.boardId, 
-        image: board.image,
-        content: board.content,
-        title:board.title,
-        recommendCount:board.recommendCount
-      }); 
-    };
+  // 핫 게시글 fetch
+  const fetchBoardData = async () => {
+    try {
+      const response = await Promise.race([
+        fetch('http://192.168.25.204:8080/board/hot-List'),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('시간이 초과되었습니다')), 1000)
+        ),
+      ]);
+      const hotBoardData = await response.json();
 
-  
+      console.log("핫보드 데이터입니다 ==>> " + hotBoardData);
+      setHotBoardList(hotBoardData);
+
+      setBoardId(hotBoardData.boardId);
+
+    } catch (error) {
+      console.error(error);
+      alert('글불러오기실패');
+    }
+  }
+  useEffect(() => {
+    fetchBoardData();
+  }, []);
+  // 핫게시글 누를 시
+  const onBoardPress = (board) => {
+    // setSelectedBoard(board);
+    navigation.navigate('PostView', {
+      boardId: board.boardId,
+      image: board.image,
+      content: board.content,
+      title: board.title,
+      recommendCount: board.recommendCount
+    });
+  };
+
+
   const renderItemForFlatList = ({ item }) => (
     <Card>
       <Card.Content>
@@ -291,18 +291,18 @@ const [hotBoardList, setHotBoardList] = useState([]);
           // 데이터 로딩 후 표시할 내용
           <View style={styles.weatherContainer}>
             <Text style={styles.weatherCity}>{selectedResortName}</Text>
-            <MaterialCommunityIcons
-              style={styles.weatherIcon}
-              name={weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherIconName(weatherData.weather[0].main) : 'question'}
-              size={150}
-              color="black"
+            <Image
+              style={styles.weatherImage} // Add a style for the image
+              source={weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherImage(weatherData.weather[0].main) : require('../Images/face.jpg')}
             />
-            <Text style={styles.weatherexp}>
-              {weatherData && weatherData.weather && weatherData.weather.length > 0 ? getKoreanWeatherCondition(weatherData.weather[0].main) : 'question'}
+            <Text style={styles.weatherTemp}>
+              {weatherData && weatherData.main
+                ? `${(weatherData.main.temp - 273.15).toFixed(0)}°`
+                : 'N/A'}
             </Text>
-            <Text style={styles.weatherTemp}> {weatherData && weatherData.main
-              ? `현재 온도: ${(weatherData.main.temp - 273.15).toFixed(0)}°C`
-              : 'N/A'}</Text>
+            <Text style={styles.weatherexp}>
+              {weatherData && weatherData.weather && weatherData.weather.length > 0 ? getKoreanWeatherCondition(weatherData.weather[0].main) : '알 수 없음'}
+            </Text>
           </View>
         )}
 
@@ -310,7 +310,10 @@ const [hotBoardList, setHotBoardList] = useState([]);
           <TouchableOpacity onPress={() => Linking.openURL(selectedResort.webcam)}>
             <View style={styles.SkiInfoIcon}>
               <View style={styles.iconContainer}>
-                <MaterialCommunityIcons name="webcam" size={24} color="black" />
+                <Image
+                  source={require('../Images/webcam.png')}
+                  style={styles.iconImage}
+                />
                 <Text style={styles.iconText}>실시간 웹캠</Text>
               </View>
             </View>
@@ -318,7 +321,10 @@ const [hotBoardList, setHotBoardList] = useState([]);
           <TouchableOpacity onPress={() => Linking.openURL(selectedResort.bus)}>
             <View style={styles.SkiResortBusIcon}>
               <View style={styles.iconContainer}>
-                <MaterialCommunityIcons name="bus-clock" size={24} color="black" />
+                <Image
+                  source={require('../Images/bus.png')}
+                  style={styles.iconImage}
+                />
                 <Text style={styles.iconText}>셔틀버스 정보</Text>
               </View>
             </View>
@@ -326,30 +332,33 @@ const [hotBoardList, setHotBoardList] = useState([]);
           <TouchableOpacity onPress={() => Linking.openURL(selectedResort.condo)}>
             <View style={styles.SkiResortIcon}>
               <View style={styles.iconContainer}>
-                <FontAwesome name="building-o" size={24} color="black" />
+                <Image
+                  source={require('../Images/condo.png')}
+                  style={styles.iconImage}
+                />
                 <Text style={styles.iconText}>스키장 콘도 예약</Text>
               </View>
             </View>
           </TouchableOpacity>
         </View>
         <View style={{ flex: 1, marginTop: 5, width: windowWidth * 0.9 }}>
-        <ScrollView>
-          <Agenda
-            items={agendaItems}
-            selected={date}
-            renderItem={renderItemForFlatList}
-            style={{ borderRadius: 10, height: 290, marginTop:15, }}
-            onDayPress={(day) => {
-              setDate(day.dateString);
-            }}
-          />
-        </ScrollView>
+          <ScrollView>
+            <Agenda
+              items={agendaItems}
+              selected={date}
+              renderItem={renderItemForFlatList}
+              style={{ borderRadius: 10, height: 290, marginTop: 15, }}
+              onDayPress={(day) => {
+                setDate(day.dateString);
+              }}
+            />
+          </ScrollView>
         </View>
 
         <View style={styles.hotboardContainer}>
           <Text style={styles.hotboardheader}>🔥 인기 게시물</Text>
           <View style={styles.hotboarditems}>
-          <FlatList
+            <FlatList
               data={hotBoardList}
               keyExtractor={(item) => item.boardId.toString()}
               renderItem={({ item }) => (
@@ -357,20 +366,20 @@ const [hotBoardList, setHotBoardList] = useState([]);
                   style={styles.textContainer}
                   onPress={() => onBoardPress(item)}
                 >
-            <View style={styles.headerContainer}>
+                  <View style={styles.headerContainer}>
                     <View style={styles.textComment}>
                       <Text style={styles.boardtitle}>{item.title}</Text>
-            <Text style={styles.boardcategory}>{item.category}</Text>
-          </View>
+                      <Text style={styles.boardcategory}>{item.category}</Text>
+                    </View>
                     <View style={styles.textComment1}>
-            <Text style={styles.datestyle}>{item.createDate}</Text>
-            <Text> 👍 {item.recommendCount}  💬 {item.commentCount}</Text>
-</View>
+                      <Text style={styles.datestyle}>{item.createDate}</Text>
+                      <Text> 👍 {item.recommendCount}  💬 {item.commentCount}</Text>
+                    </View>
                   </View>
-          </TouchableOpacity>
-)}
-          
-/>
+                </TouchableOpacity>
+              )}
+
+            />
           </View>
         </View>
       </ScrollView>
@@ -380,22 +389,21 @@ const [hotBoardList, setHotBoardList] = useState([]);
 
 const styles = StyleSheet.create({
   header: {
-
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'sticky',
-    top: 40,
+    top: 45,
     backgroundColor: '#DBEBF9',
-    paddingVertical: 7,
+    paddingVertical: 5,
     paddingHorizontal: 10,
     zIndex: 1,
   },
   title: {
     fontSize: 40,
     fontStyle: 'italic',
-    color: 'black',
-    fontFamily: 'DMSerifText1',
+    color: '#8BC1EF',
+    fontFamily: 'BalooRegular',
     left: 11,
   },
   userIcon: {
@@ -417,9 +425,9 @@ const styles = StyleSheet.create({
   },
   weatherContainer: {
     width: windowWidth * 0.9,
-    height: 300,
-    marginBottom: 0,
-    backgroundColor: 'white',
+    height: 350,
+    marginBottom: 10, // Adjust this margin value
+    backgroundColor: '#33A9FF',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -428,20 +436,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
   },
-  weatherIcon: {
-    color: 'black',
-  },
   weatherCity: {
+    color: 'white',
     fontSize: 23,
     fontWeight: '600',
+    marginBottom: 5,
+
   },
   weatherTemp: {
-    fontSize: 20,
+    color: 'white',
+    fontSize: 65,
+    marginBottom: 1,  // Remove the margin-bottom
+
+
+
   },
   weatherexp: {
+    color: 'white',
     fontSize: 30,
-    marginBottom: 20,
+    marginBottom: 10,
     fontWeight: '600',
+    marginTop: 10,
+  },
+  weatherImage: {
+    width: 145,
+    height: 145,
+    marginBottom: 1,
+
   },
 
   SkiInfo: {
@@ -450,20 +471,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: windowWidth * 0.9,
     height: 110,
-    marginTop: 10,
+    marginTop: 10, // Adjust this margin value
     borderRadius: 10,
   },
   SkiInfoIcon: {
-    marginTop: 30,
+    marginTop: 25,
     marginLeft: 14,
   },
   SkiResortBusIcon: {
-    marginTop: 30,
+    marginTop: 25,
     marginLeft: 14,
 
   },
   SkiResortIcon: {
-    marginTop: 30,
+    marginTop: 25,
     marginLeft: 3,
 
 
@@ -477,7 +498,7 @@ const styles = StyleSheet.create({
   iconText: {
     marginTop: 10,
   },
-  image:{
+  image: {
     width: 60,
     height: 60,
     borderRadius: 60,
@@ -487,15 +508,15 @@ const styles = StyleSheet.create({
   hotboardContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
-    marginBottom: 20,
+    marginBottom: 10, // Adjust this margin value
     width: windowWidth * 0.9,
     borderRadius: 10,
     backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    marginTop:10,
+    marginTop: 20, // Adjust this margin value
   },
-  hotboarditems:{
+  hotboarditems: {
     flex: 1,
 
   },
@@ -528,9 +549,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
     marginTop: 20,
-    marginLeft:-5,
+    marginLeft: -5,
   },
+  headerContainer: {
+    marginTop: 20,
+    justifyContent: 'space-between',
 
+  }
+  ,
+  bustext: {
+    fontSize: 30,
+
+  },
+  webcamtext: {
+    fontSize: 30,
+
+  },
+  condotext: {
+    fontSize: 30,
+
+  },
+  iconImage: {
+    width: 35,
+    height: 35,
+
+  },
 
 });
 

@@ -28,7 +28,7 @@ const TeacherReserveScreen = () => {
     if (selectedTeacher) {
       try {
         // 서버로 예약 데이터 전송
-        const response = await fetch('http://192.168.25.204:8080/reservation/reserve', {
+        const response = await fetch('http://192.168.25.202:8080/reservation/reserve', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ const TeacherReserveScreen = () => {
         });
 
         if (response.ok) {
-          setTeacherData(updatedTeacherData);
+          // setTeacherData(updatedTeacherData);
           setModalVisible(false); // 모달 닫기
         } else {
           // 서버 응답이 실패하면 에러 처리

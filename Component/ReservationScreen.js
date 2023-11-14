@@ -12,6 +12,8 @@ import {
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { getTokenFromLocal } from './TokenUtils';
+import axios from 'axios';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -20,6 +22,8 @@ const ReservationScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [reservatedata, setReservatedataData] = useState([]); //예약 데이터 
+  
+
 
 
   //예약 데이터 들고오기 
@@ -28,7 +32,7 @@ const ReservationScreen = () => {
       const token = await getTokenFromLocal();
       const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await axios.get('http://192.168.25.204:8080/member/me', {
+        const response = await axios.get('http://192.168.25.202:8080/reservation/reserveList', {
           headers: {
             'Authorization': authorizationHeader,
           },
@@ -48,23 +52,22 @@ const ReservationScreen = () => {
 
   //취소버튼을 누르면 item.id, item.teacherId 를 onCancel로 보내고 cancelReservation에 값을 전달하고 cancelReservation를 통해 DB로 보냄
   
-  const cancelReservation = async (reservationId, teacherId) => {
+  const cancelReservation = async (reserveId) => {
+    const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
     try {
       // 서버에 예약 취소를 요청합니다.
-      const response = await fetch('취소 API 엔드포인트', {
+      const response = await fetch(`http://192.168.25.202:8080/reservation/reserveCancel?reserveId=${reserveId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
         },
-        body: JSON.stringify({
-          reservationId,
-          teacherId,
-        }),
       });
 
       if (response.ok) {
         // 취소가 성공하면 상태를 업데이트하여 취소된 예약을 제거합니다.
-        setReservatedataData((prevData) => prevData.filter(item => item.id !== reservationId));
+        setReservatedataData((prevData) => prevData.filter(item => item.id !== reserveId));
       } else {
         console.error('예약 취소 중 오류 발생');
       }
@@ -73,9 +76,9 @@ const ReservationScreen = () => {
     }
   };
 
-  const onCancel = (reservationId, teacherId) => {
+  const onCancel = (reserveId) => {
     // 강사 ID가 예약 데이터에 있는 것
-    cancelReservation(reservationId, teacherId);
+    cancelReservation(reserveId);
   };
 
   const onGoBack = () => {
@@ -83,11 +86,11 @@ const ReservationScreen = () => {
   };
 
   const currentDate = new Date();
-  const beforeLessons = reservatedata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const beforeLessons = reservatedata.filter((item) => new Date(item.lessonDate) > currentDate);
   const duringLessons = reservatedata.filter(
-    (item) => new Date(reservatedata.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate)
+    (item) => new Date(reservatedata.lessonDate) <= currentDate && currentDate <= new Date(item.lessonDate)
   );
-  const afterLessons = reservatedata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const afterLessons = reservatedata.filter((item) => new Date(item.lessonDate) < currentDate);
 
   return (
     <View style={styles.container}>
@@ -112,8 +115,8 @@ const ReservationScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                      <Text style={styles.itemText}>{item.name} 강사님</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -124,7 +127,7 @@ const ReservationScreen = () => {
                     >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.id, item.teacherId)} style={styles.cancelButton}>
+                    <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
                   </View>
@@ -148,8 +151,8 @@ const ReservationScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                    <Text style={styles.itemText}>{item.name} 강사님</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -160,7 +163,7 @@ const ReservationScreen = () => {
                     >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.id, item.teacherId)} style={styles.cancelButton}>
+                    <TouchableOpacity onPress={() => onCancel(item.reserveId, item.teacherId)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
                   </View>
@@ -184,8 +187,8 @@ const ReservationScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                    <Text style={styles.itemText}>{item.name} 강사님</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -196,7 +199,7 @@ const ReservationScreen = () => {
                     >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.id)} style={styles.cancelButton}>
+                    <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
                   </View>
@@ -214,10 +217,10 @@ const ReservationScreen = () => {
             <View style={styles.modalContent}>
               <Image source={selectedReservation?.image} style={styles.modalImage} />
               <Text style={styles.modalText1}>{selectedReservation?.name}</Text>
-              <Text style={styles.modalText}>{`강습 장소: 선택된 리조트 `}</Text>
-              <Text style={styles.modalText}>{`강습명: ${selectedReservation?.introduce}`}</Text>
-              <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.edustartdate}`}</Text>
-              <Text style={styles.modalText}>{`강습 시간: ${selectedReservation?.edustarttime}`}</Text>
+              <Text style={styles.modalText}>{`강습 장소: ${selectedReservation?.resortId}`}</Text>
+              <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
+              <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
+              <Text style={styles.modalText}>{`강습 시작 시간: ${selectedReservation?.lessonStart}`}</Text>
               <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
                 <Text style={styles.modalCloseButton}>닫기</Text>
               </TouchableOpacity>
