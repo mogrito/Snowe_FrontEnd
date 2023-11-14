@@ -256,13 +256,14 @@ function TabNavigator({ navigation }) {
     <Tab.Navigator
       activeColor="#000000"
       inactiveColor="#000000"
-      barStyle={{ backgroundColor: '#EFFBFB', height: 80 }}
+      barStyle={{ backgroundColor: '#CEDDEA', height: 80, borderTopColor:'gray',borderTopWidth:'0.2' }}
       tabBarOptions={{
         showLabel: true,
         labelStyle: { fontSize: 12 },
         activeTintColor: '#ffffff',
         inactiveTintColor: '#b0bec5',
       }}
+      
     >
       <Tab.Screen
         name="MainView"

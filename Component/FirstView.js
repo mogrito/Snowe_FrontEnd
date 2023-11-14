@@ -22,7 +22,7 @@ const FirstScreen = () => {
   useEffect(() => {
     async function loadCustomFont() {
       await Font.loadAsync({
-        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
+        BalooRegular: require('../assets/fonts/BalooRegular.ttf'),
       });
       setFontLoaded(true);
     }
@@ -57,7 +57,9 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontStyle: 'italic',
     color: 'black',
-    fontFamily: 'DMSerifText1',
+    fontFamily: 'BalooRegular',
+    marginBottom:100,
+    marginLeft:10,
   },
   backgroundImage: {
     position: 'absolute',
