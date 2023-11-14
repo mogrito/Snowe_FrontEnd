@@ -22,7 +22,7 @@ const ForgotPasswordScreen = () => {
     
     async function loadCustomFont() {
       await Font.loadAsync({
-        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
+        BalooRegular: require('../assets/fonts/BalooRegular.ttf'),
       });
       setFontLoaded(true);
     }
@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
     marginTop: 75,
     marginBottom: 15,
     fontStyle: 'normal',
-    color: 'black',
-    fontFamily: 'DMSerifText1',
+    color: '#8BC1EF',
+    fontFamily: 'BalooRegular',
   },
   input: {
     width: '100%',

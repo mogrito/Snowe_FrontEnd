@@ -66,7 +66,7 @@ const TeacherVerifyScreen = () => {
     useEffect(() => {
       async function loadCustomFont() {
         await Font.loadAsync({
-          DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
+          BalooRegular: require('../assets/fonts/BalooRegular.ttf'),
         });
         setFontLoaded(true);
       }
@@ -393,7 +393,7 @@ const TeacherVerifyScreen = () => {
       fontWeight: 'bold',
       marginBottom: 20,
       color: 'black', 
-      fontFamily: 'DMSerifText1',
+      fontFamily: 'BalooRegular',
       textAlign:'center'
     },
     subjectContainer: {
