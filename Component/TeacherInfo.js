@@ -1,10 +1,10 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import Swiper from 'react-native-swiper';
+// import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
-
-
+import { getTokenFromLocal } from './TokenUtils';
+import axios from 'axios';
 //brief = 약력 carrer = 경력 team = 소속 
 
 const levelColors = {
@@ -24,6 +24,8 @@ const TeacherInfoScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
+  // const [teacherId, setTeacherId] = useState(null);
+  const [reviewData, setReviewData] = useState([]);
   const navigation = useNavigation();
   
 
@@ -36,7 +38,6 @@ const TeacherInfoScreen = () => {
         }
         const data = await response.json();
         setTeachers(data);
-        console.log(data);
       } catch (error) {
         console.error('데이터 가져오기 중 오류 발생:', error);
       }
@@ -44,10 +45,32 @@ const TeacherInfoScreen = () => {
     fetchData();
   }, [selectedCategory]);
 
-  const onShowDetails = (item) => {
+  async function onShowDetails(item) {
+    const teacherId = item.loginId;
+    const token = await getTokenFromLocal();
+    const authorizationHeader = `Bearer ${token}`;
+  
+    try {
+      const response = await axios.get(`http://192.168.25.202:8080/review/getReview?teacherId=${teacherId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
+        },
+      });
+      const result = response.data;
+
+      const reviews = result.map(item => item.review);
+    
+      // 새로운 배열을 reviewData에 넣어줍니다.
+      setReviewData(reviews);
+      console.log(result);
+    } catch (error) {
+      console.error('데이터 가져오기 중 오류 발생:', error);
+    }
     setSelectedTeacher(item);
+    
     setModalVisible(true);
-  };
+  }
 
   const closeModal = () => {
     setModalVisible(false);
@@ -120,7 +143,7 @@ const TeacherInfoScreen = () => {
                 </View>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
-              <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
+              {/* <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/skigosu.jpg')} style={styles.swiperImage} />  
                 </View>
@@ -130,25 +153,31 @@ const TeacherInfoScreen = () => {
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/skigosu1.jpg')} style={styles.swiperImage} />
                 </View>
-               </Swiper> 
+               </Swiper>  */}
 
               <Text style={styles.histories}>약력</Text>
 
               <View style={styles.history}>
-              <Text>- {selectedTeacher.history}</Text>
+                <Text>- {selectedTeacher.history}</Text>
               </View>
 
               <Text style={styles.carrers}>경력</Text>
 
-               <View style={styles.history}>
-               <Text>- {selectedTeacher.career}</Text>
-               </View>
+              <View style={styles.history}>
+                <Text>- {selectedTeacher.career}</Text>
+              </View>
 
-               <Text style={styles.teams}>소속</Text>
+              <Text style={styles.teams}>소속</Text>
 
-               <View style={styles.history}>
-               <Text>- {selectedTeacher.team}</Text>
-               </View>
+              <View style={styles.history}>
+                <Text>- {selectedTeacher.team}</Text>
+              </View>
+
+              <Text style={styles.teams}>이 강사님의 후기</Text>
+                
+              <View style={styles.history}>
+                <Text>- {reviewData}</Text>
+              </View>
             </ScrollView>
           </View>
         )}

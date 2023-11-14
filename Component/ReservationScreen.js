@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { getTokenFromLocal } from './TokenUtils';
 import axios from 'axios';
+import { checkTokenAndNavigate } from './TokenUtils';
 
 const Tab = createMaterialTopTabNavigator();
 
