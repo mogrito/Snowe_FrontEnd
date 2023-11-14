@@ -256,7 +256,7 @@ function TabNavigator({ navigation }) {
     <Tab.Navigator
       activeColor="#000000"
       inactiveColor="#000000"
-      barStyle={{ backgroundColor: '#CEDDEA', height: 80, borderTopColor:'gray',borderTopWidth:'0.2' }}
+      barStyle={{ backgroundColor: '#CEDDEA', height: 80}}
       tabBarOptions={{
         showLabel: true,
         labelStyle: { fontSize: 12 },

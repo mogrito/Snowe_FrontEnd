@@ -15,7 +15,7 @@ const TeacherReserveScreen = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  
+
 
   const navigation = useNavigation();
 
@@ -41,8 +41,22 @@ const TeacherReserveScreen = () => {
         });
 
         if (response.ok) {
-          // setTeacherData(updatedTeacherData);
-          setModalVisible(false); // 모달 닫기
+          // Reset the state to refresh the screen
+          resetTeacherList();
+
+          // Display success alert
+          Alert.alert(
+            '신청 완료',
+            '신청이 완료되었습니다!',
+            [
+              {
+                text: '확인',
+              },
+            ]
+          );
+
+          // Close the modal
+          setModalVisible(false);
         } else {
           // 서버 응답이 실패하면 에러 처리
           console.error('예약 실패');
@@ -54,6 +68,7 @@ const TeacherReserveScreen = () => {
       }
     }
   };
+
 
   const handleDateSelect = async (date) => {
     setSelectedDate(date.dateString);
@@ -77,15 +92,15 @@ const TeacherReserveScreen = () => {
       console.error('선생님 데이터 가져오기 오류:', error);
     }
   };
-  
-  
-  
+
+
+
   const resetTeacherList = () => {
     setFilteredTeachers([]);
     setSelectedTeacher(null);
     setSelectedDate(null);
   };
-  
+
   useEffect(() => {
     if (isFocused) {
       resetTeacherList();
@@ -126,7 +141,7 @@ const TeacherReserveScreen = () => {
     setModalVisible(false); // 모달을 닫습니다.
   };
 
-  
+
   const onGoBack = () => {
     navigation.goBack();
   };
@@ -137,7 +152,7 @@ const TeacherReserveScreen = () => {
     <View style={styles.container}>
       <View style={styles.teacherWrapper}>
         <View style={styles.topBar}>
-          <TransparentCircleButton onPress={onGoBack} name="left" color="#424242"/>
+          <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
           <Text style={styles.title}>강사 예약</Text>
         </View>
         <Calendar
@@ -148,7 +163,7 @@ const TeacherReserveScreen = () => {
           }}
           minDate={new Date().toISOString().split('T')[0]} // 현재 날짜의 ISO 문자열로 변환
           monthFormat={'yyyy년 MM월'}
-        
+
         />
         <View style={styles.sampleTeacherItem}>
           <View style={styles.teacherInfo}>
@@ -160,8 +175,8 @@ const TeacherReserveScreen = () => {
               <Text style={styles.eduTime}>강습시간</Text>
             </View>
             <View style={styles.lessonInfoView}>
-              <Text style={{fontWeight: 'bold', fontSize:17}}>강습명</Text>
-              <Text style={{fontSize:10}}>(현재 강습인원수 / 최대 강습인원수)</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 17 }}>강습명</Text>
+              <Text style={{ fontSize: 10 }}>(현재 강습인원수 / 최대 강습인원수)</Text>
             </View>
             <View style={styles.lessonLevelView}>
               <Text>종목/수준</Text>
@@ -171,9 +186,9 @@ const TeacherReserveScreen = () => {
 
         {selectedDate && (
           <FlatList
-          data={filteredTeachers}
-          keyExtractor={(item) => item?.id?.toString()}
-          renderItem={({ item, index }) => (
+            data={filteredTeachers}
+            keyExtractor={(item) => item?.id?.toString()}
+            renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={[
                   styles.teacherItem,
@@ -190,7 +205,7 @@ const TeacherReserveScreen = () => {
                     <Text style={styles.eduTime}>{item.div}</Text>
                   </View>
                   <View style={styles.lessonInfoView}>
-                    <Text style={{fontWeight: 'bold', fontSize:17}}>{`${item.lessonTitle}`}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{`${item.lessonTitle}`}</Text>
                     <Text>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
                   </View>
                   <View style={styles.lessonLevelView}>
@@ -246,9 +261,9 @@ const styles = StyleSheet.create({
   },
   topBar: {
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
     marginBottom: 20,
-    marginRight:30,
+    marginRight: 30,
   },
   title: {
     flex: 1,
@@ -266,7 +281,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     padding: 16,
-    marginTop:15
+    marginTop: 15
   },
   teacherName: {
     fontSize: 17,
@@ -300,7 +315,7 @@ const styles = StyleSheet.create({
   teacherInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    width:'100%'
+    width: '100%'
   },
   teacherImage: {
     width: 50,
@@ -324,75 +339,75 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
   },
-  
+
   teacherModalImage: {
     width: 200,
     height: 200,
     borderRadius: 200,
     marginTop: 10,
-    marginBottom: 20, 
+    marginBottom: 20,
   },
   teacherModalName: {
     fontSize: 30,
-    marginBottom: 40, 
+    marginBottom: 40,
     fontWeight: 'bold',
   },
   selectedDate: {
-    marginBottom: 10, 
+    marginBottom: 10,
     fontSize: 20
   },
   selectedTime: {
     marginBottom: 20,
-    fontSize: 20 
+    fontSize: 20
   },
   reservationTitle: {
     position: 'absolute',
-    top: 30, 
-    left: 10, 
+    top: 30,
+    left: 10,
     fontSize: 30,
     fontWeight: 'bold',
   },
   buttonContainer: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 10,
   },
   cancelButton: {
     width: '30%',
     height: 40,
-    left:10,
+    left: 10,
     backgroundColor: 'skyblue',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20, 
+    marginTop: 20,
 
   },
   checkReserveButton: {
     width: '30%',
     height: 40,
-    right:10,
+    right: 10,
     backgroundColor: 'skyblue',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20, 
+    marginTop: 20,
   },
   buttonText: {
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
-  teacherImageView:{
-    width:'15%',
+  teacherImageView: {
+    width: '15%',
   },
-  nameDivView:{
-    width:'15%',
+  nameDivView: {
+    width: '15%',
   },
-  lessonInfoView:{
-    width:'50%',
+  lessonInfoView: {
+    width: '50%',
     alignItems: 'center'
   },
-  lessonLevelView:{
-    width:'20%',
+  lessonLevelView: {
+    width: '20%',
     alignItems: 'center'
   },
 
