@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     flexDirection: 'row',
-    alignItems: 'center',
+    textAlign: 'center',
     marginBottom: 20,
     marginRight: 30,
   },

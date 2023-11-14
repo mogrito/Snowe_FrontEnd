@@ -12,8 +12,6 @@ const TeacherReserveScreen = () => {
   const isFocused = useIsFocused();
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [lessonEndDate, setLessonEndDate] = useState('');
-  const [teacherData, setTeacherData] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
@@ -60,11 +58,11 @@ const TeacherReserveScreen = () => {
         } else {
           // 서버 응답이 실패하면 에러 처리
           console.error('예약 실패');
-          Alert.alert('예약 실패', '서버 오류로 예약을 완료할 수 없습니다.');
+          alert('예약 실패', '서버 오류로 예약을 완료할 수 없습니다.');
         }
       } catch (error) {
         console.error('예약 실패: ', error);
-        Alert.alert('예약 실패', '오류로 인해 예약을 완료할 수 없습니다.');
+        alert('예약 실패', '오류로 인해 예약을 완료할 수 없습니다.');
       }
     }
   };
@@ -86,7 +84,6 @@ const TeacherReserveScreen = () => {
       const data = await response.json();
       console.log(data);
       setFilteredTeachers(data);
-      setLessonEndDate(data);
 
     } catch (error) {
       console.error('선생님 데이터 가져오기 오류:', error);
@@ -121,6 +118,7 @@ const TeacherReserveScreen = () => {
   };
 
   const handleTeacherPress = (teacher) => {
+
     if (teacher.count >= 50) {
       Alert.alert(
         '수강인원이 꽉찼습니다',
@@ -133,7 +131,7 @@ const TeacherReserveScreen = () => {
       );
     } else {
       setSelectedTeacher(teacher);
-      console.log(teacher);
+      console.log('teacher : ', teacher);
       setModalVisible(true);
     }
   };
@@ -169,7 +167,7 @@ const TeacherReserveScreen = () => {
         <View style={styles.sampleTeacherItem}>
           <View style={styles.teacherInfo}>
             <View style={styles.teacherImageView}>
-              <Text>이미지</Text>
+              <Text>사진</Text>
             </View>
             <View style={styles.nameDivView}>
               <Text style={styles.teacherName}>이름</Text>
@@ -225,13 +223,26 @@ const TeacherReserveScreen = () => {
           <Text style={styles.reservationTitle}>예약 확인</Text>
           <Image source={{ uri: selectedTeacher?.image }} style={styles.teacherModalImage} />
           <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
-          <Text style={styles.selectedDate}>{`강습 제목: ${selectedTeacher?.lessonTitle}`}</Text>
-          <Text style={styles.selectedDate}>{`강습 시작일: ${selectedDate}`}</Text>
-          <Text style={styles.selectedDate}>{`강습 종료일: ${selectedTeacher?.lessonDateEnd}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.lessonStart}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 종료시간: ${selectedTeacher?.lessonEnd}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 소개: ${selectedTeacher?.lessonIntroduce}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 인원: ${selectedTeacher?.lessonStart}`}</Text>
+          <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View>
+              <Text style={styles.lessonData1}>{`강습명`}</Text>
+              <Text style={styles.lessonData1}>{`강습 시작일`}</Text>
+              <Text style={styles.lessonData1}>{`강습 종료일`}</Text>
+              <Text style={styles.lessonData1}>{`강습 시작시간`}</Text>
+              <Text style={styles.lessonData1}>{`강습 종료시간`}</Text>
+              <Text style={styles.lessonData1}>{`강습 소개`}</Text>
+              <Text style={styles.lessonData1}>{`강습 인원`}</Text>
+            </View>
+            <View>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonTitle}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonDate}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonDateEnd}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonStart}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonEnd}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonIntroduce}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonStart}`}</Text>
+            </View>
+          </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.checkReserveButton} onPress={reserveLesson}>
               <Text style={styles.buttonText}>신청</Text>
@@ -353,13 +364,15 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     fontWeight: 'bold',
   },
-  selectedDate: {
-    marginBottom: 10,
-    fontSize: 20
+  lessonData1:{
+    marginBottom: 10, 
+    fontSize: 20,
+    textAlign: 'left',
   },
-  selectedTime: {
-    marginBottom: 20,
-    fontSize: 20
+  lessonData2:{
+    marginBottom: 10, 
+    fontSize: 20,
+    textAlign: 'left'
   },
   reservationTitle: {
     position: 'absolute',
@@ -397,8 +410,10 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold'
   },
-  teacherImageView: {
-    width: '15%',
+  teacherImageView:{
+    width:'15%',
+    alignItems:'center',
+    paddingRight:22
   },
   nameDivView: {
     width: '15%',

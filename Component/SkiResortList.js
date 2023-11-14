@@ -123,8 +123,10 @@ const SkiResortListScreen = () => {
       params: {
         selectedResort: item,
         selectedResortName: item.name,
+        navigateToTeacherVerify: true, 
       },
-    });
+    },
+    );
   };
   
 

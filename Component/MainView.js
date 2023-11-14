@@ -101,6 +101,8 @@ function MainScreen() {
 
 
 
+
+
   useEffect(() => {
     async function fetchWeather() {
       console.log(await AsyncStorage.getItem("selectedResortName"))

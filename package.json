@@ -39,6 +39,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-masked-text": "^1.13.0",
     "react-native-modal-datetime-picker": "^17.1.0",
+    "react-native-modal-selector": "^2.1.2",
     "react-native-paper": "^5.10.6",
     "react-native-popup-dialog": "^0.18.3",
     "react-native-reanimated": "~3.3.0",
