@@ -56,7 +56,7 @@ export function CustomDrawerContent({ navigation }) {
       fetchUserRole();
     });
 
-    // 컴포넌트가 언마운트될 때 이벤트 리스너 정리
+    
     return () => {
       unsubscribeFocus();
     };
