@@ -4,6 +4,7 @@ import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { getTokenFromLocal } from './TokenUtils';
+import { checkTokenAndNavigate } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -13,9 +14,8 @@ const TeacherReserveScreen = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-
-
   const navigation = useNavigation();
+  
 
 
 
@@ -99,6 +99,7 @@ const TeacherReserveScreen = () => {
   };
 
   useEffect(() => {
+    checkTokenAndNavigate(navigation);
     if (isFocused) {
       resetTeacherList();
     }

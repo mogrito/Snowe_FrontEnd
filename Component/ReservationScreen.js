@@ -24,7 +24,7 @@ const ReservationScreen = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [reservatedata, setReservatedataData] = useState([]); //예약 데이터 
 
-
+  checkTokenAndNavigate();
 
 
   //예약 데이터 들고오기 

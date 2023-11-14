@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-// import Swiper from 'react-native-swiper';
+import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -30,7 +30,7 @@ const TeacherInfoScreen = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`http://192.168.25.204:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
+        const response = await fetch(`http://192.168.25.202:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
         if (!response.ok) {
           throw Error('서버에서 데이터를 가져오지 못했습니다.');
         }
@@ -120,30 +120,35 @@ const TeacherInfoScreen = () => {
                 </View>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
-              {/* <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
+              <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
                 <View style={styles.swiperSlide}>
-                  <Image source={require('../Images/SnoweFirst.jpg')} style={styles.swiperImage} />  
-                </View>
-                <View style={styles.swiperSlide}>
-                  <Image source={require('../Images/snow.jpg')} style={styles.swiperImage} />
+                  <Image source={require('../Images/skigosu.jpg')} style={styles.swiperImage} />  
                 </View>
                 <View style={styles.swiperSlide}>
                   <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
                 </View>
-               </Swiper>  */}
+                <View style={styles.swiperSlide}>
+                  <Image source={require('../Images/skigosu1.jpg')} style={styles.swiperImage} />
+                </View>
+               </Swiper> 
 
               <Text style={styles.histories}>약력</Text>
-              {selectedTeacher.history && selectedTeacher.history.map((item, index) => (
-                <Text style={styles.history} key={index}>{item}</Text>
-              ))}
-               <Text style={styles.carrers}>경력</Text>
-              {selectedTeacher.career && selectedTeacher.carrer.map((item, index) => (
-                <Text style={styles.carrer} key={index}>{item}</Text>
-              ))}
+
+              <View style={styles.history}>
+              <Text>- {selectedTeacher.history}</Text>
+              </View>
+
+              <Text style={styles.carrers}>경력</Text>
+
+               <View style={styles.history}>
+               <Text>- {selectedTeacher.career}</Text>
+               </View>
+
                <Text style={styles.teams}>소속</Text>
-              {selectedTeacher.team && selectedTeacher.team.map((item, index) => (
-                <Text style={styles.team} key={index}>{item}</Text>
-              ))}
+
+               <View style={styles.history}>
+               <Text>- {selectedTeacher.team}</Text>
+               </View>
             </ScrollView>
           </View>
         )}
@@ -275,7 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
     height: '100%',
-    backgroundColor: '#C7DBF7'
+    backgroundColor: 'white'
   },
   modalTeacherImage: {
     width: 100,

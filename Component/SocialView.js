@@ -95,9 +95,9 @@ function SocialView(){
           </TouchableOpacity> 
         </View>   
         <Tab.Navigator>
-          <Tab.Screen name="공지사항" component={NoticeScreen} />
-          <Tab.Screen name="자유게시판" component={FreeBoardScreen} />
-          <Tab.Screen name="묻고 답하기" component={QnAScreen} />
+          <Tab.Screen name="📢 공지사항" component={NoticeScreen} />
+          <Tab.Screen name="📋 자유게시판" component={FreeBoardScreen} />
+          <Tab.Screen name="🖐🏻묻고 답하기" component={QnAScreen} />
           <Tab.Screen name="💡꿀팁 공유" component={TipBoardScreen} />
         </Tab.Navigator>   
         <FloatingWriteButton hidden={hidden} />
