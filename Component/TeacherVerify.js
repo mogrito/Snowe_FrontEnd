@@ -270,7 +270,6 @@ const TeacherVerifyScreen = () => {
       fontWeight: 'bold',
       marginBottom: 20,
       color: 'black', 
-      fontFamily: 'DMSerifText1',
     },
     input: {
       width: '100%',
