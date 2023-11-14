@@ -22,6 +22,7 @@ import * as Font from 'expo-font';
 import axios from 'axios';
 import { Card } from 'react-native-paper';
 import { getTokenFromLocal } from './TokenUtils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -94,6 +95,7 @@ function MainScreen() {
   useEffect(() => {
     if (route.params?.selectedResortName) {
       setSelectedResortName(route.params.selectedResortName);
+      AsyncStorage.setItem("selectedResortName",route.params.selectedResortName);
     }
   }, [route.params?.selectedResortName]);
 
@@ -101,6 +103,7 @@ function MainScreen() {
 
   useEffect(() => {
     async function fetchWeather() {
+      console.log(await AsyncStorage.getItem("selectedResortName"))
       try {
         const apiKey = '28664d08fe65159df42d4ee6b227bacd';
 

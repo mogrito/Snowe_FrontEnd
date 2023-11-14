@@ -50,9 +50,7 @@ function FloatingWriteButton({hidden}) {
         ]}
         android_ripple={{color: 'white'}}
         onPress={onPress}>
-        <Icon name="add" size={18} style={styles.icon}>
-          <Text style={styles.buttonText}>글쓰기</Text>
-        </Icon>
+        <Text style={styles.buttonText}>+ 글쓰기</Text>
       </Pressable>
     </Animated.View>
   );

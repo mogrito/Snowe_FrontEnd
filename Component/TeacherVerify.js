@@ -15,6 +15,8 @@ import backgroundImage from '../Images/dr1.png';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getTokenFromLocal } from './TokenUtils';
+import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -24,23 +26,40 @@ const TeacherVerifyScreen = () => {
     const [career, setCareer] = useState('');
     const [team, setTeam] = useState('');
 
-    const [username, setUsername] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
-    const [birthday, setBirthday] = useState('');
-    const [email, setEmail] = useState('');
-    const [nickname, setNickname] = useState('');
     const [fontLoaded, setFontLoaded] = useState(false);
     const navigation = useNavigation();
     const URL = 'http://192.168.25.204:8080';
     const [imageUrl, setImageUrl] = useState('');
     const [licenseImageUrl, setLicenseImageUrl] = useState('');
     const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+    const [isSki, setIsSki] = useState(false);
+    const [isBoard, setIsBoard] = useState(false);
+    const [lessonClass, setLessonClass] = useState('');
+    const [selectedLevel, setSelectedLevel] = useState('');
+    const [showLevelButtons, setShowLevelButtons] = useState(false);
+    const [selectedResortName, setselectedResortName] = useState('');
 
+    
     
     const onGoBack = () => {
       navigation.pop();
     };
+    
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const resortName = await AsyncStorage.getItem('selectedResortName');
+          console.log('resortName:',resortName);
+          console.log('storage:',await AsyncStorage.getItem('selectedResortName'));
+          setselectedResortName(resortName);
+        } catch (error) {
+          console.error('Error fetching data from AsyncStorage:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+  
   
     useEffect(() => {
       async function loadCustomFont() {
@@ -52,6 +71,37 @@ const TeacherVerifyScreen = () => {
   
       loadCustomFont();
     }, []);
+
+    const handleSkiPress = () => {
+      setLessonClass('스키');
+      setShowLevelButtons(true);
+      setIsSki(true);
+      setIsBoard(false);
+      if (lessonClass === '보드') {
+        setSelectedLevel('');
+      }
+      if (showLevelButtons === true && isSki){
+        setShowLevelButtons(false);
+      }
+    };
+  
+    const handleBoardPress = () => {
+      setLessonClass('보드');
+      setShowLevelButtons(true);
+      setIsBoard(true);
+      setIsSki(false);
+      if(lessonClass === '스키'){
+        setSelectedLevel('');
+      }
+      if (showLevelButtons === true && isBoard){
+        setShowLevelButtons(false);
+      }
+    };
+
+    const handleLevelPress = (level) => {
+      setSelectedLevel(level);
+      setShowLevelButtons(false);
+    };
   
   
     // 변수명, API DB에 맞게 변경해야함
@@ -67,6 +117,9 @@ const TeacherVerifyScreen = () => {
             'Authorization': authorizationHeader,
           },
           body: JSON.stringify({
+            resortName : selectedResortName,
+            classification: lessonClass,
+            classLevel : selectedLevel,
             introduce: introduce, // 한줄소개
             history: history, // 약력
             career: career, // 경력
@@ -157,6 +210,7 @@ const TeacherVerifyScreen = () => {
   };
 
 
+
   return (
     <View style={{ flex: 1 }}>
       <Image source={backgroundImage} style={styles.backgroundImage} />
@@ -172,6 +226,46 @@ const TeacherVerifyScreen = () => {
         </View>
         {/* 배경 이미지 설정 */}
         <Text style={fontLoaded ? styles.title : {}}>강사 신청</Text>
+        <View style={styles.subjectContainer}>
+          <TouchableOpacity
+            style={isSki ? styles.skiButtonSelected : styles.selectedButton}
+            onPress={handleSkiPress}
+          >
+            <FontAwesome5 name="skiing" size={20} color={isSki ? 'white' : 'gray'} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={isBoard ? styles.boardButtonSelected : styles.selectedButton}
+            onPress={handleBoardPress}
+          >
+            <FontAwesome5 name="snowboarding" size={20} color={isBoard ? 'white' : 'gray'} />
+          </TouchableOpacity>
+        </View>
+
+        {showLevelButtons && ( // showLevelButtons가 true일 때에만 레벨 버튼 표시
+        <View style={styles.levelButtonsContainer}>
+          <TouchableOpacity
+            style={selectedLevel === 'lv1' ? styles.Lv1levelButtonSelected : styles.levelButton}
+            onPress={() => handleLevelPress('lv1')}
+          >
+            <Text style={styles.levelButtonText}>Lv1</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={selectedLevel === 'lv2' ? styles.Lv2levelButtonSelected : styles.levelButton}
+            onPress={() => handleLevelPress('lv2')}
+          >
+            <Text style={styles.levelButtonText}>Lv2</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={selectedLevel === 'lv3' ? styles.Lv3levelButtonSelected : styles.levelButton}
+            onPress={() => handleLevelPress('lv3')}
+          >
+            <Text style={styles.levelButtonText}>Lv3</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
         <TextInput
           style={styles.input1}
@@ -250,6 +344,7 @@ const TeacherVerifyScreen = () => {
       alignItems: 'center',
       padding: 40,
       marginBottom:100,
+      marginTop:80,
       ...Platform.select({
         web: {
           alignSelf:'center'
@@ -270,6 +365,15 @@ const TeacherVerifyScreen = () => {
       fontWeight: 'bold',
       marginBottom: 20,
       color: 'black', 
+      fontFamily: 'DMSerifText1',
+      textAlign:'center'
+    },
+    subjectContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width:'100%',
+      marginRight:15
     },
     input: {
       width: '100%',
@@ -346,6 +450,98 @@ const TeacherVerifyScreen = () => {
       height: 170,
       right:3
     },  
+    selectedButton: {
+      width: 40, 
+      height: 40,
+      marginBottom: 16,
+      marginLeft: 15,
+      backgroundColor: 'transparent',
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    skiButtonSelected: {
+      width: 40,
+      height: 40,
+      marginBottom: 16,
+      marginLeft: 15,
+      backgroundColor: 'skyblue',
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    boardButtonSelected: {
+      width: 40,
+      height: 40,
+      marginBottom: 16,
+      marginLeft: 15,
+      backgroundColor: 'green', // 원하는 색상으로 변경
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    levelButtonsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    levelButton: {
+      width: 42,
+      height: 40,
+      marginBottom: 16,
+      margin:5,
+      backgroundColor: 'transparent',
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    Lv1levelButtonSelected: {
+      width: 42,
+      height: 40,
+      marginBottom: 16,
+      margin: 5,
+      backgroundColor: 'lightgreen', // 원하는 색상으로 변경
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    Lv2levelButtonSelected: {
+      width: 42,
+      height: 40,
+      marginBottom: 16,
+      margin: 5,
+      backgroundColor: 'lightblue', // 원하는 색상으로 변경
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    Lv3levelButtonSelected: {
+      width: 42,
+      height: 40,
+      marginBottom: 16,
+      margin: 5,
+      backgroundColor: 'lightpink', // 원하는 색상으로 변경
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    levelButtonText: {
+      color: 'black',
+    },
   });
   
 

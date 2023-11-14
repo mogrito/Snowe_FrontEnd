@@ -12,6 +12,9 @@ import {
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { getTokenFromLocal } from './TokenUtils';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -20,7 +23,22 @@ const ReservationScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [reservatedata, setReservatedataData] = useState([]); //예약 데이터 
+  const [selectedResortName, setselectedResortName] = useState('');
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resortName = await AsyncStorage.getItem('selectedResortName');
+        console.log('resortName:',resortName);
+        console.log('storage:',await AsyncStorage.getItem('selectedResortName'));
+        setselectedResortName(resortName);
+      } catch (error) {
+        console.error('Error fetching data from AsyncStorage:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   //예약 데이터 들고오기 
   useEffect(() => {
@@ -28,7 +46,7 @@ const ReservationScreen = () => {
       const token = await getTokenFromLocal();
       const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await axios.get('http://192.168.25.204:8080/member/me', {
+        const response = await axios.get('http://192.168.25.202:8080/reservation/reserveList', {
           headers: {
             'Authorization': authorizationHeader,
           },
@@ -83,11 +101,11 @@ const ReservationScreen = () => {
   };
 
   const currentDate = new Date();
-  const beforeLessons = reservatedata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const beforeLessons = reservatedata.filter((item) => new Date(item.lessonDate) > currentDate);
   const duringLessons = reservatedata.filter(
-    (item) => new Date(reservatedata.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate)
+    (item) => new Date(reservatedata.lessonDate) <= currentDate && currentDate <= new Date(item.lessonDate)
   );
-  const afterLessons = reservatedata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const afterLessons = reservatedata.filter((item) => new Date(item.lessonDate) < currentDate);
 
   return (
     <View style={styles.container}>
@@ -112,8 +130,8 @@ const ReservationScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                      <Text style={styles.itemText}>{item.name} 강사님</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -148,8 +166,8 @@ const ReservationScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                    <Text style={styles.itemText}>{item.name} 강사님</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -184,8 +202,8 @@ const ReservationScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                    <Text style={styles.itemText}>{item.name} 강사님</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -214,10 +232,10 @@ const ReservationScreen = () => {
             <View style={styles.modalContent}>
               <Image source={selectedReservation?.image} style={styles.modalImage} />
               <Text style={styles.modalText1}>{selectedReservation?.name}</Text>
-              <Text style={styles.modalText}>{`강습 장소: 선택된 리조트 `}</Text>
-              <Text style={styles.modalText}>{`강습명: ${selectedReservation?.introduce}`}</Text>
-              <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.edustartdate}`}</Text>
-              <Text style={styles.modalText}>{`강습 시간: ${selectedReservation?.edustarttime}`}</Text>
+              <Text style={styles.modalText}>{`강습 장소: ${selectedResortName}`}</Text>
+              <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
+              <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
+              <Text style={styles.modalText}>{`강습 시작 시간: ${selectedReservation?.lessonStart}`}</Text>
               <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
                 <Text style={styles.modalCloseButton}>닫기</Text>
               </TouchableOpacity>
