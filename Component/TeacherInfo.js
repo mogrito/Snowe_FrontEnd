@@ -90,7 +90,7 @@ const TeacherInfoScreen = () => {
                     <Text style={styles.skilevel}>{item.classLevel}</Text>
                   </View>
                 </View>
-                <Text style={styles.subjectText}>{item.introduce}</Text>
+                <Text style={styles.subjectText}>"{item.introduce}"</Text>
               </View>
               <Image source={eachsubject[item.classification]} style={styles.subjectImage} />
               <TouchableOpacity style={styles.cancelButton} onPress={() => onShowDetails(item)}>
@@ -114,7 +114,7 @@ const TeacherInfoScreen = () => {
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft:40 }}>
                   <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
                   <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
-                    <Image source={eachsubject[selectedTeacher.classification]} style={styles.subjectImage} />
+                    
                     <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
                   </View>
                 </View>
@@ -131,13 +131,7 @@ const TeacherInfoScreen = () => {
                   <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
                 </View>
                </Swiper>  */}
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={styles.levels}>수준 : </Text>
-                <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
-                  <Image source={eachsubject[selectedTeacher.classification]} style={styles.subjectImage} />
-                  <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
-                </View>
-              </View>
+
               <Text style={styles.histories}>약력</Text>
               {selectedTeacher.history && selectedTeacher.history.map((item, index) => (
                 <Text style={styles.history} key={index}>{item}</Text>
@@ -252,7 +246,7 @@ const styles = StyleSheet.create({
   },
   skilevel: {
     fontSize: 12,
-    color:'red',
+    color:'black',
   },
   categori: {
     flexDirection: 'row',
@@ -265,9 +259,9 @@ const styles = StyleSheet.create({
 
   },
   subjectImage: {
-    width: 18,
-    height: 15,
-    marginLeft:-1
+    width: 30,
+    height: 40,
+    marginRight:25,
   },
 
   modalContainer: {
