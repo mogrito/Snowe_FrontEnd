@@ -50,6 +50,7 @@
     "react-native-search-bar": "^3.5.1",
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-swiper": "^1.6.0",
+    "react-native-toast-message": "^2.1.7",
     "react-native-vector-icons": "^10.0.2",
     "react-native-web": "~0.19.6",
     "react-native-weekly-calendar": "^0.2.0"

@@ -12,6 +12,7 @@ import {
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { getTokenFromLocal } from './TokenUtils';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -28,7 +29,7 @@ const TeacherLessonListScreen = () => {
       const token = await getTokenFromLocal();
       const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await axios.get('http://192.168.25.204:8080/member/me', {
+        const response = await axios.get('http://192.168.25.202:8080/reservation/reserveList', {
           headers: {
             'Authorization': authorizationHeader,
           },
@@ -82,11 +83,11 @@ const TeacherLessonListScreen = () => {
   };
 
   const currentDate = new Date();
-  const beforeLessons = teacherlessondata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const beforeLessons = teacherlessondata.filter((item) => new Date(item.lessonDate) > currentDate);
   const duringLessons = teacherlessondata.filter(
-    (item) => new Date(teacherlessondata.edustartdate) <= currentDate && currentDate <= new Date(item.eduenddate)
+    (item) => new Date(teacherlessondata.lessonDate) <= currentDate && currentDate <= new Date(item.lessonDate)
   );
-  const afterLessons = teacherlessondata.filter((item) => new Date(item.edustartdate) > currentDate);
+  const afterLessons = teacherlessondata.filter((item) => new Date(item.lessonDate) > currentDate);
 
   return (
     <View style={styles.container}>
@@ -111,8 +112,8 @@ const TeacherLessonListScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                    <Text style={styles.itemText}>{item.name}</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -123,7 +124,7 @@ const TeacherLessonListScreen = () => {
                     >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.id, item.teacherId)} style={styles.cancelButton}>
+                    <TouchableOpacity onPress={() => onCancel(item.lessonId)} style={styles.cancelButton}>
                       <Text style={styles.cancelButtonText}>취소</Text>
                     </TouchableOpacity>
                   </View>
@@ -147,8 +148,8 @@ const TeacherLessonListScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                    <Text style={styles.itemText}>{item.name}</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -183,8 +184,8 @@ const TeacherLessonListScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                      <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.introduce}</Text>
+                    <Text style={styles.itemText}>{item.name}</Text>
+                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.moreinfoButton}
@@ -211,8 +212,8 @@ const TeacherLessonListScreen = () => {
               <Image source={selectedReservation?.image} style={styles.modalImage} />
               <Text style={styles.modalText1}>{selectedReservation?.name}</Text>
               <Text style={styles.modalText}>{`강습 장소: 선택된 리조트 `}</Text>
-              <Text style={styles.modalText}>{`강습명: ${selectedReservation?.introduce}`}</Text>
-              <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.edustartdate}`}</Text>
+              <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
+              <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
               <Text style={styles.modalText}>{`강습 시간: ${selectedReservation?.edustarttime}`}</Text>
               <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
                 <Text style={styles.modalCloseButton}>닫기</Text>

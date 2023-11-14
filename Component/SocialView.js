@@ -11,6 +11,9 @@ import TransparentCircleButton from './TransparentCircleButton';
 
 const URL = 'http://192.168.25.204:8080';
 
+
+
+
 function SocialView(){
   const Tab = createMaterialTopTabNavigator();
 
@@ -380,8 +383,7 @@ function SocialView(){
                   style={styles.ImageStyle}
                 />
               </View>
-            </TouchableOpacity>
-            
+            </TouchableOpacity>        
           )}
           refreshControl={
             <RefreshControl
@@ -433,10 +435,11 @@ const styles = StyleSheet.create({
     paddingBottom:15,
     paddingRight:15,
     borderRadius: 5, 
-    margin:10,
+    margin:4,
     height: 'auto',
     textAlign:'auto',
-    backgroundColor:'white'
+    backgroundColor:'white',
+    marginTop:9,
   },
   textComment: {
     flexDirection: 'row', 

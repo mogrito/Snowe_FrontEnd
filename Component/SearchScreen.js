@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontStyle: 'italic',
     color: 'black',
-    fontFamily: 'DMSerifText1',
+    fontFamily: 'BalooRegular',
     marginLeft:-30
   },
   userIcon: {

@@ -48,7 +48,7 @@ const LessonSignUpScreen = () => {
   useEffect(() => {
     async function loadCustomFont() {
       await Font.loadAsync({
-        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
+        BalooRegular: require('../assets/fonts/BalooRegular.ttf'),
       });
       setFontLoaded(true);
     }
@@ -59,6 +59,7 @@ const LessonSignUpScreen = () => {
   const handleRegister = async () => {
     const token = await getTokenFromLocal();
     const authorizationHeader = `Bearer ${token}`;
+
     if (!lessonname) {
       alert('강습명을 입력해 주세요.');
       return;
