@@ -44,7 +44,7 @@ function getWeatherImage(weatherCondition) {
     case 'Rain':
       return require('../Images/rain.png');
     case 'Snow':
-      return require('../Images/snow.png');
+      return require('../Images/snow1.png');
     case 'Haze':
       return require('../Images/fog.png');
     case 'Mist':
