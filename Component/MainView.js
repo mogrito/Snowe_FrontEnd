@@ -293,7 +293,7 @@ function MainScreen() {
             <Text style={styles.weatherCity}>{selectedResortName}</Text>
             <Image
               style={styles.weatherImage} // Add a style for the image
-              source={weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherImage(weatherData.weather[0].main) : require('../Images/face.jpg')}
+              source={weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherImage(weatherData.weather[0].main) : require('../Images/question.png')}
             />
             <Text style={styles.weatherTemp}>
               {weatherData && weatherData.main

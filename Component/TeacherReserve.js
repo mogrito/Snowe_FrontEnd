@@ -28,7 +28,7 @@ const TeacherReserveScreen = () => {
     if (selectedTeacher) {
       try {
         // 서버로 예약 데이터 전송
-        const response = await fetch('http://192.168.25.202:8080/reservation/reserve', {
+        const response = await fetch('http://192.168.25.204:8080/reservation/reserve', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
