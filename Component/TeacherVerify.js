@@ -341,22 +341,22 @@ const TeacherVerifyScreen = () => {
         {showLevelButtons && ( // showLevelButtons가 true일 때에만 레벨 버튼 표시
         <View style={styles.levelButtonsContainer}>
           <TouchableOpacity
-            style={selectedLevel === 'lv1' ? styles.Lv1levelButtonSelected : styles.levelButton}
-            onPress={() => handleLevelPress('lv1')}
+            style={selectedLevel === 'Lv1' ? styles.Lv1levelButtonSelected : styles.levelButton}
+            onPress={() => handleLevelPress('Lv1')}
           >
             <Text style={styles.levelButtonText}>Lv1</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={selectedLevel === 'lv2' ? styles.Lv2levelButtonSelected : styles.levelButton}
-            onPress={() => handleLevelPress('lv2')}
+            style={selectedLevel === 'Lv2' ? styles.Lv2levelButtonSelected : styles.levelButton}
+            onPress={() => handleLevelPress('Lv2')}
           >
             <Text style={styles.levelButtonText}>Lv2</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={selectedLevel === 'lv3' ? styles.Lv3levelButtonSelected : styles.levelButton}
-            onPress={() => handleLevelPress('lv3')}
+            style={selectedLevel === 'Lv3' ? styles.Lv3levelButtonSelected : styles.levelButton}
+            onPress={() => handleLevelPress('Lv3')}
           >
             <Text style={styles.levelButtonText}>Lv3</Text>
           </TouchableOpacity>

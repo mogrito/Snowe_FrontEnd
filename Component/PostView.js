@@ -3,7 +3,7 @@ import { View, ScrollView, Text, Image, StyleSheet, TextInput, FlatList,  Keyboa
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { getTokenFromLocal } from './TokenUtils';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 const { StatusBarManager } = NativeModules
@@ -324,10 +324,14 @@ function PostView({ route }) {
   
   const editComment = async (commentId, editedContent) => {
     try {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+
       const response = await fetch(`${URL}/comment/edit/${commentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
         },
         body: JSON.stringify({ content: editedContent }),
       });
@@ -384,10 +388,14 @@ function PostView({ route }) {
   };
     const deleteComment = async (commentId, boardId) => {
       try {
+        const token = await getTokenFromLocal();
+        const authorizationHeader = `Bearer ${token}`;
+        
         const response = await fetch(`${URL}/comment/del/${commentId}/${boardId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': authorizationHeader,
           },
           body: JSON.stringify({ boardId, commentId }), 
         });
@@ -488,10 +496,8 @@ function PostView({ route }) {
   // };
 
 return (
-  <View style={styles.rootContainer}>
-    <KeyboardAwareScrollView
-      contentContainerStyle={styles.container}
-    >
+  // <View style={styles.rootContainer}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerButton}>
           <TransparentCircleButton
@@ -556,12 +562,12 @@ return (
         </TouchableOpacity>
       </View>
 
-      <View
-        // behavior={Platform.OS === 'ios' ? 'padding' : null}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
         style={{ flex: 1}}
-        // keyboardVerticalOffset={statusBarHeight-50}
+        keyboardVerticalOffset={statusBarHeight-50}
       >
-        <View style={styles.commentListContainer}>
+        <ScrollView style={styles.commentListContainer}>
           <FlatList
             data={comments}
             keyExtractor={(item, index) => `comment-${index}`}
@@ -603,7 +609,7 @@ return (
               )}
             />
           </View> */}
-        </View>
+        </ScrollView>
         <View style={styles.commentInputWithButton}>
           <TextInput
             placeholder="댓글을 입력하세요"
@@ -620,7 +626,7 @@ return (
             <Text style={styles.postButtonText}>게시</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
       {/* 댓글모달 */}
       <Modal
           animationType="slide"
@@ -707,19 +713,15 @@ return (
           </View>
         </View>
       </Modal>   */}
-    </KeyboardAwareScrollView>
-  </View>
+    </SafeAreaView>
+  // </View>
 );
 }
 
 const styles = StyleSheet.create({
-  rootContainer:{
-    flex:1,
-    backgroundColor : '#F6FDFF'
-  },
   container: {
     flex: 1,
-    marginTop:50,
+    backgroundColor : '#F6FDFF'
   },
   header: {
     flexDirection: 'row',
@@ -739,7 +741,7 @@ const styles = StyleSheet.create({
     paddingTop:13
   },
   commentContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#f5f5f5',
     padding: 12,
     borderRadius: 8,
     marginBottom: 8,
@@ -934,6 +936,9 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
     marginLeft:10
   },
+  contentView:{
+    maxHeight:250
+  }
 });
 
 export default PostView;
