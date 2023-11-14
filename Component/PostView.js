@@ -432,7 +432,7 @@ function PostView({ route }) {
       } else {
         // 요청이 실패한 경우 처리
         console.error('추천 요청 실패');
-        alert('추천 할 수 없습니다.');
+        alert('이미 추천한 게시글입니다.');
       }
     } catch (error) {
       console.error('추천 요청 중 오류:', error);
@@ -446,7 +446,23 @@ function PostView({ route }) {
         await Like();
       }
     } else {
-      await Like();
+      Alert.alert(
+        '추천',
+        '이 글을 추천하시겠습니까?',
+        [
+          {
+            text: '취소',
+            style: 'cancel',
+          },
+          {
+            text: '확인',
+            onPress: async () => {
+              await Like();
+            },
+          },
+        ],
+        { cancelable: false }
+      );
     }
   };
 

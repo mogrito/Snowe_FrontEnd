@@ -90,7 +90,7 @@ const LessonSignUpScreen = () => {
     }
   
     if (!lessonClass) {
-      alert('강습 분류를 선택해주세요.');
+      alert('강습 종목을 선택해주세요.');
       return;
     }
   
@@ -107,6 +107,7 @@ const LessonSignUpScreen = () => {
           'Authorization': authorizationHeader,
         },
         body: JSON.stringify({
+
           lessonTitle: lessonname,
           lessonDate: startday,
           lessonDateEnd: endday,
@@ -187,20 +188,20 @@ const LessonSignUpScreen = () => {
         {/* 배경 이미지 설정 */}
         <Text style={fontLoaded ? styles.title : {}}>강습 등록</Text>
         <View style={styles.subjectContainer}>
-            <TouchableOpacity
-              style={isSki ? styles.skiButtonSelected : styles.selectedButton}
-              onPress={handleSkiPress}
-            >
-              <FontAwesome5 name="skiing" size={20} color={isSki ? 'white' : 'gray'} />
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={isSki ? styles.skiButtonSelected : styles.selectedButton}
+            onPress={handleSkiPress}
+          >
+            <FontAwesome5 name="skiing" size={20} color={isSki ? 'white' : 'gray'} />
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={isBoard ? styles.boardButtonSelected : styles.selectedButton}
-              onPress={handleBoardPress}
-            >
-              <FontAwesome5 name="snowboarding" size={20} color={isBoard ? 'white' : 'gray'} />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={isBoard ? styles.boardButtonSelected : styles.selectedButton}
+            onPress={handleBoardPress}
+          >
+            <FontAwesome5 name="snowboarding" size={20} color={isBoard ? 'white' : 'gray'} />
+          </TouchableOpacity>
+        </View>
         <View style={styles.inputContainer}>
           <View style={styles.iconContainer1}>
             <TouchableOpacity

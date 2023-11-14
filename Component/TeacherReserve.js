@@ -146,7 +146,7 @@ const TeacherReserveScreen = () => {
           markedDates={{
             [selectedDate]: { selected: true, selectedColor: 'skyblue' }, // Highlight the selected date
           }}
-          minDate={new Date()}
+          minDate={new Date().toISOString().split('T')[0]} // 현재 날짜의 ISO 문자열로 변환
           monthFormat={'yyyy년 MM월'}
         
         />
