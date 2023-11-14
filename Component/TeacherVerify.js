@@ -16,6 +16,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getTokenFromLocal } from './TokenUtils';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -36,12 +37,29 @@ const TeacherVerifyScreen = () => {
     const [lessonClass, setLessonClass] = useState('');
     const [selectedLevel, setSelectedLevel] = useState('');
     const [showLevelButtons, setShowLevelButtons] = useState(false);
+    const [selectedResortName, setselectedResortName] = useState('');
 
-
+    
     
     const onGoBack = () => {
       navigation.pop();
     };
+    
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const resortName = await AsyncStorage.getItem('selectedResortName');
+          console.log('resortName:',resortName);
+          console.log('storage:',await AsyncStorage.getItem('selectedResortName'));
+          setselectedResortName(resortName);
+        } catch (error) {
+          console.error('Error fetching data from AsyncStorage:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+  
   
     useEffect(() => {
       async function loadCustomFont() {
@@ -99,6 +117,9 @@ const TeacherVerifyScreen = () => {
             'Authorization': authorizationHeader,
           },
           body: JSON.stringify({
+            resortName : selectedResortName,
+            classification: lessonClass,
+            classLevel : selectedLevel,
             introduce: introduce, // 한줄소개
             history: history, // 약력
             career: career, // 경력
