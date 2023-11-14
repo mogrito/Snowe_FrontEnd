@@ -23,6 +23,7 @@ import axios from 'axios';
 import { Card, Avatar } from 'react-native-paper';
 import { getTokenFromLocal } from './TokenUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const windowWidth = Dimensions.get('window').width;
 
 const weatherConditionTranslations = {
@@ -68,7 +69,7 @@ function MainScreen() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [items, setItems] = useState({});
   const [agendaItems, setAgendaItems] = useState({});
-  const [hotBoardList, setHotBoardList] = useState([]);
+const [hotBoardList, setHotBoardList] = useState([]);
   const [boardId, setBoardId] = useState('');
  
 
@@ -97,11 +98,12 @@ function MainScreen() {
       AsyncStorage.setItem("selectedResortName",route.params.selectedResortName);
     }
   }, [route.params?.selectedResortName]);
-  
+
 
 
   useEffect(() => {
     async function fetchWeather() {
+      console.log(await AsyncStorage.getItem("selectedResortName"))
       try {
         const apiKey = '28664d08fe65159df42d4ee6b227bacd';
   
@@ -179,7 +181,7 @@ function MainScreen() {
       const token = await getTokenFromLocal();
       const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await axios.get(`http://192.168.25.202:8080/reservation/listOnDate?lessonDate=${date}`, {
+        const response = await axios.get(`http://192.168.25.204:8080/reservation/listOnDate?lessonDate=${date}`, {
           headers: {
             'Authorization': authorizationHeader,
           },
@@ -355,21 +357,21 @@ function MainScreen() {
                   style={styles.textContainer}
                   onPress={() => onBoardPress(item)}
                 >
-                  <View style={styles.headerContainer}>
+            <View style={styles.headerContainer}>
                     <View style={styles.textComment}>
                       <Text style={styles.boardtitle}>{item.title}</Text>
-                      <Text style={styles.boardcategory}>{item.category}</Text>
-                    </View>
+            <Text style={styles.boardcategory}>{item.category}</Text>
+          </View>
                     <View style={styles.textComment1}>
-                      <Text style={styles.datestyle}>{item.createDate}</Text>
-                      <Text> 👍 {item.recommendCount}  💬 {item.commentCount}</Text>
-                    </View>
+            <Text style={styles.datestyle}>{item.createDate}</Text>
+            <Text> 👍 {item.recommendCount}  💬 {item.commentCount}</Text>
+</View>
                   </View>
-                </TouchableOpacity>
-              )}
-            
-            />
-            </View>
+          </TouchableOpacity>
+)}
+          
+/>
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -400,14 +402,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
     right: 10,
   },
-
+  calendar: {
+    width: windowWidth * 0.9,
+    marginTop: 20,
+    borderRadius: 10,
+  },
   background: {
     flex: 1,
     backgroundColor: '#DBEBF9',
   },
   body: {
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 50,
   },
   weatherContainer: {
     width: windowWidth * 0.9,
@@ -444,7 +450,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: windowWidth * 0.9,
     height: 110,
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 10,
   },
   SkiInfoIcon: {
@@ -468,10 +474,6 @@ const styles = StyleSheet.create({
 
 
   },
-  divider: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
-  },
   iconText: {
     marginTop: 10,
   },
@@ -491,16 +493,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    marginTop:20,
+    marginTop:10,
   },
   hotboarditems:{
-    flex:1,
-    width:'100%',
-    marginBottom:40,
+    flex: 1,
+
   },
   hotboarditem: {
     fontSize: 16,
-    marginBottom: 10, // Adjust this margin value to add space
+    marginBottom: 3, // Adjust this margin value to add space
   },
   hotboarddate: {
     fontSize: 13,
@@ -508,7 +509,7 @@ const styles = StyleSheet.create({
   },
   hotboarditem1: {
     fontSize: 16,
-    marginBottom: 10, // Adjust this margin value to add space
+    marginBottom: 3, // Adjust this margin value to add space
   },
   hotboarddate1: {
     fontSize: 13,
@@ -516,7 +517,7 @@ const styles = StyleSheet.create({
   },
   hotboarditem2: {
     fontSize: 16,
-    marginBottom: 10, // Adjust this margin value to add space
+    marginBottom: 3, // Adjust this margin value to add space
   },
   hotboarddate2: {
     fontSize: 13,
@@ -529,36 +530,19 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft:-5,
   },
-  textComment: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', 
-    alignItems: 'flex-start', 
-  },
-  textComment1: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', 
-    alignItems: 'flex-start', 
-    marginTop:5,
-  },
-  headerContainer: {
-    marginTop: 20,
-    justifyContent: 'space-between', 
-  },
-  boardcategory:{
-    fontWeight:'bold',
-    marginBottom:1,
-  },
-  textContainer:{
-    width:'100%',
-
-  }
-  ,
-  datestyle:{
-    fontSize:13,
-    color:'gray'
-  }
 
 
 });
 
 export default MainScreen;
+
+
+
+
+
+
+
+
+
+
+
