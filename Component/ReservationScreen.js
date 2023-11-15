@@ -181,7 +181,7 @@ const submitReview = async () => {
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity
@@ -219,7 +219,7 @@ const submitReview = async () => {
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity
@@ -257,7 +257,7 @@ const submitReview = async () => {
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity

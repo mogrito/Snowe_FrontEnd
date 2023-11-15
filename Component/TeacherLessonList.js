@@ -114,7 +114,7 @@ const TeacherLessonListScreen = () => {
                   <View style={styles.itemContent}>
 
                     <View style={styles.textContainer}>
-                    <Text style={styles.itemText}>{item.lessonTitle}</Text>
+                    <Text style={styles.itemText}>"{item.lessonTitle}"</Text>
    
                     </View>
                     <View style={styles.textContainer1}>
@@ -158,7 +158,7 @@ const TeacherLessonListScreen = () => {
                   <View style={styles.itemContent}>
 
                     <View style={styles.textContainer}>
-                    <Text style={styles.itemText}>{item.lessonTitle}</Text>
+                    <Text style={styles.itemText}>"{item.lessonTitle}"</Text>
                
                     </View>
 
@@ -210,7 +210,7 @@ const TeacherLessonListScreen = () => {
 
 
                     <View style={styles.textContainer}>
-                    <Text style={styles.itemText}>{item.lessonTitle}</Text>
+                    <Text style={styles.itemText}>"{item.lessonTitle}"</Text>
                     </View>
 
                     {/* <View style={styles.textContainer}>
