@@ -56,7 +56,7 @@ export function CustomDrawerContent({ navigation }) {
       fetchUserRole();
     });
 
-    
+
     return () => {
       unsubscribeFocus();
     };
@@ -92,7 +92,7 @@ export function CustomDrawerContent({ navigation }) {
             navigation.navigate('TeacherMyPage');
           } else if (userRole === 'USER') {
             navigation.navigate('MyPage');
-          }else if(userRole === 'ADMIN') {
+          } else if (userRole === 'ADMIN') {
             navigation.navigate('MyPage');
           }
            else if (userRole === 'Guest' || userRole === null) {
@@ -123,17 +123,33 @@ export function CustomDrawerContent({ navigation }) {
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="account-clock" color={color} size={size} />
           )}
-          onPress={() => navigation.navigate('Reservation')}
-        />
+          onPress={() => {
+            if (userRole === 'Guest') {
+              navigation.navigate('Login');
+            } else if (userRole === 'USER') {
+              navigation.navigate('Reservation');
+            }
 
-    )}
-      <DrawerItem
-        label="강사자격 신청 및 등록"
-        icon={({ color, size }) => (
-          <FontAwesome name="id-card-o" color={color} size={size} />
-        )}
-        onPress={() => navigation.navigate('TeacherVerify')}
-      />
+          }}
+        />
+      )}
+
+      {userRole !== 'TEACHER' && (
+        <DrawerItem
+          label="강사자격 신청 및 등록"
+          icon={({ color, size }) => (
+            <FontAwesome name="id-card-o" color={color} size={size} />
+          )}
+          onPress={() => {
+            if (userRole === 'Guest') {
+              navigation.navigate('Login');
+            } else if (userRole === 'USER') {
+              navigation.navigate('TeacherVerify');
+            }
+            // Add additional conditions for other roles if needed
+          }}
+        />
+      )}
     </DrawerContentScrollView>
   );
 }

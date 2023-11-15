@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer, useFocusEffect  } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5 , Octicons, FontAwesome } from '@expo/vector-icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import LoginScreen from './Component/Login';
 import MainScreen from './Component/MainView';
@@ -271,7 +271,7 @@ function TabNavigator({ navigation }) {
         options={{
           tabBarLabel: '홈',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
+            <Octicons
               name="home"
               color={color}
               size={26}
@@ -288,8 +288,8 @@ function TabNavigator({ navigation }) {
           options={{
             tabBarLabel: '내 강습 등록',
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="calendar-plus"
+              <FontAwesome
+                name="calendar-plus-o"
                 color={color}
                 size={26}
               />
@@ -304,7 +304,7 @@ function TabNavigator({ navigation }) {
             tabBarLabel: '강습 예약',
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
-                name="calendar-clock"
+                name="calendar-clock-outline"
                 color={color}
                 size={26}
               />
@@ -320,7 +320,7 @@ function TabNavigator({ navigation }) {
           tabBarLabel: '커뮤니티',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
-              name="account-group"
+              name="account-group-outline"
               color={color}
               size={26}
             />
@@ -334,8 +334,8 @@ function TabNavigator({ navigation }) {
         options={{
           tabBarLabel: '강사 정보',
           tabBarIcon: ({ color }) => (
-            <FontAwesome5
-              name="chalkboard-teacher"
+            <Octicons
+              name="mortar-board"
               color={color}
               size={26}
             />
