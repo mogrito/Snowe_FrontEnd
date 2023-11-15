@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     marginTop: 3
   },
   subjectText: {
-    fontSize: 13,
+    fontSize: 14,
     marginTop: 3,
   },
   cancelButton: {
