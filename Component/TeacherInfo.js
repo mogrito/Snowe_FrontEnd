@@ -17,6 +17,11 @@ const eachsubject = {
   보드: require('../Images/skiboard.png'),
 };
 
+const imagedata = [
+  { id: '1', image: require('../Images/skigosu.jpg') },
+  { id: '2', image: require('../Images/snow.jpg') },
+  { id: '3', image: require('../Images/snowee.jpg') },
+]
 
 const TeacherInfoScreen = () => {
   const [teachers, setTeachers] = useState([]);
@@ -26,7 +31,7 @@ const TeacherInfoScreen = () => {
   // const [teacherId, setTeacherId] = useState(null);
   const [reviewData, setReviewData] = useState([]);
   const navigation = useNavigation();
-
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -130,57 +135,53 @@ const TeacherInfoScreen = () => {
             <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
               <TransparentCircleButton onPress={closeModal} name="left" color="#424242" />
             </TouchableOpacity>
-        <ScrollView style={styles.modalContent}>
-  <View style={styles.modalinfoimage}>
-    {/* Teacher's basic information */}
-    <Image source={selectedTeacher.image} style={styles.modalTeacherImage} />
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 40 }}>
-      <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
-      <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
-        <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
-      </View>
-    </View>
-    <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
-  </View>
+            <ScrollView style={styles.modalContent}>
+              <View style={styles.modalinfoimage}>
+                {/* Teacher's basic information */}
+                <Image source={selectedTeacher.image} style={styles.modalTeacherImage} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 40 }}>
+                  <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
+                  <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
+                    <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
+                  </View>
+                </View>
+                <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
+              </View>
 
-  {/* FlatList for images */}
-  <FlatList
-    data={[
-      { id: '1', image: require('../Images/skigosu.jpg') },
-      { id: '2', image: require('../Images/snow.jpg') },
-      { id: '3', image: require('../Images/snowee.jpg') },
-    ]}
-    horizontal
-    pagingEnabled
-    showsHorizontalScrollIndicator={false}
-    keyExtractor={(item) => item.id}
-    renderItem={({ item }) => (
-      <View style={styles.swiperSlide}>
-        <Image source={item.image} style={styles.swiperImage} />
-      </View>
-    )}
-  />
+              {/* FlatList for images */}
+              <FlatList
+                data={imagedata}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <View style={styles.swiperSlide}>
+                    <Image source={item.image} style={styles.swiperImage} />
+                  </View>
+                )}
+              />
 
-  {/* Other details like histories, careers, teams, and reviews */}
-  <Text style={styles.histories}>약력</Text>
-  <View style={styles.history}>
-    <Text>- {selectedTeacher.history}</Text>
-  </View>
-  <Text style={styles.carrers}>경력</Text>
-  <View style={styles.history}>
-    <Text>- {selectedTeacher.career}</Text>
-  </View>
-  <Text style={styles.teams}>소속</Text>
-  <View style={styles.history}>
-    <Text>- {selectedTeacher.team}</Text>
-  </View>
-  <Text style={styles.teams}>이 강사님의 후기</Text>
-  <View style={styles.history}>
-    {reviewData.map((review, index) => (
-      <Text key={index}>- {review}</Text>
-    ))}
-  </View>
-</ScrollView>
+              {/* Other details like histories, careers, teams, and reviews */}
+              <Text style={styles.histories}>약력</Text>
+              <View style={styles.history}>
+                <Text>- {selectedTeacher.history}</Text>
+              </View>
+              <Text style={styles.carrers}>경력</Text>
+              <View style={styles.history}>
+                <Text>- {selectedTeacher.career}</Text>
+              </View>
+              <Text style={styles.teams}>소속</Text>
+              <View style={styles.history}>
+                <Text>- {selectedTeacher.team}</Text>
+              </View>
+              <Text style={styles.teams}>이 강사님의 후기</Text>
+              <View style={styles.history}>
+                {reviewData.map((review, index) => (
+                  <Text key={index}>- {review}</Text>
+                ))}
+              </View>
+            </ScrollView>
           </View>
         )}
       </Modal>
@@ -274,6 +275,7 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     textAlign: 'center',
   },
+
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
