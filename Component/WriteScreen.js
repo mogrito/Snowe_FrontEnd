@@ -106,7 +106,8 @@ function WriteScreen({ route }) {
           },
         }
       )
-      console.log('새 글 작성 완료');
+
+      console.log('새 글 작성 완료:', formData);
       navigation.goBack();
     } catch (error) {
       // 에러 처리

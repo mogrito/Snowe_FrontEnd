@@ -11,7 +11,7 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import { Agenda, LocaleConfig } from 'react-native-calendars';
+import { Calendar, Agenda, LocaleConfig } from 'react-native-calendars';
 import {
   FontAwesome,
   MaterialIcons,
@@ -95,7 +95,7 @@ function MainScreen() {
   useEffect(() => {
     if (route.params?.selectedResortName) {
       setSelectedResortName(route.params.selectedResortName);
-      AsyncStorage.setItem("selectedResortName",route.params.selectedResortName);
+      AsyncStorage.setItem("selectedResortName", route.params.selectedResortName);
     }
   }, [route.params?.selectedResortName]);
 
@@ -171,49 +171,6 @@ function MainScreen() {
 
   LocaleConfig.defaultLocale = 'ko';
 
-  const timeToString = (time) => {
-    const date = new Date(time);
-    return date.toISOString().split('T')[0];
-  };
-
-
-  useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true); // 로딩 시작
-      const token = await getTokenFromLocal();
-      const authorizationHeader = `Bearer ${token}`;
-      try {
-        const response = await axios.get(`http://192.168.25.204:8080/reservation/listOnDate?lessonDate=${date}`, {
-          headers: {
-            'Authorization': authorizationHeader,
-          },
-        });
-        if (response.status === 200) {
-          const data = response.data;
-          console.log('Fetched Data:', data);
-
-          // 아젠다 아이템 설정
-          const agendaItem = {};
-          agendaItem[date] = data;
-          setAgendaItems(agendaItem);
-
-          // items에 agendaItems를 설정
-          setItems(agendaItem);
-          console.log('items: ', items)
-        } else {
-          setreservationData(null);
-          console.error('데이터 가져오기 중 오류 발생:', response.status);
-        }
-      } catch (error) {
-        setreservationData(null);
-        console.error('데이터 가져오기 중 오류 발생:', error);
-      } finally {
-        setIsLoading(false); // 로딩 종료
-      }
-    }
-    fetchData();
-  }, [date]);
-
   // 핫 게시글 fetch
   const fetchBoardData = async () => {
     try {
@@ -238,6 +195,8 @@ function MainScreen() {
   useEffect(() => {
     fetchBoardData();
   }, []);
+
+
   // 핫게시글 누를 시
   const onBoardPress = (board) => {
     // setSelectedBoard(board);
@@ -249,31 +208,6 @@ function MainScreen() {
       recommendCount: board.recommendCount
     });
   };
-
-
-  const renderItemForFlatList = ({ item }) => (
-    <Card>
-      <Card.Content>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          {item.lessonDate ? ( // lessonDate가 있는 경우 텍스트 표시
-            <>
-              <Text>{item.lessonDate}</Text>
-              <Text>{item.name}</Text>
-              <Text>{item.lessonTitle}</Text>
-            </>
-          ) : (
-            // lessonDate가 없는 경우 안내 메시지 표시
-            <Text>예약 내역이 없습니다.</Text>
-          )}
-        </View>
-      </Card.Content>
-    </Card>
-  );
 
   return (
     <View style={styles.background}>
@@ -343,19 +277,20 @@ function MainScreen() {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{ flex: 1, marginTop: 5, width: windowWidth * 0.9 }}>
-          <ScrollView>
-            <Agenda
-              items={agendaItems}
-              selected={date}
-              renderItem={renderItemForFlatList}
-              style={{ borderRadius: 10, height: 290, marginTop: 15, }}
-              onDayPress={(day) => {
-                setDate(day.dateString);
-              }}
+
+        <View style={{ flex: 1, marginTop: 20, width: windowWidth * 0.9 }}>         
+            <Calendar monthFormat={'yyyy년 MM월'} style={{borderRadius:8}}
             />
-          </ScrollView>
         </View>
+
+        {/* <View style={styles.reservateview}>
+
+          <Image
+            source={require('../Images/face.jpg')}
+            style={styles.iconImage}
+          />
+          <Text style={styles.reservetext}>asd</Text>
+        </View> */}
 
         <View style={styles.hotboardContainer}>
           <Text style={styles.hotboardheader}>🔥 인기 게시물</Text>
@@ -449,6 +384,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 65,
     marginBottom: 1,  // Remove the margin-bottom
+    marginLeft: 14,
 
 
 
@@ -510,21 +446,26 @@ const styles = StyleSheet.create({
   hotboardContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
-    marginBottom: 10, // Adjust this margin value
+    marginBottom: 20,
     width: windowWidth * 0.9,
     borderRadius: 10,
     backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    marginTop: 20, // Adjust this margin value
+    marginTop: 20,
+
   },
   hotboarditems: {
     flex: 1,
+    width: "100%",
+    marginBottom: 40,
+
 
   },
   hotboarditem: {
     fontSize: 16,
     marginBottom: 3, // Adjust this margin value to add space
+
   },
   hotboarddate: {
     fontSize: 13,
@@ -556,7 +497,37 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginTop: 20,
     justifyContent: 'space-between',
+    flexDirection: 'row'
 
+  },
+  textComment: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  textComment1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginTop: 5,
+  },
+  headerContainer: {
+    marginTop: 20,
+    justifyContent: 'space-between',
+  },
+  boardcategory: {
+    fontWeight: 'bold',
+    marginBottom: 1,
+  },
+  textContainer: {
+    width: '100%',
+
+  }
+  ,
+  datestyle: {
+    fontSize: 13,
+    marginTop:4,
+    color: 'gray'
   }
   ,
   bustext: {
@@ -576,7 +547,26 @@ const styles = StyleSheet.create({
     height: 35,
 
   },
-
+  reservateview: {
+    flexDirection: 'row',
+    alignItems: 'center', // Center items vertically
+    backgroundColor: 'white',
+    width: windowWidth * 0.9,
+    height: 100,
+    marginTop: -10,
+    borderRadius: 8,
+    padding: 10, // Add padding for better visual spacing
+  },
+  
+  iconImage: {
+    width: 35,
+    height: 35,
+  },
+  
+  reservetext: {
+    fontSize: 16,
+    // Add any other styles you want for the text
+  }
 });
 
 export default MainScreen;

@@ -63,7 +63,12 @@ const TeacherInfoScreen = () => {
       });
       const result = response.data;
 
-      const reviews = result.map(item => item.review);
+      const reviews = result.map(item => ({
+        review: item.review,
+        studentId: item.studentId, 
+        reviewDate: item.reviewDate,  
+        lessonTitle: item.lessonTitle   
+      }));
 
       // 새로운 배열을 reviewData에 넣어줍니다.
       setReviewData(reviews);
@@ -161,25 +166,77 @@ const TeacherInfoScreen = () => {
                   </View>
                 )}
               />
+              <View style={{marginBottom:150}}>
+                <Text style={styles.histories}>약력</Text>
+                <View style={styles.history}>
+                  <Text>- {selectedTeacher.history}</Text>
+                </View>
+                <Text style={styles.carrers}>경력</Text>
+                <View style={styles.history}>
+                  <Text>- {selectedTeacher.career}</Text>
+                </View>
+                <Text style={styles.teams}>소속</Text>
+                <View style={styles.history}>
+                  <Text>- {selectedTeacher.team}</Text>
+                </View>
+                <Text style={styles.teams}>이 강사님의 후기</Text>
+                <FlatList
+                  data={reviewData}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <View style={styles.review}>
+                      
+                      <View style={{flexDirection:'row', width:'100%', padding:5}}>
+                        <View style={{width:'20%'}}>
+                          <Text>{` - 작성자 ID `}</Text>
+                        </View>
+                        <View style={{width:'5%'}}>
+                          <Text>{` : `}</Text>
+                        </View>
+                        <View style={{width:'75%'}}>
+                          <Text>{` ${item.studentId}`}</Text>
+                        </View>
+                      </View>
+                      
+                      <View style={{flexDirection:'row', width:'100%', padding:5}}>
+                        <View style={{width:'20%'}}>
+                          <Text>{` - 작성 날짜 `}</Text>
+                        </View>
+                        <View style={{width:'5%'}}>
+                          <Text>{` : `}</Text>
+                        </View>
+                        <View style={{width:'75%'}}>
+                          <Text>{` ${item.reviewDate}`}</Text>
+                        </View>
+                      </View>
 
-              {/* Other details like histories, careers, teams, and reviews */}
-              <Text style={styles.histories}>약력</Text>
-              <View style={styles.history}>
-                <Text>- {selectedTeacher.history}</Text>
-              </View>
-              <Text style={styles.carrers}>경력</Text>
-              <View style={styles.history}>
-                <Text>- {selectedTeacher.career}</Text>
-              </View>
-              <Text style={styles.teams}>소속</Text>
-              <View style={styles.history}>
-                <Text>- {selectedTeacher.team}</Text>
-              </View>
-              <Text style={styles.teams}>이 강사님의 후기</Text>
-              <View style={styles.history}>
-                {reviewData.map((review, index) => (
-                  <Text key={index}>- {review}</Text>
-                ))}
+                      <View style={{flexDirection:'row', width:'100%', padding:5}}>
+                        <View style={{width:'20%'}}>
+                          <Text>{` - 강습명 `}</Text>
+                        </View>
+                        <View style={{width:'5%'}}>
+                          <Text>{` : `}</Text>
+                        </View>
+                        <View style={{width:'75%'}}>
+                          <Text>{` ${item.lessonTitle}`}</Text>
+                        </View>
+                      </View>
+                      
+                      <View style={{flexDirection:'row', width:'100%', padding:5}}>
+                        <View style={{width:'20%'}}>
+                          <Text>{` - 후기 내용 `}</Text>
+                        </View>
+                        <View style={{width:'5%'}}>
+                          <Text>{` : `}</Text>
+                        </View>
+                        <View style={{width:'75%'}}>
+                          <Text>{` ${item.review}`}</Text>
+                        </View>
+                      </View>
+                    </View>
+                    
+                  )}
+                />
               </View>
             </ScrollView>
           </View>
@@ -234,7 +291,7 @@ const styles = StyleSheet.create({
     marginTop: 3
   },
   subjectText: {
-    fontSize: 16,
+    fontSize: 14,
     marginTop: 3,
   },
   cancelButton: {
@@ -313,7 +370,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
     height: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   modalTeacherImage: {
     width: 100,
@@ -369,6 +426,13 @@ const styles = StyleSheet.create({
   },
   history: {
     marginTop: 10,
+    width:'100%',
+  },
+  review: {
+    marginTop: 10,
+    width:'100%',
+    borderBottomWidth:0.6, 
+    borderColor:'#bbb'
   },
   carrer: {
     marginTop: 10,
