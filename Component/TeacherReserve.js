@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button, Alert, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
@@ -232,7 +232,7 @@ const TeacherReserveScreen = () => {
         )}
       </View>
       <Modal animationType="slide" visible={modalVisible} presentationStyle="pageSheet">
-        <View style={styles.modalContainer}>
+        <ScrollView style={styles.modalContainer}>
           <Text style={styles.reservationTitle}>예약 확인</Text>
           <View style={styles.centerView}>
           <Image style={styles.teacherModalImage} source={faceImage[selectedTeacher?.name]} />
@@ -248,6 +248,11 @@ const TeacherReserveScreen = () => {
             <View style={styles.lessonDataView}>
               <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습명`}</Text></View>
               <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonTitle}`}</Text></View>
+            </View>
+
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 장소`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.resortId}`}</Text></View>
             </View>
 
             <View style={styles.lessonDataView}>
@@ -288,7 +293,7 @@ const TeacherReserveScreen = () => {
               <Text style={styles.buttonText}>취소</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </Modal>
     </View>
   );
@@ -383,8 +388,6 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'white',
     padding: 20,
   },
@@ -404,14 +407,13 @@ const styles = StyleSheet.create({
   lessonDataContainer:{
     flex:1,
     flexDirection: 'column', 
-    justifyContent: 'center' 
+    marginBottom:40
   },
   lessonDataView:{
     width:'100%', 
     flexDirection:'row',
     justifyContent: 'center', 
     padding:10,
-    paddingBottom:18
   },
   lessonData3:{
     width:'30%', 
@@ -441,7 +443,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
     justifyContent: 'center',
-    marginBottom:70,
   },
   cancelButton: {
     width: '30%',
