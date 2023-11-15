@@ -13,6 +13,7 @@ import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { getTokenFromLocal } from './TokenUtils';
+import axios from 'axios';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -20,7 +21,9 @@ const TeacherLessonListScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
-  const [teacherlessondata, setteacherlessondataData] = useState([]); //강사 강습 데이터 
+  const [teacherlessondata, setTeacherlessondataData] = useState([]); //강사 강습 데이터 
+  const [studentData, setStudentData] = useState([]);     // 강습을 등록한 회원 데이터
+  const [studentModalVisible, setStudentModalVisible] = useState(false);  // 회원정보 모달
 
 
   //강습 데이터 들고오기 
@@ -29,14 +32,14 @@ const TeacherLessonListScreen = () => {
       const token = await getTokenFromLocal();
       const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await axios.get('http://192.168.25.202:8080/reservation/reserveList', {
+        const response = await axios.get('http://192.168.25.204:8080/teachers/lessonList', {
           headers: {
             'Authorization': authorizationHeader,
           },
         });
     
         const responseData = response.data;
-        setteacherlessondataData(responseData);       
+        setTeacherlessondataData(responseData);      
     
       } catch (error) {
         // 오류 처리
@@ -46,48 +49,49 @@ const TeacherLessonListScreen = () => {
     fetchData();
   }, []);
 
-  //취소버튼을 누르면 item.id, item.teacherId 를 onCancel로 보내고 cancelReservation에 값을 전달하고 cancelReservation를 통해 DB로 보냄
+
+    // 회원정보 버튼을 누르면 
+    const showMemberByLesson = async (lessonId) => {
+      const token = await getTokenFromLocal();
+      const authorizationHeader = `Bearer ${token}`;
+
+      try {
+        // 강습별 회원정보를 가져옴
+        const response = await axios.get(`http://192.168.25.204:8080/teachers/student-List?lessonId=${lessonId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authorizationHeader,
+          },
+        });
+
+        const responseData = response.data
+        setStudentData(responseData);
   
-  const cancelReservation = async (teacherlessonId, teacherId) => {
-    try {
-      // 서버에 예약 취소를 요청합니다.
-      const response = await fetch('취소 API 엔드포인트', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          teacherlessonId,
-          teacherId,
-        }),
-      });
-
-      if (response.ok) {
-        // 취소가 성공하면 상태를 업데이트하여 취소된 예약을 제거합니다.
-        setteacherlessondataData((prevData) => prevData.filter(item => item.id !== reservationId));
-      } else {
-        console.error('예약 취소 중 오류 발생');
+      } catch (error) {
+        console.error('회원정보 불러오는중 오류 발생:', error);
       }
-    } catch (error) {
-      console.error('예약 취소 중 오류 발생:', error);
-    }
-  };
+    };
+  
+    const onMember = (lessonId) => {
+      // 강사 ID가 예약 데이터에 있는 것
+      showMemberByLesson(lessonId);
+    };
 
-  const onCancel = (reservationId, teacherId) => {
-    // 강사 ID가 예약 데이터에 있는 것
-    cancelReservation(reservationId, teacherId);
-  };
+
 
   const onGoBack = () => {
     navigation.pop();
   };
 
   const currentDate = new Date();
-  const beforeLessons = teacherlessondata.filter((item) => new Date(item.lessonDate) > currentDate);
-  const duringLessons = teacherlessondata.filter(
-    (item) => new Date(teacherlessondata.lessonDate) <= currentDate && currentDate <= new Date(item.lessonDate)
-  );
-  const afterLessons = teacherlessondata.filter((item) => new Date(item.lessonDate) > currentDate);
+
+  const currentDateFormatted = currentDate.toISOString().split('T')[0];
+  console.log(currentDateFormatted);
+  console.log(teacherlessondata);
+
+  const beforeLessons = teacherlessondata.filter((item) => item.lessonDate > currentDateFormatted);
+  const duringLessons = teacherlessondata.filter((item) => item.lessonDate <= currentDateFormatted && currentDateFormatted <= item.lessonDateEnd);
+  const afterLessons = teacherlessondata.filter((item) => item.lessonDateEnd < currentDateFormatted);
 
   return (
     <View style={styles.container}>
@@ -108,25 +112,42 @@ const TeacherLessonListScreen = () => {
               renderItem={({ item }) => (
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
+
                     <View style={styles.imageContainer}>
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
+
                     <View style={styles.textContainer}>
-                    <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                    <Text style={styles.itemText}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>{item.lessonIntroduce}</Text>
                     </View>
+
+                    <View style={styles.textContainer}>
+                    <Text style={styles.itemText1}>{item.lessonLevel}/{item.lessonClass}</Text>
+                    </View>
+
+                    <View style={styles.textContainer}>
+                    <Text style={styles.itemText1}>{item.reserveCount}/{item.maxReserveCount}</Text>
+                    </View>
+
                     <TouchableOpacity
                       style={styles.moreinfoButton}
                       onPress={() => {
                         setSelectedReservation(item);
                         setModalVisible(true);
-                      }}
-                    >
+                      }}>
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.lessonId)} style={styles.cancelButton}>
-                      <Text style={styles.cancelButtonText}>취소</Text>
+
+                    <TouchableOpacity
+                      style={styles.moreinfoButton}
+                      onPress={() => {
+                        showMemberByLesson(item.lessonId);
+                        setStudentModalVisible(true);
+                      }}>
+                        <Text style={styles.moreinfoButtonText}>회원정보</Text>
                     </TouchableOpacity>
+
                   </View>
                 </View>
               )}
@@ -144,13 +165,25 @@ const TeacherLessonListScreen = () => {
               renderItem={({ item }) => (
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
-                    <View style={styles.imageContainer}>
+
+                  <View style={styles.imageContainer}>
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
+
                     <View style={styles.textContainer}>
-                    <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                    <Text style={styles.itemText}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>{item.lessonIntroduce}</Text>
                     </View>
+
+                    <View style={styles.textContainer}>
+                    <Text style={styles.itemText1}>{item.lessonLevel}/{item.lessonClass}</Text>
+                    </View>
+
+                    <View style={styles.textContainer}>
+                    <Text style={styles.itemText1}>{item.reserveCount}/{item.maxReserveCount}</Text>
+                    </View>
+
+
                     <TouchableOpacity
                       style={styles.moreinfoButton}
                       onPress={() => {
@@ -160,9 +193,16 @@ const TeacherLessonListScreen = () => {
                     >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.id, item.teacherId)} style={styles.cancelButton}>
-                      <Text style={styles.cancelButtonText}>취소</Text>
+
+                    <TouchableOpacity
+                      style={styles.moreinfoButton}
+                      onPress={() => {
+                        showMemberByLesson(item.lessonId);
+                        setStudentModalVisible(true);
+                      }}>
+                        <Text style={styles.moreinfoButtonText}>회원정보</Text>
                     </TouchableOpacity>
+
                   </View>
                 </View>
               )}
@@ -180,13 +220,25 @@ const TeacherLessonListScreen = () => {
               renderItem={({ item }) => (
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
+
                     <View style={styles.imageContainer}>
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
+
                     <View style={styles.textContainer}>
-                    <Text style={styles.itemText}>{item.name}</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                    <Text style={styles.itemText}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>{item.lessonIntroduce}</Text>
                     </View>
+
+                    <View style={styles.textContainer}>
+                    <Text style={styles.itemText1}>{item.lessonLevel}/{item.lessonClass}</Text>
+                    </View>
+
+                    <View style={styles.textContainer}>
+                    <Text style={styles.itemText1}>{item.reserveCount}/{item.maxReserveCount}</Text>
+                    </View>
+
+                    
                     <TouchableOpacity
                       style={styles.moreinfoButton}
                       onPress={() => {
@@ -196,6 +248,16 @@ const TeacherLessonListScreen = () => {
                     >
                       <Text style={styles.moreinfoButtonText}>상세보기</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.moreinfoButton}
+                      onPress={() => {
+                        showMemberByLesson(item.lessonId);
+                        setStudentModalVisible(true);
+                      }}>
+                        <Text style={styles.moreinfoButtonText}>회원정보</Text>
+                    </TouchableOpacity>
+
                   </View>
                 </View>
               )}
@@ -209,19 +271,58 @@ const TeacherLessonListScreen = () => {
         <View style={styles.modalContainer}>
           <ScrollView>
             <View style={styles.modalContent}>
-              <Image source={selectedReservation?.image} style={styles.modalImage} />
-              <Text style={styles.modalText1}>{selectedReservation?.name}</Text>
-              <Text style={styles.modalText}>{`강습 장소: 선택된 리조트 `}</Text>
-              <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
-              <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
-              <Text style={styles.modalText}>{`강습 시간: ${selectedReservation?.edustarttime}`}</Text>
+              
+              {/* <Image source={selectedReservation?.image} style={styles.modalImage} /> */}
+              <Text style={styles.modalText1}>{selectedReservation?.lessonTitle}</Text>
+              <Text style={styles.modalText}>{`한줄소개 : ${selectedReservation?.lessonIntroduce}`}</Text>
+              <Text style={styles.modalText}>{`강습 장소 : ${selectedReservation?.resortId} `}</Text>
+              <Text style={styles.modalText}>{`장비/레벨 : ${selectedReservation?.lessonClass} / ${selectedReservation?.lessonLevel}`}</Text>
+              <Text style={styles.modalText}>{`강습 시작일 : ${selectedReservation?.lessonDate}`}</Text>
+              <Text style={styles.modalText}>{`강습 종료일 : ${selectedReservation?.lessonDateEnd}`}</Text>
+              <Text style={styles.modalText}>{`강습 시작시간 : ${selectedReservation?.lessonStart}`}</Text>
+              <Text style={styles.modalText}>{`강습 종료시간 : ${selectedReservation?.lessonEnd}`}</Text>
+              <Text style={styles.modalText}>{`강습타임 : ${selectedReservation?.lessonDiv}`}</Text>
+              <Text style={styles.modalText}>{`강습연령 : ${selectedReservation?.lessonAge}`}</Text>
+              <Text style={styles.modalText}>{`신청인원 : ${selectedReservation?.reserveCount}`}</Text>
+
               <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
                 <Text style={styles.modalCloseButton}>닫기</Text>
               </TouchableOpacity>
+
             </View>
           </ScrollView>
         </View>
       </Modal>
+
+      <Modal visible={studentModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <ScrollView>
+            <View style={styles.modalContent}>
+
+              <FlatList
+                data={studentData}
+                keyExtractor={(item) => item.studentId.toString()}
+                renderItem={({ item }) => (
+
+                  <TouchableOpacity
+                    style={styles.studentItem}
+                  >
+
+                    <Text style={styles.modalText}>이름 : {item.name}</Text>
+                    <Text style={styles.modalText}>이메일 : {item.email}</Text>
+                    <Text style={styles.modalText}>닉네임: {item.nickName}</Text>
+
+                  </TouchableOpacity>
+                )}/>
+              <TouchableOpacity style={styles.cancelButton1} onPress={() => setStudentModalVisible(false)}>
+                <Text style={styles.modalCloseButton}>닫기</Text>
+              </TouchableOpacity>
+
+            </View>
+          </ScrollView>
+        </View>
+      </Modal>
+
     </View>
   );
 };
@@ -347,6 +448,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
+  },
+  // 회원정보 모달 구분
+  studentItem: {
+    padding: 10, // 각 학생 아이템의 안쪽 여백
+    marginBottom: 10, // 각 학생 아이템 간의 아래 여백
   },
 });
 

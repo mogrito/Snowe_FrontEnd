@@ -3,6 +3,7 @@ import { View, ScrollView, Text, Image, StyleSheet, TextInput, FlatList,  Keyboa
 import { useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { getTokenFromLocal } from './TokenUtils';
+import { replaceAll } from 'lodash';
 
 
 const { StatusBarManager } = NativeModules
@@ -68,6 +69,9 @@ function PostView({ route }) {
       console.log(boardId);
       const boardData = await response.json();
       console.log(boardData); // 게시글 정보 확인
+
+      console.log(boardData.filePath);
+      console.log(boardData.fileSName);
 
       // 게시글 데이터에서 필요한 정보 추출
       const { title, content, recommendCount, loginId } = boardData;
@@ -505,17 +509,20 @@ return (
     </View>
     <View>
       <Text style={styles.contentText}>{content}</Text>  
-    </View>  
+    </View> 
+
     <View>
       <FlatList
         data={image}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
+
           <Image 
-            source={{ uri: item.url }} 
+            source={{ uri: `${item.filePath.replace(/\\/g, '/')}/${item.fileSName}` }}
             style={{ width: 200, height: 300, alignSelf: 'center' }}
             resizeMode='contain' 
           />
+
         )}
       />
     </View>

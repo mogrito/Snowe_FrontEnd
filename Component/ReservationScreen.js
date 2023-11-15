@@ -32,15 +32,13 @@ const ReservationScreen = () => {
       const token = await getTokenFromLocal();
       const authorizationHeader = `Bearer ${token}`;
       try {
-        const response = await axios.get('http://192.168.25.202:8080/reservation/reserveList', {
+        const response = await axios.get('http://192.168.25.204:8080/reservation/reserveList', {
           headers: {
             'Authorization': authorizationHeader,
           },
         });
-    
         const responseData = response.data;
         setReservatedataData(responseData);       
-    
       } catch (error) {
         // 오류 처리
         console.error('API 요청 중 오류 발생:', error);
@@ -57,7 +55,7 @@ const ReservationScreen = () => {
       const authorizationHeader = `Bearer ${token}`;
     try {
       // 서버에 예약 취소를 요청합니다.
-      const response = await fetch(`http://192.168.25.202:8080/reservation/reserveCancel?reserveId=${reserveId}`, {
+      const response = await fetch(`http://192.168.25.204:8080/reservation/reserveCancel?reserveId=${reserveId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,11 +84,13 @@ const ReservationScreen = () => {
   };
 
   const currentDate = new Date();
-  const beforeLessons = reservatedata.filter((item) => new Date(item.lessonDate) > currentDate);
-  const duringLessons = reservatedata.filter(
-    (item) => new Date(reservatedata.lessonDate) <= currentDate && currentDate <= new Date(item.lessonDate)
-  );
-  const afterLessons = reservatedata.filter((item) => new Date(item.lessonDate) < currentDate);
+  console.log(currentDate);
+  const currentDateFormatted = currentDate.toISOString().split('T')[0];
+  console.log(currentDateFormatted);
+  console.log(reservatedata);
+  const beforeLessons = reservatedata.filter((item) => item.lessonDate > currentDateFormatted);
+  const duringLessons = reservatedata.filter((item) => item.lessonDate <= currentDateFormatted && currentDateFormatted <= item.lessonDateEnd);
+  const afterLessons = reservatedata.filter((item) => item.lessonDateEnd < currentDateFormatted);
 
   return (
     <View style={styles.container}>
