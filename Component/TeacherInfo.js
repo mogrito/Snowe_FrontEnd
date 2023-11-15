@@ -23,6 +23,36 @@ const imagedata = [
   { id: '3', image: require('../Images/snowee.jpg') },
 ]
 
+const faceImage = 
+  { 김희찬: require('../Images/heechan.jpg') ,
+    홍주성: require('../Images/jusung.jpg'), 
+    장원빈: require('../Images/face2.jpg') ,
+    김정훈: require('../Images/face3.jpg') ,
+  };
+  
+  const swiperimage1 = {
+    김희찬: [
+      require('../Images/skigosu.jpg'),
+      require('../Images/skigosu1.jpg'),
+      require('../Images/skigosu2.jpg'),
+    ],
+    홍주성: [
+      require('../Images/skigosu3.jpg'),
+      require('../Images/skigosu4.jpg'),
+      require('../Images/skigosu5.jpg'),
+    ],
+    장원빈: [
+      require('../Images/Snowboard.jpg'),
+      require('../Images/snowboard1.jpg'),
+      require('../Images/snowboard2.jpg'),
+    ],
+    김정훈: [
+      require('../Images/skigosu6.jpg'),
+      require('../Images/skigousu7.jpg'),
+      require('../Images/skigosu8.jpg'),
+    ],
+  };
+
 const TeacherInfoScreen = () => {
   const [teachers, setTeachers] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -36,7 +66,7 @@ const TeacherInfoScreen = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`http://192.168.25.202:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
+        const response = await fetch(`http://192.168.25.204:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
         if (!response.ok) {
           throw Error('서버에서 데이터를 가져오지 못했습니다.');
         }
@@ -55,7 +85,7 @@ const TeacherInfoScreen = () => {
     const authorizationHeader = `Bearer ${token}`;
 
     try {
-      const response = await axios.get(`http://192.168.25.202:8080/review/getReview?teacherId=${teacherId}`, {
+      const response = await axios.get(`http://192.168.25.204:8080/review/getReview?teacherId=${teacherId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': authorizationHeader,
@@ -114,7 +144,7 @@ const TeacherInfoScreen = () => {
         renderItem={({ item }) => (
           <View style={styles.item}>
             <View style={styles.teacherContent}>
-              <Image source={item.image} style={styles.teacherImage} />
+            <Image style={styles.teacherImage} source={faceImage[item.name]} />
               <View style={styles.textContainer}>
                 <View style={styles.headerimage}>
                   <Text style={styles.itemText}>{item.name}</Text>
@@ -140,10 +170,10 @@ const TeacherInfoScreen = () => {
             <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
               <TransparentCircleButton onPress={closeModal} name="left" color="#424242" />
             </TouchableOpacity>
-            <ScrollView style={styles.modalContent}>
+            <ScrollView style={styles.modalContent}  showsVerticalScrollIndicator={false}>
               <View style={styles.modalinfoimage}>
                 {/* Teacher's basic information */}
-                <Image source={selectedTeacher.image} style={styles.modalTeacherImage} />
+                <Image style={styles.modalTeacherImage} source={faceImage[selectedTeacher.name]} />
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 40 }}>
                   <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
                   <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
@@ -162,7 +192,7 @@ const TeacherInfoScreen = () => {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                   <View style={styles.swiperSlide}>
-                    <Image source={item.image} style={styles.swiperImage} />
+                    <Image style={styles.swiperImage} source={swiperimage1[selectedTeacher.name][parseInt(item.id) - 1]} />
                   </View>
                 )}
               />
@@ -291,7 +321,7 @@ const styles = StyleSheet.create({
     marginTop: 3
   },
   subjectText: {
-    fontSize: 14,
+    fontSize: 16,
     marginTop: 3,
   },
   cancelButton: {

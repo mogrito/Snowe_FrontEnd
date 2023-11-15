@@ -18,8 +18,15 @@ import { getTokenFromLocal } from './TokenUtils';
 import axios from 'axios';
 import { checkTokenAndNavigate } from './TokenUtils';
 
+const faceImage = 
+  { 김희찬: require('../Images/face.jpg') ,
+    홍주성: require('../Images/face1.jpg'), 
+    장원빈: require('../Images/face2.jpg') ,
+    김정훈: require('../Images/face3.jpg') ,
+  };
+
 const Tab = createMaterialTopTabNavigator();
-const URL = 'http://192.168.25.202:8080';
+const URL = 'http://192.168.25.204:8080';
 const ReservationScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -102,8 +109,8 @@ const ReservationScreen = () => {
     navigation.pop();
   };
 
-  const goReview = (lessonId, teacherId) => {
-    setSelectedReservation({ lessonId, teacherId }); // 리뷰 작성에 필요한 정보 설정
+  const goReview = (lessonId, teacherId, lessonTitle) => {
+    setSelectedReservation({ lessonId, teacherId, lessonTitle }); // 리뷰 작성에 필요한 정보 설정
     setModalVisible(true);
   };
 
@@ -111,12 +118,12 @@ const ReservationScreen = () => {
     setModalVisible(false);
     setReview('');
 };
-
+console.log('앙기모치22222', afterLessons);
 const submitReview = async () => {
   try {
     const token = await getTokenFromLocal();
     const authorizationHeader = `Bearer ${token}`;
-
+    console.log('앙기모치', selectedReservation);
     const response = await fetch(`${URL}/review/addReview`, {
       method: 'POST',
       headers: {
@@ -127,9 +134,10 @@ const submitReview = async () => {
         lessonId:selectedReservation?.lessonId,
         teacherId:selectedReservation?.teacherId,
         review:review,
+        lessonTitle:selectedReservation?.lessonTitle
       }),
     });
-
+    console.log('앙',response);
     if (response.ok) {
       alert('리뷰 제출 성공');
       setModalVisible(false);
@@ -170,11 +178,11 @@ const submitReview = async () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
                     <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity
@@ -186,7 +194,7 @@ const submitReview = async () => {
                       >
                         <Text style={styles.moreinfoButtonText}>상세보기</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.cancelButton}>
+                      <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.reviewButton}>
                         <Text style={styles.cancelButtonText}>취소</Text>
                       </TouchableOpacity>
                     </View>
@@ -208,11 +216,11 @@ const submitReview = async () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
                     <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity
@@ -246,11 +254,11 @@ const submitReview = async () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
                     <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity
@@ -262,7 +270,7 @@ const submitReview = async () => {
                       >
                         <Text style={styles.moreinfoButtonText}>상세보기</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.reviewButton} onPress={() => goReview(item.lessonId, item.teacherId)}>
+                      <TouchableOpacity style={styles.reviewButton} onPress={() => goReview(item.lessonId, item.teacherId, item.lessonTitle)}>
                         <Text style={styles.goReviewButton}>리뷰 남기기</Text>
                       </TouchableOpacity>
                     </View>
@@ -279,8 +287,8 @@ const submitReview = async () => {
         <View style={styles.modalContainer}>
           <ScrollView>
             <View style={styles.modalContent}>
-              <Image source={selectedReservation?.image} style={styles.modalImage} />
-              <Text style={styles.modalText1}>{selectedReservation?.name}</Text>
+            <Image style={styles.modalImage} source={faceImage[selectedReservation?.name]} />
+              <Text style={styles.modalText1}>{selectedReservation?.name} 강사님</Text>
               <Text style={styles.modalText}>{`강습 장소: ${selectedReservation?.resortId}`}</Text>
               <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
               <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
@@ -365,8 +373,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   teacherImage: {
-    width: 40,
-    height: 40,
+    width: 55,
+    height: 55,
     borderRadius: 50,
   },
   textContainer: {
@@ -429,8 +437,8 @@ const styles = StyleSheet.create({
     marginTop: 290,
   },
   modalImage: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     borderRadius: 100,
   },
   modalText: {

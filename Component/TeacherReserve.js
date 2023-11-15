@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Image, Dimensions, Button, Alert, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
@@ -7,6 +7,13 @@ import { getTokenFromLocal } from './TokenUtils';
 import { checkTokenAndNavigate } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
+
+const faceImage = 
+  { 김희찬: require('../Images/heechan.jpg') ,
+    홍주성: require('../Images/jusung.jpg'), 
+    장원빈: require('../Images/face2.jpg') ,
+    김정훈: require('../Images/face3.jpg') ,
+  };
 
 const TeacherReserveScreen = () => {
   const isFocused = useIsFocused();
@@ -203,7 +210,7 @@ const TeacherReserveScreen = () => {
               >
                 <View style={styles.teacherInfo}>
                   <View style={styles.teacherImageView}>
-                    <Image source={{ uri: item.image }} style={styles.teacherImage} />
+                  <Image style={styles.teacherImage} source={faceImage[item.name]} />
                   </View>
                   <View style={styles.nameDivView}>
                     <Text style={styles.teacherName}>{item.name}</Text>
@@ -225,10 +232,10 @@ const TeacherReserveScreen = () => {
         )}
       </View>
       <Modal animationType="slide" visible={modalVisible} presentationStyle="pageSheet">
-        <View style={styles.modalContainer}>
+        <ScrollView style={styles.modalContainer}>
           <Text style={styles.reservationTitle}>예약 확인</Text>
           <View style={styles.centerView}>
-            <Image source={{ uri: selectedTeacher?.image }} style={styles.teacherModalImage} />
+          <Image style={styles.teacherModalImage} source={faceImage[selectedTeacher?.name]} />
             <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
             <TouchableOpacity
               style={styles.teacherDetail}
@@ -241,6 +248,11 @@ const TeacherReserveScreen = () => {
             <View style={styles.lessonDataView}>
               <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습명`}</Text></View>
               <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonTitle}`}</Text></View>
+            </View>
+
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 장소`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.resortId}`}</Text></View>
             </View>
 
             <View style={styles.lessonDataView}>
@@ -270,7 +282,7 @@ const TeacherReserveScreen = () => {
 
             <View style={styles.lessonDataView}>
               <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 인원`}</Text></View>
-              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonStart}`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.reserveCount} / ${selectedTeacher?.maxReserveCount}`}</Text></View>
             </View>
           </View>
           <View style={styles.buttonContainer}>
@@ -281,7 +293,7 @@ const TeacherReserveScreen = () => {
               <Text style={styles.buttonText}>취소</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </Modal>
     </View>
   );
@@ -376,15 +388,13 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'white',
     padding: 20,
   },
 
   teacherModalImage: {
-    width: 200,
-    height: 200,
+    width: 170,
+    height: 170,
     borderRadius: 200,
     marginTop: 10,
     marginBottom: 20,
@@ -397,14 +407,13 @@ const styles = StyleSheet.create({
   lessonDataContainer:{
     flex:1,
     flexDirection: 'column', 
-    justifyContent: 'center' 
+    marginBottom:40
   },
   lessonDataView:{
     width:'100%', 
     flexDirection:'row',
     justifyContent: 'center', 
     padding:10,
-    paddingBottom:18
   },
   lessonData3:{
     width:'30%', 

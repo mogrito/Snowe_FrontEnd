@@ -264,7 +264,7 @@ const TeacherVerifyScreen = () => {
     //이미지 업로드 기능
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
+      allowsEditing: true,
       quality: 1,
       aspect: [1, 1],
       multiple: true,

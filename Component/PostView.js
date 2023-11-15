@@ -597,9 +597,7 @@ return (
                   <Text style={styles.commentText}>{item.content}</Text>
                 <View>
                   
-                    <TouchableOpacity onPress={onReplyButtonPress}>
-                      <Text style={styles.replyButtonWithBorder}>답글</Text>
-                    </TouchableOpacity>
+
                   </View>
                 </View>
               </View>
@@ -901,6 +899,7 @@ const styles = StyleSheet.create({
     marginLeft: 10, // "수정/삭제" 버튼 사이의 간격 추가
   },
   commentInputWithButton: {
+    width:'96.5%',
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
@@ -944,7 +943,7 @@ const styles = StyleSheet.create({
     marginLeft:10
   },
   contentView:{
-    maxHeight:250
+    maxHeight:300
   }
 });
 
