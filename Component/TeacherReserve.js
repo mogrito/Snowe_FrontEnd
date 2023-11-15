@@ -282,7 +282,7 @@ const TeacherReserveScreen = () => {
 
             <View style={styles.lessonDataView}>
               <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 인원`}</Text></View>
-              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonStart}`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.reserveCount} / ${selectedTeacher?.maxReserveCount}`}</Text></View>
             </View>
           </View>
           <View style={styles.buttonContainer}>
