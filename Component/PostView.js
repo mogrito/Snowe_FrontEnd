@@ -901,6 +901,7 @@ const styles = StyleSheet.create({
     marginLeft: 10, // "수정/삭제" 버튼 사이의 간격 추가
   },
   commentInputWithButton: {
+    width:'96.5%',
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
