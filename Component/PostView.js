@@ -301,6 +301,7 @@ function PostView({ route }) {
       } else {
         // 서버에서 오류 응답을 받았을 때 처리
         console.error('댓글 추가 실패');
+        alert("비회원은 작성할 수 없습니다.");
       }
     } catch (error) {
       console.error('댓글 추가 중 오류 발생', error);

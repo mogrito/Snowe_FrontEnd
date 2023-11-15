@@ -96,6 +96,7 @@ export function CustomDrawerContent({ navigation }) {
             navigation.navigate('MyPage');
           }
            else if (userRole === 'Guest' || userRole === null) {
+            alert("회원정보가 없어 로그인 화면으로 이동합니다.");
             navigation.navigate('Login');
           }
         }}
@@ -124,6 +125,7 @@ export function CustomDrawerContent({ navigation }) {
           )}
           onPress={() => navigation.navigate('Reservation')}
         />
+
     )}
       <DrawerItem
         label="강사자격 신청 및 등록"
