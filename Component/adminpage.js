@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { getTokenFromLocal } from './TokenUtils';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const AdminPage = () => {
   const [teachers, setTeachers] = useState([]);
