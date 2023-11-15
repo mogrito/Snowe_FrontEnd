@@ -38,6 +38,7 @@ import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TeacherLessonListScreen from './Component/TeacherLessonList';
 import ReviewScreen from './Component/ReviewScreen';
+import AdminPage from './Component/adminpage';
 
 
 
@@ -201,6 +202,11 @@ export default function App() {
         <RootStack.Screen
           name="TeacherLessonList"
           component={TeacherLessonListScreen}
+          options={{ headerShown: false }}
+        />
+         <RootStack.Screen
+          name="adminpage"
+          component={AdminPage}
           options={{ headerShown: false }}
         />
         </RootStack.Navigator>

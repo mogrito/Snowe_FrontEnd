@@ -55,7 +55,7 @@ export const getTokenFromLocal = async () => {
 // AsyncStorage에 토큰 있는지 여부만 체크 (화면 전환용)
 export const checkTokenAndNavigate = async (navigation) => {
   const token = await AsyncStorage.getItem('Tokens');
-
+  
   if (!token) {
     // 토큰이 없으면 로그인 화면으로 이동
     navigation.navigate('Login');
