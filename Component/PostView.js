@@ -597,9 +597,7 @@ return (
                   <Text style={styles.commentText}>{item.content}</Text>
                 <View>
                   
-                    <TouchableOpacity onPress={onReplyButtonPress}>
-                      <Text style={styles.replyButtonWithBorder}>답글</Text>
-                    </TouchableOpacity>
+
                   </View>
                 </View>
               </View>
@@ -945,7 +943,7 @@ const styles = StyleSheet.create({
     marginLeft:10
   },
   contentView:{
-    maxHeight:250
+    maxHeight:300
   }
 });
 

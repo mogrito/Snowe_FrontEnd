@@ -256,16 +256,121 @@ const TeacherLessonListScreen = () => {
               
               {/* <Image source={selectedReservation?.image} style={styles.modalImage} /> */}
               <Text style={styles.modalText1}>{selectedReservation?.lessonTitle}</Text>
-              <Text style={styles.modalText}>{`한줄소개 : ${selectedReservation?.lessonIntroduce}`}</Text>
-              <Text style={styles.modalText}>{`강습 장소 : ${selectedReservation?.resortId} `}</Text>
-              <Text style={styles.modalText}>{`장비/레벨 : ${selectedReservation?.lessonClass} / ${selectedReservation?.lessonLevel}`}</Text>
-              <Text style={styles.modalText}>{`강습 시작일 : ${selectedReservation?.lessonDate}`}</Text>
-              <Text style={styles.modalText}>{`강습 종료일 : ${selectedReservation?.lessonDateEnd}`}</Text>
-              <Text style={styles.modalText}>{`강습 시작시간 : ${selectedReservation?.lessonStart}`}</Text>
-              <Text style={styles.modalText}>{`강습 종료시간 : ${selectedReservation?.lessonEnd}`}</Text>
-              <Text style={styles.modalText}>{`강습타임 : ${selectedReservation?.lessonDiv}`}</Text>
-              <Text style={styles.modalText}>{`강습연령 : ${selectedReservation?.lessonAge}`}</Text>
-              <Text style={styles.modalText}>{`신청인원 : ${selectedReservation?.reserveCount}`}</Text>
+              <View style={{marginTop:15}}>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`한줄소개`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.lessonIntroduce}`}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`강습 장소`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.resortId} `}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`장비/레벨`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.lessonClass} `}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`강습 시작일`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.lessonDate} `}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`강습 종료일`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.lessonDateEnd} `}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`강습 시작시간`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.lessonStart} `}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`강습 종료시간`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.lessonEnd} `}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`강습타임`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.lessonIntroduce} `}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`강습연령`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.lessonDiv} `}</Text>
+                  </View>
+                </View>
+                <View style={styles.intro1}>
+                  <View style={styles.intro2}>
+                    <Text>{`신청인원`}</Text>
+                  </View>
+                  <View style={styles.intro3}>
+                    <Text>{` : `}</Text>
+                  </View>
+                  <View style={styles.intro4}>
+                    <Text>{` ${selectedReservation?.reserveCount} `}</Text>
+                  </View>
+                </View>
+              </View>
+              
+            
+        
 
               <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
                 <Text style={styles.modalCloseButton}>닫기</Text>
@@ -428,7 +533,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   modalText1: {
-    fontSize: 16,
+    fontSize: 20,
     marginTop: 10,
     fontWeight: 'bold',
   },
@@ -453,6 +558,24 @@ const styles = StyleSheet.create({
     padding: 10, // 각 학생 아이템의 안쪽 여백
     marginBottom: 10, // 각 학생 아이템 간의 아래 여백
   },
+  intro1:{
+    width:'100%',
+    flexDirection:'row',
+    justifyContent:'center',
+    padding:7
+  },
+  intro2:{
+    width:'30%',
+    textAlign:'left'
+  },
+  intro3:{
+    width:'5%',
+    textAlign:'center'
+  },
+  intro4:{
+    width:'65%', 
+    textAlign:'left'
+  }
 });
 
 export default TeacherLessonListScreen;
