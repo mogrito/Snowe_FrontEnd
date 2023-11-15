@@ -11,22 +11,21 @@ import axios from 'axios';
 const URL = 'http://192.168.25.204:8080';
 
 
-
 function WriteScreen({ route }) {
   const log = route.params?.log;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const navigation = useNavigation();
   const bodyRef = useRef();
-  const [date, setDate] = useState(log ? new Date(log.date) : new Date());
+  const [date] = useState(log ? new Date(log.date) : new Date());
+  //const loginId = '정훈';
   const [category, setCategory] = useState(''); // 선택한 카테고리 상태
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('카테고리 선택');
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-  const [imageUrl, setImageUrl] = useState(null);
-  const [role, setRole] = useState('');
+  const [imageUri, setImageUri] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
-
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -70,7 +69,7 @@ function WriteScreen({ route }) {
       const formData = new FormData();
 
       // board지정
-      const board = { title: title, content: content, category: category };
+      //const board = { title: title, content: content, category: category };
 
       if (!title) {
         alert('제목을 입력해주세요');
@@ -85,51 +84,45 @@ function WriteScreen({ route }) {
         return null;
       }
 
-      const json = JSON.stringify(board);
-      const boardBlob = new Blob([json], {
-        type: 'application/json'
-      });
+      // const json = JSON.stringify(board);
+      // const boardBlob = new Blob([json], {
+      //   type: 'application/json'
+      // });
 
-      formData.append('board', boardBlob);
+      // formData.append('board', boardBlob);
 
-      if (imageUrl) {
-        // 파일 
-        const filename = imageUrl.split('/').pop();
-        console.log("파일이름 => " + filename);
-
-
-        const response = await fetch(imageUrl);
-        const imageBlob = await response.blob();
-
-        formData.append('image', imageBlob, filename);
-      }
+      
 
       //요청
-      axios.post(`${URL}/board/add`, formData,
+      axios.post(`${URL}/board/boardAdd`, {
+        title: title, 
+        content: content, 
+        category: category
+      },
         {
           headers: {
             'Authorization': authorizationHeader,
-            'Content-Type': 'multipart/form-data'
+            //'Content-Type': 'multipart/form-data'
           },
         }
       )
 
       console.log('새 글 작성 완료:', formData);
-      navigation.pop();
+      navigation.goBack();
     } catch (error) {
       // 에러 처리
       console.error('글 작성 중 오류발생:', error);
     }
   };
-
+  
 
 
   // 카메라에서 이미지를 가져올 함수
   const uploadImage = async () => {
     // 권한요청
-    if (!status?.granted) {
+    if(!status?.granted) {
       const permission = await requestPermission();
-      if (!permission.granted) {
+      if(!permission.granted) {
         return null;
       }
     }
@@ -144,58 +137,14 @@ function WriteScreen({ route }) {
     if (!result.canceled) {
 
 
-      console.log("기본uri => " + result.uri);
-      setImageUrl(result.uri);
-    }
-  };
-  useEffect(() => {
-    fetchGetToken();
-  }, []);
-
-  const fetchGetToken = async () => {
-    try {
-      const token = await getTokenFromLocal();
-      const authorizationHeader = `Bearer ${token}`;
-
-      const response = await fetch(`${URL}/board/view/token-check`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': authorizationHeader,
-        }
-      });
-
-      const tokenData = await response.json();
-      console.log(tokenData); // 게시글 정보 확인
-
-      // 게시글 데이터에서 필요한 정보 추출
-      const role = tokenData.role;
-      console.log(role);
-      setRole(role);
-
-    } catch (error) {
-      console.error(error);
+       console.log("기본uri => " + result.uri);
+       setImageUri(result.uri);
     }
   };
 
 
   return (
-    <View style={styles.block}>
-       <View style={styles.header}>
-          <TransparentCircleButton
-            onPress={onGoBack}
-            name="left"
-            color="#424242"
-          />
-          <Text style={styles.headertitle}>글 쓰기</Text>
-          {/* <Text style={{marginTop:8}}>{currentTime}</Text> */}
-          <TransparentCircleButton
-            onPress={onSave}
-            name="check"
-            color="#009688"
-          />
-        </View>
-        <View style={styles.borderLine1}></View>
+    <SafeAreaView style={styles.block}>
       <KeyboardAvoidingView
         style={styles.avoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -203,9 +152,22 @@ function WriteScreen({ route }) {
           onSave={onSave}
           date={date}
         /> */}
+        <View style={styles.header}>
+          <TransparentCircleButton
+            onPress={onGoBack}
+            name="left"
+            color="#424242"
+          />
+          <Text style={{marginTop:8}}>{currentTime}</Text>
+          <TransparentCircleButton
+            onPress={onSave}
+            name="check"
+            color="#009688"
+          />
+        </View>
         <View style={styles.category}>
           <TouchableOpacity onPress={handleOpenModal}>
-            <Text style={{ marginTop: 2, backgroundColor: '#DBEBF9' }}>{selectedCategory}</Text>
+            <Text style={{marginTop:2}}>{selectedCategory || '카테고리 선택'}</Text>
           </TouchableOpacity>
           <TextInput
             placeholder="제목을 입력하세요"
@@ -228,18 +190,14 @@ function WriteScreen({ route }) {
           value={content}
           ref={bodyRef}
         />
-        <Image source={{ uri: imageUrl }} style={{ width: 50, height: 50, marginBottom: 40 }} />
-        <View style={{ alignItems: 'center' }}>
-          <View style={styles.borderLine}></View>
-        </View>
-
-        <TouchableOpacity style={styles.imageContainer} onPress={uploadImage}>
-          <Image
-            source={require('../Images/photo.png')}
-            style={styles.iconImage}
-          />
-          <Text style={styles.iconText}>사진</Text>
-        </TouchableOpacity>
+       {/* <View style={{ flex: 1, alignItems: 'left', justifyContent: 'center' }}> */}
+          <TouchableOpacity onPress={uploadImage}>
+            <MaterialIcons name='add-a-photo' size={30} color="black" />
+            {imageUri &&  (
+            <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />
+            )}
+          </TouchableOpacity>
+        {/* </View> */}
 
         <Modal
           animationType="slide"
@@ -247,60 +205,45 @@ function WriteScreen({ route }) {
           visible={isModalVisible}
           onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text>검색 대상을 선택하세요:</Text>
-              <View style={styles.buttonContainer}>
-                {role !== 'ADMIN' && (
-                  <Button
-                    title="공지사항"
-                    onPress={() => handleSelectCategory('공지사항', '공지사항')}
-                    disabled={true}
-                  />
-                )}
-                {role === 'ADMIN' && (
-                  <Button
-                    title="공지사항"
-                    onPress={() => handleSelectCategory('공지사항', '공지사항')}
-                  />
-                )}
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button title="자유게시판" onPress={() => handleSelectCategory('자유게시판', '자유게시판')} />
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button title="묻고 답하기" onPress={() => handleSelectCategory('묻고답하기', '묻고 답하기')} />
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button title="💡꿀팁 공유" onPress={() => handleSelectCategory('꿀팁공유', '💡꿀팁 공유')} />
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button title="닫기" onPress={() => setModalVisible(false)} />
-              </View>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text>검색 대상을 선택하세요:</Text>
+            <View style={styles.buttonContainer}>
+              <Button title="공지사항" onPress={() => handleSelectCategory('공지사항', '공지사항')} />
             </View>
+            <View style={styles.buttonContainer}>
+              <Button title="자유게시판" onPress={() => handleSelectCategory('자유게시판', '자유게시판')} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button title="묻고 답하기" onPress={() => handleSelectCategory('묻고답하기', '묻고 답하기')} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button title="💡꿀팁 공유" onPress={() => handleSelectCategory('꿀팁공유', '💡꿀팁 공유')} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button title="닫기" onPress={() => setModalVisible(false)} />
+            </View>     
           </View>
+        </View>
         </Modal>
       </KeyboardAvoidingView>
-    </View>
-
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   block: {
     flex: 1,
-    paddingTop: 50, // 
+    paddingHorizontal: 16,
   },
   avoidingView: {
     flex: 1,
-    paddingHorizontal: 16,
-  },
+  },  
   header: {
-    flexDirection: 'row',
+    flexDirection:'row',
     justifyContent: 'space-between',
-    paddingTop: 5,
-    paddingLeft:10,
-    paddingRight:20,
+    paddingTop:5,
+    paddingBottom:10
   },
   titleInput: {
     flex: 1,
@@ -315,14 +258,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     paddingVertical: 0,
-    marginBottom: 16,
+    marginBottom:16,
     color: '#263238',
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',    
   },
   modalContent: {
     backgroundColor: 'white',
@@ -332,58 +275,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     margin: 3, // 버튼 간의 상단 여백 조정
   },
-  category: {
+  category:{
     flexDirection: 'row',
-  },
-  imageContainer: {
-    marginBottom: 50,
-    width: 33,
-    height: 33,
-    flexDirection: 'row',
-     alignItems: 'center', 
-    
-  },
-  borderLine: {
-    borderTopWidth: 0.3,
-    borderTopColor: 'gray',
-    marginTop: '5%',
-    marginBottom: 10,
-    flexDirection: 'row',
-    width: '120%',
-  },
-  iconImage:{
-    width:25,
-    height:25,
-
-  },
-  iconText: {
-    width:25,
-    marginLeft: 5, // 이미지와 텍스트 사이의 간격 조절
-
-  },
-  headertitle:{
-    fontSize:20,
-    fontWeight:'bold',
-    paddingLeft:4,
-  },
-  borderLine1: {
-    borderTopWidth: 0.3,
-    borderTopColor: 'gray',
-    marginTop:10,
-    marginBottom: 20,
-    flexDirection: 'row',
-    width: '120%',
-  },
-  borderLine2: {
-    borderTopWidth: 0.3,
-    borderTopColor: 'gray',
-    marginTop:0,
-    marginBottom: 20,
-    flexDirection: 'row',
-    width: '100%',
-  },
-  
-
+  }
 });
 
 
