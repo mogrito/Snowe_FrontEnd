@@ -173,52 +173,60 @@ const TeacherVerifyScreen = () => {
   
     // 변수명, API DB에 맞게 변경해야함
     const handleRegister = async () => {
-      try {
+      
         const token = await getTokenFromLocal();
         const authorizationHeader = `Bearer ${token}`;
     
-        const formData = new FormData();
+        //const formData = new FormData();
     
         // 요청보낼 body 설정
-        const applyTeacher = {
-          resortName: selectedResortName,  // 강사의 리조트명
-          classification: lessonClass,     // 강사 종목
-          classLevel: selectedLevel,       // 강사 레벨
-          introduce: introduce,            // 한줄소개
-          history: history,                // 약력
-          career: career,                  // 경력
-          team: team,                          // 소속
-        }
-
-        alert(applyTeacher);
+        // const applyTeacher = {
+        //   resortName: selectedResortName,  // 강사의 리조트명
+        //   classification: lessonClass,     // 강사 종목
+        //   classLevel: selectedLevel,       // 강사 레벨
+        //   introduce: introduce,            // 한줄소개
+        //   history: history,                // 약력
+        //   career: career,                  // 경력
+        //   team: team,                          // 소속
+        // }
     
-        const json = JSON.stringify(applyTeacher);
-        const applyBlob = new Blob([json], {
-          type: 'application/json'
-        });
-        // 강사소개 요청
-        formData.append('teacher', applyBlob);
+        // const json = JSON.stringify(applyTeacher);
+        // const applyBlob = new Blob([json], {
+        //   type: 'application/json'
+        // });
+        // // 강사소개 요청
+        // formData.append('teacher', applyBlob);
     
         // 이미지 리스트
-        const imageUrls = [imageUrl, licenseImageUrl];
+        // const imageUrls = [imageUrl, licenseImageUrl];
     
-        for (let i = 0; i < imageUrls.length; i++) {
-          const fileUrl = imageUrls[i];
-          const fileName = fileUrl.split('/').pop();
+        // for (let i = 0; i < imageUrls.length; i++) {
+        //   const fileUrl = imageUrls[i];
+        //   const fileName = fileUrl.split('/').pop();
+
+        //   console.log(fileName);
     
-          // React Native에서 이미지를 blob으로 변환하는 방법
-          const fileResponse = await fetch(fileUrl);
-          const imageBlob = await fileResponse.blob();
+        //   // React Native에서 이미지를 blob으로 변환하는 방법
+        //   const fileResponse = await fetch(fileUrl);
+        //   const imageBlob = await fileResponse.blob();
     
-          // FormData에 이미지 추가
-          formData.append('image', imageBlob, fileName);
-        }
+        //   // FormData에 이미지 추가
+        //   formData.append('image', imageBlob, fileName);
+        // }
     
         // 요청
-        const response = await axios.post(`${URL}/member/apply`, formData, {
+        const response = await axios.post(`${URL}/member/apply`, {
+            resortName: selectedResortName,  // 강사의 리조트명
+            classification: lessonClass,     // 강사 종목
+            classLevel: selectedLevel,       // 강사 레벨
+            introduce: introduce,            // 한줄소개
+            history: history,                // 약력
+            career: career,                  // 경력
+            team: team,   
+        }, {
           headers: {
             'Authorization': authorizationHeader,
-            'Content-Type': 'multipart/form-data'
+            //'Content-Type': 'multipart/form-data'
           },
         });
     
@@ -230,10 +238,7 @@ const TeacherVerifyScreen = () => {
           // 서버 오류 응답
           alert('서버 오류로 강사 신청이 실패했습니다.');
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('이미 신청된 내역이 존재합니다.');
-      }
+       
     
   
       // 상태 초기화

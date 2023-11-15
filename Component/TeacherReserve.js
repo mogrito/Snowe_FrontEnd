@@ -244,24 +244,40 @@ const TeacherReserveScreen = () => {
               <Text>강사 정보 보기</Text>
             </TouchableOpacity>
           </View>
-          <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.lessonData1}>{`강습명`}</Text>
-              <Text style={styles.lessonData1}>{`강습 시작일`}</Text>
-              <Text style={styles.lessonData1}>{`강습 종료일`}</Text>
-              <Text style={styles.lessonData1}>{`강습 시작시간`}</Text>
-              <Text style={styles.lessonData1}>{`강습 종료시간`}</Text>
-              <Text style={styles.lessonData1}>{`강습 소개`}</Text>
-              <Text style={styles.lessonData1}>{`강습 인원`}</Text>
+          <View style={styles.lessonDataContainer}>
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습명`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonTitle}`}</Text></View>
             </View>
-            <View>
-              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonTitle}`}</Text>
-              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonDate}`}</Text>
-              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonDateEnd}`}</Text>
-              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonStart}`}</Text>
-              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonEnd}`}</Text>
-              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonIntroduce}`}</Text>
-              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonStart}`}</Text>
+
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 시작일`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonDate}`}</Text></View>
+            </View>
+
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 종료일`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonDateEnd}`}</Text></View>
+            </View>
+
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 시작시간`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonStart}`}</Text></View>
+            </View>
+
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 종료시간`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonEnd}`}</Text></View>
+            </View>
+
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 소개`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonIntroduce}`}</Text></View>
+            </View>
+
+            <View style={styles.lessonDataView}>
+              <View style={styles.lessonData3}><Text style={styles.lessonDataText1}>{`강습 인원`}</Text></View>
+              <View style={styles.lessonData4}><Text style={styles.lessonDataText2}>{` :  ${selectedTeacher?.lessonStart}`}</Text></View>
             </View>
           </View>
           <View style={styles.buttonContainer}>
@@ -382,18 +398,36 @@ const styles = StyleSheet.create({
   },
   teacherModalName: {
     fontSize: 30,
-    marginBottom: 40,
+    marginBottom:10,
     fontWeight: 'bold',
   },
-  lessonData1:{
-    marginBottom: 10, 
-    fontSize: 20,
-    textAlign: 'left',
+  lessonDataContainer:{
+    flex:1,
+    flexDirection: 'column', 
+    justifyContent: 'center' 
   },
-  lessonData2:{
-    marginBottom: 10, 
-    fontSize: 20,
-    textAlign: 'left'
+  lessonDataView:{
+    width:'100%', 
+    flexDirection:'row',
+    justifyContent: 'center', 
+    padding:10,
+    paddingBottom:18
+  },
+  lessonData3:{
+    width:'30%', 
+    paddingLeft:10
+  },
+  lessonData4:{
+    width:'70%', 
+  },
+  lessonDataText1:{
+    fontSize:18, 
+    textAlign:'left', 
+  },
+  lessonDataText2:{
+    fontSize:18, 
+    textAlign:'left', 
+
   },
   reservationTitle: {
     position: 'absolute',
@@ -452,6 +486,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop:55,
   },
   teacherDetail:{
     backgroundColor:'yellow'
