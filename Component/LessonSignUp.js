@@ -127,6 +127,17 @@ const LessonSignUpScreen = () => {
         // 등록 성공
         alert('강습 등록이 완료되었습니다.');
         navigation.navigate('MainView');
+        setLessonname('');
+        setStartday('');
+        setEndday('');
+        setLevel('');
+        setAge('');
+        setStartLessontime('');
+        setEndLessontime('');
+        setAmPm('');
+        setMaxReserveCount('');
+        setLessonClass('');
+        setLessonIntroduce('');
       } else {
         // 등록 실패
         alert('강습 등록이 실패했습니다.');
