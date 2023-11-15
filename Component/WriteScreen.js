@@ -269,7 +269,7 @@ function WriteScreen({ route }) {
                 <Button title="자유게시판" onPress={() => handleSelectCategory('자유게시판', '자유게시판')} />
               </View>
               <View style={styles.buttonContainer}>
-                <Button title="묻고 답하기" onPress={() => handleSelectCategory('묻고 답하기', '묻고 답하기')} />
+                <Button title="묻고 답하기" onPress={() => handleSelectCategory('묻고답하기', '묻고 답하기')} />
               </View>
               <View style={styles.buttonContainer}>
                 <Button title="💡꿀팁 공유" onPress={() => handleSelectCategory('꿀팁공유', '💡꿀팁 공유')} />

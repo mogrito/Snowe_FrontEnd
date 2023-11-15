@@ -189,6 +189,8 @@ const TeacherVerifyScreen = () => {
           career: career,                  // 경력
           team: team,                          // 소속
         }
+
+        alert(applyTeacher);
     
         const json = JSON.stringify(applyTeacher);
         const applyBlob = new Blob([json], {
@@ -451,10 +453,8 @@ const TeacherVerifyScreen = () => {
       alignItems: 'center',
       justifyContent: 'space-between',
       position: 'sticky',
-      // top:40,
-      padding:40,
-      // paddingVertical: 10,
-      // paddingHorizontal: 10,
+      paddingVertical: 40,
+      paddingHorizontal: 10,
       zIndex: 1,
       marginBottom:40,
       marginTop:10,

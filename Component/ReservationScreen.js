@@ -8,7 +8,8 @@ import {
   Image,
   Modal,
   ScrollView,
-  Alert
+  Alert,
+  TextInput
 } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
@@ -18,12 +19,14 @@ import axios from 'axios';
 import { checkTokenAndNavigate } from './TokenUtils';
 
 const Tab = createMaterialTopTabNavigator();
-
+const URL = 'http://192.168.25.202:8080';
 const ReservationScreen = () => {
   const navigation = useNavigation();
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [reservatedata, setReservatedataData] = useState([]); //예약 데이터 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [review, setReview] = useState('');
 
   checkTokenAndNavigate();
 
@@ -99,14 +102,43 @@ const ReservationScreen = () => {
     navigation.pop();
   };
 
-  const goReview = () => {
-    const { lessonId, teacherId } = selectedReservation;
-
-    navigation.navigate('Review', {
-      lessonId,
-      teacherId,
-    });
+  const goReview = (lessonId, teacherId) => {
+    setSelectedReservation({ lessonId, teacherId }); // 리뷰 작성에 필요한 정보 설정
+    setModalVisible(true);
   };
+
+  const reviewCloseModal = () => {
+    setModalVisible(false);
+};
+
+const submitReview = async () => {
+  try {
+    const token = await getTokenFromLocal();
+    const authorizationHeader = `Bearer ${token}`;
+
+    const response = await fetch(`${URL}/review/addReview`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authorizationHeader,
+      },
+      body: JSON.stringify({
+        lessonId:selectedReservation?.lessonId,
+        teacherId:selectedReservation?.teacherId,
+        review:review,
+      }),
+    });
+
+    if (response.ok) {
+      alert('리뷰 제출 성공');
+      setModalVisible(false);
+    } else {
+      alert('리뷰 제출 실패');
+    }
+  } catch (error) {
+    console.error('리뷰 제출 중 오류 발생:', error);
+  }
+};
 
   const currentDate = new Date();
   console.log(currentDate);
@@ -143,18 +175,20 @@ const ReservationScreen = () => {
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
                       <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
-                    <TouchableOpacity
-                      style={styles.moreinfoButton}
-                      onPress={() => {
-                        setSelectedReservation(item);
-                        setModalVisible(true);
-                      }}
-                    >
-                      <Text style={styles.moreinfoButtonText}>상세보기</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.cancelButton}>
-                      <Text style={styles.cancelButtonText}>취소</Text>
-                    </TouchableOpacity>
+                    <View style={styles.buttonView}>
+                      <TouchableOpacity
+                        style={styles.moreinfoButton}
+                        onPress={() => {
+                          setSelectedReservation(item);
+                          setIsModalVisible(true);
+                        }}
+                      >
+                        <Text style={styles.moreinfoButtonText}>상세보기</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.cancelButton}>
+                        <Text style={styles.cancelButtonText}>취소</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               )}
@@ -179,18 +213,20 @@ const ReservationScreen = () => {
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
                       <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
-                    <TouchableOpacity
-                      style={styles.moreinfoButton}
-                      onPress={() => {
-                        setSelectedReservation(item);
-                        setModalVisible(true);
-                      }}
-                    >
-                      <Text style={styles.moreinfoButtonText}>상세보기</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.reserveId, item.teacherId)} style={styles.cancelButton}>
-                      <Text style={styles.cancelButtonText}>취소</Text>
-                    </TouchableOpacity>
+                    <View style={styles.buttonView}>
+                      <TouchableOpacity
+                        style={styles.moreinfoButton}
+                        onPress={() => {
+                          setSelectedReservation(item);
+                          setIsModalVisible(true);
+                        }}
+                      >
+                        <Text style={styles.moreinfoButtonText}>상세보기</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => onCancel(item.reserveId, item.teacherId)} style={styles.reviewButton}>
+                        <Text style={styles.cancelButtonText}>취소</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               )}
@@ -215,18 +251,20 @@ const ReservationScreen = () => {
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
                       <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
-                    <TouchableOpacity
-                      style={styles.moreinfoButton}
-                      onPress={() => {
-                        setSelectedReservation(item);
-                        setModalVisible(true);
-                      }}
-                    >
-                      <Text style={styles.moreinfoButtonText}>상세보기</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.cancelButton}>
-                      <Text style={styles.cancelButtonText}>취소</Text>
-                    </TouchableOpacity>
+                    <View style={styles.buttonView}>
+                      <TouchableOpacity
+                        style={styles.moreinfoButton}
+                        onPress={() => {
+                          setSelectedReservation(item);
+                          setIsModalVisible(true);
+                        }}
+                      >
+                        <Text style={styles.moreinfoButtonText}>상세보기</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.reviewButton} onPress={() => goReview(item.lessonId, item.teacherId)}>
+                        <Text style={styles.goReviewButton}>리뷰 남기기</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               )}
@@ -245,17 +283,41 @@ const ReservationScreen = () => {
               <Text style={styles.modalText}>{`강습 장소: ${selectedReservation?.resortId}`}</Text>
               <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
               <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
+              <Text style={styles.modalText}>{`강습 종료일: ${selectedReservation?.lessonDateEnd}`}</Text>
               <Text style={styles.modalText}>{`강습 시작 시간: ${selectedReservation?.lessonStart}`}</Text>
+              <Text style={styles.modalText}>{`강습 종료 시간: ${selectedReservation?.lessonEnd}`}</Text>
               <View style={styles.cancelButtonView}>
-                <TouchableOpacity style={styles.reviewButton} onPress={goReview}>
-                  <Text style={styles.goReviewButton}>리뷰남기기</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
+                <TouchableOpacity style={styles.cancelButton1} onPress={() => setIsModalVisible(false)}>
                   <Text style={styles.modalCloseButton}>닫기</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </ScrollView>
+        </View>
+      </Modal>
+      {/* 리뷰 모달 */}
+      <Modal visible={modalVisible} animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.reviewModalContent}>
+            <Text style={styles.reviewTitle}>강의 리뷰 작성</Text>
+            <TextInput
+              style={styles.reviewCommentInput}
+              placeholder="리뷰를 작성해주세요."
+              multiline
+              value={review}
+              onChangeText={(text) => setReview(text)}
+            />
+            <View style={styles.reviewModalButtonContainer}>
+              <TouchableOpacity style={styles.submitButton} onPress={submitReview}>
+                <Text style={styles.submitButtonText}>리뷰 제출</Text>
+              </TouchableOpacity>
+
+              {/* 모달 닫기 버튼 */}
+              <TouchableOpacity style={styles.closeButton} onPress={reviewCloseModal}>
+                <Text style={styles.closeButtonText}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
     </View>
@@ -286,27 +348,36 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: 'white',
-    padding: 16,
+    padding: 10,
     marginVertical: 8,
     borderRadius: 8,
   },
   itemContent: {
+    width:'100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   imageContainer: {
+    width:'15%',
     borderRadius: 50,
     overflow: 'hidden',
   },
   teacherImage: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 50,
   },
   textContainer: {
     flex: 1,
     marginLeft: 10,
+    width:'50%'
+  },
+  buttonView:{
+    width:'35%',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    paddingBottom:10
   },
   itemText: {
     fontSize: 16,
@@ -318,13 +389,15 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   moreinfoButton: {
-    width: '20%',
-    padding: 10,
+    width: '45%',
+    height: 40,
+    padding: 0,
     borderRadius: 5,
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginTop: 10,
+    marginLeft:10
   },
   moreinfoButtonText: {
     textAlign: 'center',
@@ -375,13 +448,13 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   goReviewButton: {
-    fontSize: 15,
+    fontSize: 11,
     color: 'black',
     textAlign: 'center',
     marginTop: 2,
   },
   cancelButton1: {
-    width: '45%',
+    width: '100%',
     height: 40,
     padding: 0,
     borderRadius: 5,
@@ -401,9 +474,73 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   cancelButtonView:{
-    width:'65%',
+    width:'100%',
     flexDirection:'row',
     justifyContent:'space-between',
+  },
+  reviewModalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  reviewModalContent: {
+    backgroundColor: 'white',
+    width: 300,
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center', // 중앙 정렬을 위해 추가
+  },
+  reviewTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  reviewCommentInput: {
+    width:'100%',
+    height: 100,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 16,
+  },
+  submitButton: {
+    width:'35%',
+    backgroundColor: 'skyblue',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  submitButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    width:'35%',
+    backgroundColor: 'red',
+    borderRadius: 8,
+    alignItems: 'center',
+    padding: 12,
+    marginBottom: 16,
+    marginLeft:10
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  reviewModalButtonContainer:{
+    width:'100%',
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    marginRight:10
   }
 });
 
