@@ -181,7 +181,7 @@ const submitReview = async () => {
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity
@@ -219,7 +219,7 @@ const submitReview = async () => {
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity
@@ -257,7 +257,7 @@ const submitReview = async () => {
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
-                      <Text style={styles.itemText1}>{item.lessonTitle}</Text>
+                      <Text style={styles.itemText1}>"{item.lessonTitle}"</Text>
                     </View>
                     <View style={styles.buttonView}>
                       <TouchableOpacity
@@ -286,8 +286,8 @@ const submitReview = async () => {
         <View style={styles.modalContainer}>
           <ScrollView>
             <View style={styles.modalContent}>
-              <Image source={selectedReservation?.image} style={styles.modalImage} />
-              <Text style={styles.modalText1}>{selectedReservation?.name}</Text>
+            <Image style={styles.modalImage} source={faceImage[selectedReservation?.name]} />
+              <Text style={styles.modalText1}>{selectedReservation?.name} 강사님</Text>
               <Text style={styles.modalText}>{`강습 장소: ${selectedReservation?.resortId}`}</Text>
               <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
               <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
@@ -372,8 +372,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   teacherImage: {
-    width: 40,
-    height: 40,
+    width: 55,
+    height: 55,
     borderRadius: 50,
   },
   textContainer: {
@@ -436,8 +436,8 @@ const styles = StyleSheet.create({
     marginTop: 290,
   },
   modalImage: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     borderRadius: 100,
   },
   modalText: {
