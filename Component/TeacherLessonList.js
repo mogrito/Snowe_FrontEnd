@@ -17,6 +17,13 @@ import axios from 'axios';
 
 const Tab = createMaterialTopTabNavigator();
 
+const faceImage = 
+  { 김희찬: require('../Images/face.jpg') ,
+    홍주성: require('../Images/face1.jpg'), 
+    장원빈: require('../Images/face2.jpg') ,
+    김정훈: require('../Images/face3.jpg') ,
+  };
+
 const TeacherLessonListScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -114,7 +121,7 @@ const TeacherLessonListScreen = () => {
                   <View style={styles.itemContent}>
 
                     <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
 
                     <View style={styles.textContainer}>
@@ -167,7 +174,7 @@ const TeacherLessonListScreen = () => {
                   <View style={styles.itemContent}>
 
                   <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                  <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
 
                     <View style={styles.textContainer}>
@@ -222,7 +229,7 @@ const TeacherLessonListScreen = () => {
                   <View style={styles.itemContent}>
 
                     <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
 
                     <View style={styles.textContainer}>
@@ -272,7 +279,7 @@ const TeacherLessonListScreen = () => {
           <ScrollView>
             <View style={styles.modalContent}>
               
-              {/* <Image source={selectedReservation?.image} style={styles.modalImage} /> */}
+            <Image style={styles.teacherImage} source={faceImage[selectedReservation?.name]} />
               <Text style={styles.modalText1}>{selectedReservation?.lessonTitle}</Text>
               <Text style={styles.modalText}>{`한줄소개 : ${selectedReservation?.lessonIntroduce}`}</Text>
               <Text style={styles.modalText}>{`강습 장소 : ${selectedReservation?.resortId} `}</Text>
