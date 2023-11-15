@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView, } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 import { getTokenFromLocal } from './TokenUtils';
@@ -17,6 +17,11 @@ const eachsubject = {
   보드: require('../Images/skiboard.png'),
 };
 
+const imagedata = [
+  { id: '1', image: require('../Images/skigosu.jpg') },
+  { id: '2', image: require('../Images/snow.jpg') },
+  { id: '3', image: require('../Images/snowee.jpg') },
+]
 
 const TeacherInfoScreen = () => {
   const [teachers, setTeachers] = useState([]);
@@ -26,7 +31,7 @@ const TeacherInfoScreen = () => {
   // const [teacherId, setTeacherId] = useState(null);
   const [reviewData, setReviewData] = useState([]);
   const navigation = useNavigation();
-  
+
 
   useEffect(() => {
     async function fetchData() {
@@ -48,7 +53,7 @@ const TeacherInfoScreen = () => {
     const teacherId = item.loginId;
     const token = await getTokenFromLocal();
     const authorizationHeader = `Bearer ${token}`;
-  
+
     try {
       const response = await axios.get(`http://192.168.25.202:8080/review/getReview?teacherId=${teacherId}`, {
         headers: {
@@ -59,7 +64,7 @@ const TeacherInfoScreen = () => {
       const result = response.data;
 
       const reviews = result.map(item => item.review);
-    
+
       // 새로운 배열을 reviewData에 넣어줍니다.
       setReviewData(reviews);
       console.log(result);
@@ -67,7 +72,7 @@ const TeacherInfoScreen = () => {
       console.error('데이터 가져오기 중 오류 발생:', error);
     }
     setSelectedTeacher(item);
-    
+
     setModalVisible(true);
   }
 
@@ -132,22 +137,20 @@ const TeacherInfoScreen = () => {
             </TouchableOpacity>
             <ScrollView style={styles.modalContent}>
               <View style={styles.modalinfoimage}>
+                {/* Teacher's basic information */}
                 <Image source={selectedTeacher.image} style={styles.modalTeacherImage} />
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft:40 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 40 }}>
                   <Text style={styles.modalItemText}>{selectedTeacher.name}</Text>
                   <View style={[styles.badge1, { backgroundColor: levelColors[selectedTeacher.classLevel] }]}>
-                    
                     <Text style={styles.skilevel}>{selectedTeacher.classLevel}</Text>
                   </View>
                 </View>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
+
+              {/* FlatList for images */}
               <FlatList
-                data={[
-                  { id: '1', image: require('../Images/skigosu.jpg') },
-                  { id: '2', image: require('../Images/snow.jpg') },
-                  { id: '3', image: require('../Images/snowee.jpg') },
-                ]}
+                data={imagedata}
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
@@ -158,28 +161,25 @@ const TeacherInfoScreen = () => {
                   </View>
                 )}
               />
-              <Text style={styles.histories}>약력</Text>
 
+              {/* Other details like histories, careers, teams, and reviews */}
+              <Text style={styles.histories}>약력</Text>
               <View style={styles.history}>
                 <Text>- {selectedTeacher.history}</Text>
               </View>
-
               <Text style={styles.carrers}>경력</Text>
-
               <View style={styles.history}>
                 <Text>- {selectedTeacher.career}</Text>
               </View>
-
               <Text style={styles.teams}>소속</Text>
-
               <View style={styles.history}>
                 <Text>- {selectedTeacher.team}</Text>
               </View>
-
               <Text style={styles.teams}>이 강사님의 후기</Text>
-                
               <View style={styles.history}>
-                <Text>- {reviewData}</Text>
+                {reviewData.map((review, index) => (
+                  <Text key={index}>- {review}</Text>
+                ))}
               </View>
             </ScrollView>
           </View>
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    
+
   },
   teacherImage: {
     width: 50,
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop:3
+    marginTop: 3
   },
   subjectText: {
     fontSize: 16,
@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     textAlign: 'center',
   },
+
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
   },
   skilevel: {
     fontSize: 12,
-    color:'black',
+    color: 'black',
   },
   categori: {
     flexDirection: 'row',
@@ -298,7 +299,7 @@ const styles = StyleSheet.create({
   subjectImage: {
     width: 30,
     height: 40,
-    marginRight:25,
+    marginRight: 25,
   },
 
   modalContainer: {
@@ -349,7 +350,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 15,
-    paddingBottom:20
+    paddingBottom: 20
   },
   histories: {
     fontSize: 20,
@@ -367,16 +368,16 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   history: {
-    marginTop:10,
+    marginTop: 10,
   },
   carrer: {
-    marginTop:10,
+    marginTop: 10,
   },
   team: {
-    marginTop:10,
+    marginTop: 10,
   },
-  Imageforteacher:{
-    marginTop:20,
+  Imageforteacher: {
+    marginTop: 20,
     width: 190,
     height: 190,
   },
@@ -384,25 +385,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    
+
   },
   swiperImage: {
     width: 396,
     height: 200,
-    marginTop:20,
-    borderRadius:8,
+    marginTop: 20,
+    borderRadius: 8,
   },
-  headerimage:{
-    flexDirection:'row'
+  headerimage: {
+    flexDirection: 'row'
   },
   badge1: {
     borderRadius: 4,
-    marginLeft:5,
-    marginTop:-1,
-    padding:3,
-    marginRight:10,
-    height:25,
-    flexDirection: 'row', 
+    marginLeft: 5,
+    marginTop: -1,
+    padding: 3,
+    marginRight: 10,
+    height: 25,
+    flexDirection: 'row',
     alignItems: 'center'
   },
 });
