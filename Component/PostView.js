@@ -578,12 +578,15 @@ return (
             renderItem={({ item }) => (
               <View style={styles.commentContainer}>
                 <View style={styles.commentHeader}>
-                  <Text style={styles.commentAuthor}>{item.loginId}</Text>
+                  <Text style={styles.commentAuthor}>{item.loginId}   {item.createDate}</Text>
+
                   {item.loginId === loginId && (
                     <View style={styles.actionButtons}>
+
                       <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
                         <Text style={styles.actionButtonText}>수정</Text>
                       </TouchableOpacity>
+
                       <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
                         <Text style={styles.actionButtonText}>삭제</Text>
                       </TouchableOpacity>
@@ -592,7 +595,8 @@ return (
                 </View>
                 <View style={styles.commentItem}>
                   <Text style={styles.commentText}>{item.content}</Text>
-                  <View>
+                <View>
+                  
                     <TouchableOpacity onPress={onReplyButtonPress}>
                       <Text style={styles.replyButtonWithBorder}>답글</Text>
                     </TouchableOpacity>

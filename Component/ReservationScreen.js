@@ -245,7 +245,9 @@ const ReservationScreen = () => {
               <Text style={styles.modalText}>{`강습 장소: ${selectedReservation?.resortId}`}</Text>
               <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
               <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
+              <Text style={styles.modalText}>{`강습 종료일: ${selectedReservation?.lessonDateEnd}`}</Text>
               <Text style={styles.modalText}>{`강습 시작 시간: ${selectedReservation?.lessonStart}`}</Text>
+              <Text style={styles.modalText}>{`강습 종료 시간: ${selectedReservation?.lessonEnd}`}</Text>
               <View style={styles.cancelButtonView}>
                 <TouchableOpacity style={styles.reviewButton} onPress={goReview}>
                   <Text style={styles.goReviewButton}>리뷰남기기</Text>
