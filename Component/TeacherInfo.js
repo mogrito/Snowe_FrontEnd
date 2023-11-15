@@ -1,16 +1,15 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-// import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
-
-
+import { getTokenFromLocal } from './TokenUtils';
+import axios from 'axios';
 //brief = 약력 carrer = 경력 team = 소속 
 
 const levelColors = {
-  LV01: 'lightgreen',
-  LV02: 'lightblue',
-  LV03: 'lightpink',
+  Lv1: 'lightgreen',
+  Lv2: 'lightblue',
+  Lv3: 'lightpink',
 };
 
 const eachsubject = {
@@ -24,19 +23,20 @@ const TeacherInfoScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
+  // const [teacherId, setTeacherId] = useState(null);
+  const [reviewData, setReviewData] = useState([]);
   const navigation = useNavigation();
   
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`http://192.168.25.204:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
+        const response = await fetch(`http://192.168.25.202:8080/member/getTeacherList?ridingClass=${selectedCategory}`);
         if (!response.ok) {
           throw Error('서버에서 데이터를 가져오지 못했습니다.');
         }
         const data = await response.json();
         setTeachers(data);
-        console.log(data);
       } catch (error) {
         console.error('데이터 가져오기 중 오류 발생:', error);
       }
@@ -44,10 +44,32 @@ const TeacherInfoScreen = () => {
     fetchData();
   }, [selectedCategory]);
 
-  const onShowDetails = (item) => {
+  async function onShowDetails(item) {
+    const teacherId = item.loginId;
+    const token = await getTokenFromLocal();
+    const authorizationHeader = `Bearer ${token}`;
+  
+    try {
+      const response = await axios.get(`http://192.168.25.202:8080/review/getReview?teacherId=${teacherId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authorizationHeader,
+        },
+      });
+      const result = response.data;
+
+      const reviews = result.map(item => item.review);
+    
+      // 새로운 배열을 reviewData에 넣어줍니다.
+      setReviewData(reviews);
+      console.log(result);
+    } catch (error) {
+      console.error('데이터 가져오기 중 오류 발생:', error);
+    }
     setSelectedTeacher(item);
+    
     setModalVisible(true);
-  };
+  }
 
   const closeModal = () => {
     setModalVisible(false);
@@ -120,30 +142,45 @@ const TeacherInfoScreen = () => {
                 </View>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
-              {/* <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
-                <View style={styles.swiperSlide}>
-                  <Image source={require('../Images/SnoweFirst.jpg')} style={styles.swiperImage} />  
-                </View>
-                <View style={styles.swiperSlide}>
-                  <Image source={require('../Images/snow.jpg')} style={styles.swiperImage} />
-                </View>
-                <View style={styles.swiperSlide}>
-                  <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
-                </View>
-               </Swiper>  */}
-
+              <FlatList
+                data={[
+                  { id: '1', image: require('../Images/skigosu.jpg') },
+                  { id: '2', image: require('../Images/snow.jpg') },
+                  { id: '3', image: require('../Images/snowee.jpg') },
+                ]}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <View style={styles.swiperSlide}>
+                    <Image source={item.image} style={styles.swiperImage} />
+                  </View>
+                )}
+              />
               <Text style={styles.histories}>약력</Text>
-              {selectedTeacher.history && selectedTeacher.history.map((item, index) => (
-                <Text style={styles.history} key={index}>{item}</Text>
-              ))}
-               <Text style={styles.carrers}>경력</Text>
-              {selectedTeacher.career && selectedTeacher.carrer.map((item, index) => (
-                <Text style={styles.carrer} key={index}>{item}</Text>
-              ))}
-               <Text style={styles.teams}>소속</Text>
-              {selectedTeacher.team && selectedTeacher.team.map((item, index) => (
-                <Text style={styles.team} key={index}>{item}</Text>
-              ))}
+
+              <View style={styles.history}>
+                <Text>- {selectedTeacher.history}</Text>
+              </View>
+
+              <Text style={styles.carrers}>경력</Text>
+
+              <View style={styles.history}>
+                <Text>- {selectedTeacher.career}</Text>
+              </View>
+
+              <Text style={styles.teams}>소속</Text>
+
+              <View style={styles.history}>
+                <Text>- {selectedTeacher.team}</Text>
+              </View>
+
+              <Text style={styles.teams}>이 강사님의 후기</Text>
+                
+              <View style={styles.history}>
+                <Text>- {reviewData}</Text>
+              </View>
             </ScrollView>
           </View>
         )}
@@ -198,7 +235,7 @@ const styles = StyleSheet.create({
   },
   subjectText: {
     fontSize: 16,
-    marginTop: 8,
+    marginTop: 3,
   },
   cancelButton: {
     width: '20%',
@@ -275,7 +312,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
     height: '100%',
-    backgroundColor: '#C7DBF7'
+    backgroundColor: 'white'
   },
   modalTeacherImage: {
     width: 100,
@@ -350,9 +387,10 @@ const styles = StyleSheet.create({
     
   },
   swiperImage: {
-    width: '100%',
-    height: '110%',
-    marginTop:40
+    width: 396,
+    height: 200,
+    marginTop:20,
+    borderRadius:8,
   },
   headerimage:{
     flexDirection:'row'

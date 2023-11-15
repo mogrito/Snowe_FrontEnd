@@ -44,7 +44,7 @@ function getWeatherImage(weatherCondition) {
     case 'Rain':
       return require('../Images/rain.png');
     case 'Snow':
-      return require('../Images/snow.png');
+      return require('../Images/snow1.png');
     case 'Haze':
       return require('../Images/fog.png');
     case 'Mist':
@@ -98,6 +98,8 @@ function MainScreen() {
       AsyncStorage.setItem("selectedResortName",route.params.selectedResortName);
     }
   }, [route.params?.selectedResortName]);
+
+
 
 
 
@@ -293,7 +295,7 @@ function MainScreen() {
             <Text style={styles.weatherCity}>{selectedResortName}</Text>
             <Image
               style={styles.weatherImage} // Add a style for the image
-              source={weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherImage(weatherData.weather[0].main) : require('../Images/face.jpg')}
+              source={weatherData && weatherData.weather && weatherData.weather.length > 0 ? getWeatherImage(weatherData.weather[0].main) : require('../Images/question.png')}
             />
             <Text style={styles.weatherTemp}>
               {weatherData && weatherData.main

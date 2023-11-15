@@ -4,6 +4,7 @@ import { Calendar } from 'react-native-calendars';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { getTokenFromLocal } from './TokenUtils';
+import { checkTokenAndNavigate } from './TokenUtils';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -11,13 +12,10 @@ const TeacherReserveScreen = () => {
   const isFocused = useIsFocused();
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [lessonEndDate, setLessonEndDate] = useState('');
-  const [teacherData, setTeacherData] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  
-
   const navigation = useNavigation();
+  
 
 
 
@@ -28,7 +26,7 @@ const TeacherReserveScreen = () => {
     if (selectedTeacher) {
       try {
         // 서버로 예약 데이터 전송
-        const response = await fetch('http://192.168.25.202:8080/reservation/reserve', {
+        const response = await fetch('http://192.168.25.204:8080/reservation/reserve', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -41,19 +39,34 @@ const TeacherReserveScreen = () => {
         });
 
         if (response.ok) {
-          // setTeacherData(updatedTeacherData);
-          setModalVisible(false); // 모달 닫기
+          // Reset the state to refresh the screen
+          resetTeacherList();
+
+          // Display success alert
+          Alert.alert(
+            '신청 완료',
+            '신청이 완료되었습니다!',
+            [
+              {
+                text: '확인',
+              },
+            ]
+          );
+
+          // Close the modal
+          setModalVisible(false);
         } else {
           // 서버 응답이 실패하면 에러 처리
           console.error('예약 실패');
-          Alert.alert('예약 실패', '서버 오류로 예약을 완료할 수 없습니다.');
+          alert('예약 실패', '서버 오류로 예약을 완료할 수 없습니다.');
         }
       } catch (error) {
         console.error('예약 실패: ', error);
-        Alert.alert('예약 실패', '오류로 인해 예약을 완료할 수 없습니다.');
+        alert('예약 실패', '오류로 인해 예약을 완료할 수 없습니다.');
       }
     }
   };
+
 
   const handleDateSelect = async (date) => {
     setSelectedDate(date.dateString);
@@ -71,22 +84,22 @@ const TeacherReserveScreen = () => {
       const data = await response.json();
       console.log(data);
       setFilteredTeachers(data);
-      setLessonEndDate(data);
 
     } catch (error) {
       console.error('선생님 데이터 가져오기 오류:', error);
     }
   };
-  
-  
-  
+
+
+
   const resetTeacherList = () => {
     setFilteredTeachers([]);
     setSelectedTeacher(null);
     setSelectedDate(null);
   };
-  
+
   useEffect(() => {
+    checkTokenAndNavigate(navigation);
     if (isFocused) {
       resetTeacherList();
     }
@@ -105,6 +118,7 @@ const TeacherReserveScreen = () => {
   };
 
   const handleTeacherPress = (teacher) => {
+
     if (teacher.count >= 50) {
       Alert.alert(
         '수강인원이 꽉찼습니다',
@@ -117,7 +131,7 @@ const TeacherReserveScreen = () => {
       );
     } else {
       setSelectedTeacher(teacher);
-      console.log(teacher);
+      console.log('teacher : ', teacher);
       setModalVisible(true);
     }
   };
@@ -126,7 +140,7 @@ const TeacherReserveScreen = () => {
     setModalVisible(false); // 모달을 닫습니다.
   };
 
-  
+
   const onGoBack = () => {
     navigation.goBack();
   };
@@ -137,7 +151,7 @@ const TeacherReserveScreen = () => {
     <View style={styles.container}>
       <View style={styles.teacherWrapper}>
         <View style={styles.topBar}>
-          <TransparentCircleButton onPress={onGoBack} name="left" color="#424242"/>
+          <TransparentCircleButton onPress={onGoBack} name="left" color="#424242" />
           <Text style={styles.title}>강사 예약</Text>
         </View>
         <Calendar
@@ -148,20 +162,20 @@ const TeacherReserveScreen = () => {
           }}
           minDate={new Date().toISOString().split('T')[0]} // 현재 날짜의 ISO 문자열로 변환
           monthFormat={'yyyy년 MM월'}
-        
+
         />
         <View style={styles.sampleTeacherItem}>
           <View style={styles.teacherInfo}>
             <View style={styles.teacherImageView}>
-              <Text>이미지</Text>
+              <Text>사진</Text>
             </View>
             <View style={styles.nameDivView}>
               <Text style={styles.teacherName}>이름</Text>
               <Text style={styles.eduTime}>강습시간</Text>
             </View>
             <View style={styles.lessonInfoView}>
-              <Text style={{fontWeight: 'bold', fontSize:17}}>강습명</Text>
-              <Text style={{fontSize:10}}>(현재 강습인원수 / 최대 강습인원수)</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 17 }}>강습명</Text>
+              <Text style={{ fontSize: 10 }}>(현재 강습인원수 / 최대 강습인원수)</Text>
             </View>
             <View style={styles.lessonLevelView}>
               <Text>종목/수준</Text>
@@ -171,9 +185,9 @@ const TeacherReserveScreen = () => {
 
         {selectedDate && (
           <FlatList
-          data={filteredTeachers}
-          keyExtractor={(item) => item?.id?.toString()}
-          renderItem={({ item, index }) => (
+            data={filteredTeachers}
+            keyExtractor={(item) => item?.id?.toString()}
+            renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={[
                   styles.teacherItem,
@@ -190,7 +204,7 @@ const TeacherReserveScreen = () => {
                     <Text style={styles.eduTime}>{item.div}</Text>
                   </View>
                   <View style={styles.lessonInfoView}>
-                    <Text style={{fontWeight: 'bold', fontSize:17}}>{`${item.lessonTitle}`}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{`${item.lessonTitle}`}</Text>
                     <Text>{`(${item.reserveCount} / ${item.maxReserveCount})`}</Text>
                   </View>
                   <View style={styles.lessonLevelView}>
@@ -209,13 +223,26 @@ const TeacherReserveScreen = () => {
           <Text style={styles.reservationTitle}>예약 확인</Text>
           <Image source={{ uri: selectedTeacher?.image }} style={styles.teacherModalImage} />
           <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
-          <Text style={styles.selectedDate}>{`강습 제목: ${selectedTeacher?.lessonTitle}`}</Text>
-          <Text style={styles.selectedDate}>{`강습 시작일: ${selectedDate}`}</Text>
-          <Text style={styles.selectedDate}>{`강습 종료일: ${selectedTeacher?.lessonDateEnd}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 시작시간: ${selectedTeacher?.lessonStart}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 종료시간: ${selectedTeacher?.lessonEnd}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 소개: ${selectedTeacher?.lessonIntroduce}`}</Text>
-          <Text style={styles.selectedTime}>{`강습 인원: ${selectedTeacher?.lessonStart}`}</Text>
+          <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View>
+              <Text style={styles.lessonData1}>{`강습명`}</Text>
+              <Text style={styles.lessonData1}>{`강습 시작일`}</Text>
+              <Text style={styles.lessonData1}>{`강습 종료일`}</Text>
+              <Text style={styles.lessonData1}>{`강습 시작시간`}</Text>
+              <Text style={styles.lessonData1}>{`강습 종료시간`}</Text>
+              <Text style={styles.lessonData1}>{`강습 소개`}</Text>
+              <Text style={styles.lessonData1}>{`강습 인원`}</Text>
+            </View>
+            <View>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonTitle}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonDate}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonDateEnd}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonStart}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonEnd}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonIntroduce}`}</Text>
+              <Text style={styles.lessonData2}>{` : ${selectedTeacher?.lessonStart}`}</Text>
+            </View>
+          </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.checkReserveButton} onPress={reserveLesson}>
               <Text style={styles.buttonText}>신청</Text>
@@ -246,9 +273,9 @@ const styles = StyleSheet.create({
   },
   topBar: {
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
     marginBottom: 20,
-    marginRight:30,
+    marginRight: 30,
   },
   title: {
     flex: 1,
@@ -266,7 +293,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     padding: 16,
-    marginTop:15
+    marginTop: 15
   },
   teacherName: {
     fontSize: 17,
@@ -300,7 +327,7 @@ const styles = StyleSheet.create({
   teacherInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    width:'100%'
+    width: '100%'
   },
   teacherImage: {
     width: 50,
@@ -324,75 +351,79 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
   },
-  
+
   teacherModalImage: {
     width: 200,
     height: 200,
     borderRadius: 200,
     marginTop: 10,
-    marginBottom: 20, 
+    marginBottom: 20,
   },
   teacherModalName: {
     fontSize: 30,
-    marginBottom: 40, 
+    marginBottom: 40,
     fontWeight: 'bold',
   },
-  selectedDate: {
+  lessonData1:{
     marginBottom: 10, 
-    fontSize: 20
+    fontSize: 20,
+    textAlign: 'left',
   },
-  selectedTime: {
-    marginBottom: 20,
-    fontSize: 20 
+  lessonData2:{
+    marginBottom: 10, 
+    fontSize: 20,
+    textAlign: 'left'
   },
   reservationTitle: {
     position: 'absolute',
-    top: 30, 
-    left: 10, 
+    top: 30,
+    left: 10,
     fontSize: 30,
     fontWeight: 'bold',
   },
   buttonContainer: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 10,
   },
   cancelButton: {
     width: '30%',
     height: 40,
-    left:10,
+    left: 10,
     backgroundColor: 'skyblue',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20, 
+    marginTop: 20,
 
   },
   checkReserveButton: {
     width: '30%',
     height: 40,
-    right:10,
+    right: 10,
     backgroundColor: 'skyblue',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20, 
+    marginTop: 20,
   },
   buttonText: {
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   teacherImageView:{
     width:'15%',
+    alignItems:'center',
+    paddingRight:22
   },
-  nameDivView:{
-    width:'15%',
+  nameDivView: {
+    width: '15%',
   },
-  lessonInfoView:{
-    width:'50%',
+  lessonInfoView: {
+    width: '50%',
     alignItems: 'center'
   },
-  lessonLevelView:{
-    width:'20%',
+  lessonLevelView: {
+    width: '20%',
     alignItems: 'center'
   },
 

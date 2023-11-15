@@ -36,6 +36,7 @@ import TeacherChangeMySelfScreen from './Component/TeacherChangeMySelf';
 import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TeacherLessonListScreen from './Component/TeacherLessonList';
+import ReviewScreen from './Component/ReviewScreen';
 
 
 
@@ -200,7 +201,6 @@ export default function App() {
           name="TeacherLessonList"
           component={TeacherLessonListScreen}
           options={{ headerShown: false }}
-          
         />
         </RootStack.Navigator>
       </LogContextProvider>
@@ -220,6 +220,7 @@ function DrawerNavigator() {
     >
       <Drawer.Screen name="SkiResortList" component={SkiResortListScreen} options={{ headerShown: false }} />
       <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
+      <Drawer.Screen name="Review" component={ReviewScreen} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
 }
@@ -256,14 +257,13 @@ function TabNavigator({ navigation }) {
     <Tab.Navigator
       activeColor="#000000"
       inactiveColor="#000000"
-      barStyle={{ backgroundColor: '#CEDDEA', height: 80, borderTopColor:'gray',borderTopWidth:'0.2' }}
+      barStyle={{ backgroundColor: '#EFFBFB', height: 80 }}
       tabBarOptions={{
         showLabel: true,
         labelStyle: { fontSize: 12 },
         activeTintColor: '#ffffff',
         inactiveTintColor: '#b0bec5',
       }}
-      
     >
       <Tab.Screen
         name="MainView"
@@ -342,6 +342,7 @@ function TabNavigator({ navigation }) {
           ),
         }}
       />
+      
     </Tab.Navigator>
   );
 }

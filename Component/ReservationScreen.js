@@ -8,12 +8,14 @@ import {
   Image,
   Modal,
   ScrollView,
+  Alert
 } from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { getTokenFromLocal } from './TokenUtils';
 import axios from 'axios';
+import { checkTokenAndNavigate } from './TokenUtils';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -22,8 +24,8 @@ const ReservationScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [reservatedata, setReservatedataData] = useState([]); //예약 데이터 
-  
 
+  checkTokenAndNavigate();
 
 
   //예약 데이터 들고오기 
@@ -37,8 +39,11 @@ const ReservationScreen = () => {
             'Authorization': authorizationHeader,
           },
         });
+    
         const responseData = response.data;
-        setReservatedataData(responseData);       
+        setReservatedataData(responseData);
+        console.log('여깁니다@@@@@@@@', responseData);
+
       } catch (error) {
         // 오류 처리
         console.error('API 요청 중 오류 발생:', error);
@@ -49,13 +54,14 @@ const ReservationScreen = () => {
 
 
   //취소버튼을 누르면 item.id, item.teacherId 를 onCancel로 보내고 cancelReservation에 값을 전달하고 cancelReservation를 통해 DB로 보냄
-  
+
   const cancelReservation = async (reserveId) => {
     const token = await getTokenFromLocal();
-      const authorizationHeader = `Bearer ${token}`;
+    const authorizationHeader = `Bearer ${token}`;
+
     try {
       // 서버에 예약 취소를 요청합니다.
-      const response = await fetch(`http://192.168.25.204:8080/reservation/reserveCancel?reserveId=${reserveId}`, {
+      const response = await fetch(`http://192.168.25.202:8080/reservation/reserveCancel?reserveId=${reserveId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,8 +70,18 @@ const ReservationScreen = () => {
       });
 
       if (response.ok) {
-        // 취소가 성공하면 상태를 업데이트하여 취소된 예약을 제거합니다.
-        setReservatedataData((prevData) => prevData.filter(item => item.id !== reserveId));
+        Alert.alert('알림', '취소가 완료되었습니다!', [
+          {
+            text: '확인',
+            onPress: () => {
+              // 취소가 성공하면 상태를 업데이트하여 취소된 예약을 제거합니다.
+              console.log('Before update:', reservatedata);
+              setReservatedataData((prevData) => prevData.filter(item => item.reserveId !== reserveId));
+              console.log('After update:', reservatedata);
+
+            },
+          },
+        ]);
       } else {
         console.error('예약 취소 중 오류 발생');
       }
@@ -81,6 +97,15 @@ const ReservationScreen = () => {
 
   const onGoBack = () => {
     navigation.pop();
+  };
+
+  const goReview = () => {
+    const { lessonId, teacherId } = selectedReservation;
+
+    navigation.navigate('Review', {
+      lessonId,
+      teacherId,
+    });
   };
 
   const currentDate = new Date();
@@ -107,7 +132,7 @@ const ReservationScreen = () => {
             <FlatList
               style={{ backgroundColor: '#DBEBF9' }}
               data={beforeLessons}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item.reserveId.toString()}
               renderItem={({ item }) => (
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
@@ -151,7 +176,7 @@ const ReservationScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                    <Text style={styles.itemText}>{item.name} 강사님</Text>
+                      <Text style={styles.itemText}>{item.name} 강사님</Text>
                       <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
@@ -187,7 +212,7 @@ const ReservationScreen = () => {
                       <Image source={item.image} style={styles.teacherImage} />
                     </View>
                     <View style={styles.textContainer}>
-                    <Text style={styles.itemText}>{item.name} 강사님</Text>
+                      <Text style={styles.itemText}>{item.name} 강사님</Text>
                       <Text style={styles.itemText1}>{item.lessonTitle}</Text>
                     </View>
                     <TouchableOpacity
@@ -221,9 +246,14 @@ const ReservationScreen = () => {
               <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
               <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
               <Text style={styles.modalText}>{`강습 시작 시간: ${selectedReservation?.lessonStart}`}</Text>
-              <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
-                <Text style={styles.modalCloseButton}>닫기</Text>
-              </TouchableOpacity>
+              <View style={styles.cancelButtonView}>
+                <TouchableOpacity style={styles.reviewButton} onPress={goReview}>
+                  <Text style={styles.goReviewButton}>리뷰남기기</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
+                  <Text style={styles.modalCloseButton}>닫기</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -339,13 +369,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   modalCloseButton: {
-    fontSize: 18,
+    fontSize: 15,
+    color: 'black',
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  goReviewButton: {
+    fontSize: 15,
     color: 'black',
     textAlign: 'center',
     marginTop: 2,
   },
   cancelButton1: {
-    width: '25%',
+    width: '45%',
     height: 40,
     padding: 0,
     borderRadius: 5,
@@ -354,6 +390,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
+  reviewButton: {
+    width: '45%',
+    height: 40,
+    padding: 0,
+    borderRadius: 5,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  cancelButtonView:{
+    width:'65%',
+    flexDirection:'row',
+    justifyContent:'space-between',
+  }
 });
 
 export default ReservationScreen;

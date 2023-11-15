@@ -48,7 +48,7 @@ const LessonSignUpScreen = () => {
   useEffect(() => {
     async function loadCustomFont() {
       await Font.loadAsync({
-        DMSerifText1: require('../assets/fonts/DMSerifText1.ttf'),
+        BalooRegular: require('../assets/fonts/BalooRegular.ttf'),
       });
       setFontLoaded(true);
     }
