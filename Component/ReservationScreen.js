@@ -193,7 +193,7 @@ const submitReview = async () => {
                       >
                         <Text style={styles.moreinfoButtonText}>상세보기</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.cancelButton}>
+                      <TouchableOpacity onPress={() => onCancel(item.reserveId)} style={styles.reviewButton}>
                         <Text style={styles.cancelButtonText}>취소</Text>
                       </TouchableOpacity>
                     </View>
