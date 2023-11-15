@@ -1,52 +1,35 @@
-import React, { useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import ImagePicker from 'react-native-image-picker';
-import Axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { View, Image, Text, StyleSheet } from 'react-native';
+import axios from 'axios';
 
+const URL = 'http://192.168.25.204:8080';
 
+const YourComponent = () => {
+  const [imagePath, setImagePath] = useState(null);
 
-const ImageUploadScreen = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const selectImage = () => {
-    ImagePicker.showImagePicker({ title: 'Select an Image' }, (response) => {
-      if (response.didCancel) {
-        console.log('Image selection canceled');
-      } else if (response.error) {
-        console.error('ImagePicker Error: ', response.error);
-      } else {
-        // 이미지가 선택되었을 때 서버로 업로드
-        uploadImageToServer(response);
-      }
-    });
-  };
-
-  const uploadImageToServer = (imageData) => {
-    const formData = new FormData();
-    formData.append('image', {
-      uri: imageData.uri,
-      type: 'image/jpeg',
-      name: 'image.jpg',
-    });
-
-    Axios.post('YOUR_API_URL', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-      .then((response) => {
-        console.log('Image uploaded successfully:', response.data);
-        setSelectedImage({ uri: imageData.uri });
+  useEffect((boardId) => {
+    // 서버의 이미지 API 엔드포인트로 요청을 보냄
+    axios.get(`${URL}/board/view/${boardId}`)
+      .then(response => {
+        // 응답에서 이미지 경로를 가져와 상태 업데이트
+        const imageData = response.data;
+        setImagePath(imageData.imagePath);
       })
-      .catch((error) => {
-        console.error('Image upload failed:', error);
+      .catch(error => {
+        console.error('Error fetching image:', error);
       });
-  };
+  }, []);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity title="Select Image" onPress={selectImage} />
-      {selectedImage && <Image source={selectedImage} style={styles.image} />}
+      {imagePath ? (
+        <Image
+          source={{ uri: imagePath }}
+          style={styles.image}
+        />
+      ) : (
+        <Text>Loading image...</Text>
+      )}
     </View>
   );
 };
@@ -56,13 +39,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width:'100%'
   },
   image: {
     width: 200,
     height: 200,
-    marginTop: 20,
   },
 });
 
-export default ImageUploadScreen;
+export default YourComponent;
