@@ -24,8 +24,8 @@ const imagedata = [
 ]
 
 const faceImage = 
-  { 김희찬: require('../Images/face.jpg') ,
-    홍주성: require('../Images/face1.jpg'), 
+  { 김희찬: require('../Images/heechan.jpg') ,
+    홍주성: require('../Images/jusung.jpg'), 
     장원빈: require('../Images/face2.jpg') ,
     김정훈: require('../Images/face3.jpg') ,
   };
@@ -170,7 +170,7 @@ const TeacherInfoScreen = () => {
             <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
               <TransparentCircleButton onPress={closeModal} name="left" color="#424242" />
             </TouchableOpacity>
-            <ScrollView style={styles.modalContent}>
+            <ScrollView style={styles.modalContent}  showsVerticalScrollIndicator={false}>
               <View style={styles.modalinfoimage}>
                 {/* Teacher's basic information */}
                 <Image style={styles.modalTeacherImage} source={faceImage[selectedTeacher.name]} />

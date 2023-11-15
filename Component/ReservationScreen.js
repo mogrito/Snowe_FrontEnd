@@ -19,8 +19,8 @@ import axios from 'axios';
 import { checkTokenAndNavigate } from './TokenUtils';
 
 const faceImage = 
-  { 김희찬: require('../Images/face.jpg') ,
-    홍주성: require('../Images/face1.jpg'), 
+  { 김희찬: require('../Images/heechan.jpg') ,
+    홍주성: require('../Images/jusung.jpg'), 
     장원빈: require('../Images/face2.jpg') ,
     김정훈: require('../Images/face3.jpg') ,
   };

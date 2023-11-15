@@ -286,7 +286,7 @@ function MainScreen() {
         {/* <View style={styles.reservateview}>
 
           <Image
-            source={require('../Images/face.jpg')}
+            source={require('../Images/heechan.jpg')}
             style={styles.iconImage}
           />
           <Text style={styles.reservetext}>asd</Text>
