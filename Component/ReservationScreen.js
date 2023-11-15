@@ -18,6 +18,13 @@ import { getTokenFromLocal } from './TokenUtils';
 import axios from 'axios';
 import { checkTokenAndNavigate } from './TokenUtils';
 
+const faceImage = 
+  { 김희찬: require('../Images/face.jpg') ,
+    홍주성: require('../Images/face1.jpg'), 
+    장원빈: require('../Images/face2.jpg') ,
+    김정훈: require('../Images/face3.jpg') ,
+  };
+
 const Tab = createMaterialTopTabNavigator();
 const URL = 'http://192.168.25.202:8080';
 const ReservationScreen = () => {
@@ -170,7 +177,7 @@ const submitReview = async () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
                     <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
@@ -208,7 +215,7 @@ const submitReview = async () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
                     <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
@@ -246,7 +253,7 @@ const submitReview = async () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
                     <View style={styles.imageContainer}>
-                      <Image source={item.image} style={styles.teacherImage} />
+                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
                     </View>
                     <View style={styles.textContainer}>
                       <Text style={styles.itemText}>{item.name} 강사님</Text>
