@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, Modal, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons} from '@expo/vector-icons';
+import TransparentCircleButton from './TransparentCircleButton';
 
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState('');
@@ -71,9 +72,9 @@ const SearchScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.searchBar}>
-        <TouchableOpacity style={styles.userIcon} onPress={onGoBack}>
-          <MaterialIcons name="left" size={30} color="black" />
-        </TouchableOpacity>
+        <View style={{marginLeft:10}}>
+          <TransparentCircleButton onPress={onGoBack} name="left" size={30} color="black" />
+        </View>
         <View style={styles.searchTypeContainer}>
           <Button
             title={selectedSearchTypeText}

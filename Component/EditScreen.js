@@ -60,7 +60,7 @@ function EditScreen({ route }) {
           />
         </View>
         <View>
-          <Text style={{ fontSize: 20, color: 'black' }}>글 수정</Text>
+          <Text style={{ fontSize: 20, color: 'black', paddingLeft:21 }}>글 수정</Text>
         </View>
         <View>
         <TouchableOpacity
@@ -71,22 +71,26 @@ function EditScreen({ route }) {
         </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.divider}></View>
-      <TextInput
-        style={styles.input}
-        value={editTitle}
-        onChangeText={(text) => setEditTitle(text)}
-        placeholder="제목을 입력하세요"
-      />
-      <View style={styles.divider}></View>
-      <TextInput
-        style={styles.input1}
-        value={editContent}
-        onChangeText={(text) => setEditContent(text)}
-        placeholder="내용을 입력하세요"
-        multiline={true}
-        numberOfLines={4}
-      />
+      <View>
+        <View style={styles.editView}>
+          <TextInput
+            style={styles.input}
+            value={editTitle}
+            onChangeText={(text) => setEditTitle(text)}
+            placeholder="제목을 입력하세요"
+          />
+        </View>
+        <View style={styles.contentView}>
+          <TextInput
+            style={styles.input1}
+            value={editContent}
+            onChangeText={(text) => setEditContent(text)}
+            placeholder="내용을 입력하세요"
+            multiline={true}
+            numberOfLines={4}
+          />
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -94,12 +98,13 @@ function EditScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DBEBF9'
+    backgroundColor: '#F6FDFF'
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 5,
+    paddingRight:8,
     justifyContent: 'space-between'
   },
   input: {
@@ -118,6 +123,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     backgroundColor: 'skyblue', // 버튼 배경색
+  },
+  editView:{
+    borderTopWidth:0.6,
+    borderBottomWidth:0.6,
+    borderColor:'#bbb'
+  },
+  contentView:{
+    marginTop:10,
+    maxHeight:250
   }
 });
 

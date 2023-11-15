@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { getTokenFromLocal } from './TokenUtils';
 import axios from 'axios';
+import { checkTokenAndNavigate } from './TokenUtils';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -41,6 +42,7 @@ const ReservationScreen = () => {
 
         const responseData = response.data;
         setReservatedataData(responseData);
+        console.log('여깁니다@@@@@@@@', responseData);
 
       } catch (error) {
         // 오류 처리
@@ -94,6 +96,15 @@ const ReservationScreen = () => {
 
   const onGoBack = () => {
     navigation.pop();
+  };
+
+  const goReview = () => {
+    const { lessonId, teacherId } = selectedReservation;
+
+    navigation.navigate('Review', {
+      lessonId,
+      teacherId,
+    });
   };
 
   const currentDate = new Date();
@@ -232,9 +243,14 @@ const ReservationScreen = () => {
               <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
               <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
               <Text style={styles.modalText}>{`강습 시작 시간: ${selectedReservation?.lessonStart}`}</Text>
-              <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
-                <Text style={styles.modalCloseButton}>닫기</Text>
-              </TouchableOpacity>
+              <View style={styles.cancelButtonView}>
+                <TouchableOpacity style={styles.reviewButton} onPress={goReview}>
+                  <Text style={styles.goReviewButton}>리뷰남기기</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelButton1} onPress={() => setModalVisible(false)}>
+                  <Text style={styles.modalCloseButton}>닫기</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -350,13 +366,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   modalCloseButton: {
-    fontSize: 18,
+    fontSize: 15,
+    color: 'black',
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  goReviewButton: {
+    fontSize: 15,
     color: 'black',
     textAlign: 'center',
     marginTop: 2,
   },
   cancelButton1: {
-    width: '25%',
+    width: '45%',
     height: 40,
     padding: 0,
     borderRadius: 5,
@@ -365,6 +387,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
+  reviewButton: {
+    width: '45%',
+    height: 40,
+    padding: 0,
+    borderRadius: 5,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  cancelButtonView:{
+    width:'65%',
+    flexDirection:'row',
+    justifyContent:'space-between',
+  }
 });
 
 export default ReservationScreen;
