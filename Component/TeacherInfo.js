@@ -31,7 +31,7 @@ const TeacherInfoScreen = () => {
   // const [teacherId, setTeacherId] = useState(null);
   const [reviewData, setReviewData] = useState([]);
   const navigation = useNavigation();
-
+  
 
   useEffect(() => {
     async function fetchData() {
