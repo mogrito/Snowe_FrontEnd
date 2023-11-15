@@ -283,7 +283,9 @@ const submitReview = async () => {
               <Text style={styles.modalText}>{`강습 장소: ${selectedReservation?.resortId}`}</Text>
               <Text style={styles.modalText}>{`강습명: ${selectedReservation?.lessonTitle}`}</Text>
               <Text style={styles.modalText}>{`강습 시작일: ${selectedReservation?.lessonDate}`}</Text>
+              <Text style={styles.modalText}>{`강습 종료일: ${selectedReservation?.lessonDateEnd}`}</Text>
               <Text style={styles.modalText}>{`강습 시작 시간: ${selectedReservation?.lessonStart}`}</Text>
+              <Text style={styles.modalText}>{`강습 종료 시간: ${selectedReservation?.lessonEnd}`}</Text>
               <View style={styles.cancelButtonView}>
                 <TouchableOpacity style={styles.cancelButton1} onPress={() => setIsModalVisible(false)}>
                   <Text style={styles.modalCloseButton}>닫기</Text>

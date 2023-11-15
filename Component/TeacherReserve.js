@@ -99,6 +99,7 @@ const TeacherReserveScreen = () => {
 
   useEffect(() => {
     checkTokenAndNavigate(navigation);
+    
     if (isFocused) {
       resetTeacherList();
     }

@@ -95,7 +95,8 @@ export function CustomDrawerContent({ navigation }) {
           } else if (userRole === 'ADMIN') {
             navigation.navigate('MyPage');
           }
-          else if (userRole === 'Guest' || userRole === null) {
+           else if (userRole === 'Guest' || userRole === null) {
+            alert("회원정보가 없어 로그인 화면으로 이동합니다.");
             navigation.navigate('Login');
           }
         }}
@@ -124,6 +125,7 @@ export function CustomDrawerContent({ navigation }) {
           )}
           onPress={() => {
             if (userRole === 'Guest') {
+              alert("회원정보가 없어 로그인 화면으로 이동합니다.");
               navigation.navigate('Login');
             } else if (userRole === 'USER') {
               navigation.navigate('Reservation');
@@ -141,6 +143,7 @@ export function CustomDrawerContent({ navigation }) {
           )}
           onPress={() => {
             if (userRole === 'Guest') {
+              alert("회원정보가 없어 로그인 화면으로 이동합니다.");
               navigation.navigate('Login');
             } else if (userRole === 'USER') {
               navigation.navigate('TeacherVerify');

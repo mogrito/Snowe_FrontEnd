@@ -301,6 +301,7 @@ function PostView({ route }) {
       } else {
         // 서버에서 오류 응답을 받았을 때 처리
         console.error('댓글 추가 실패');
+        alert("비회원은 작성할 수 없습니다.");
       }
     } catch (error) {
       console.error('댓글 추가 중 오류 발생', error);
@@ -577,12 +578,15 @@ return (
             renderItem={({ item }) => (
               <View style={styles.commentContainer}>
                 <View style={styles.commentHeader}>
-                  <Text style={styles.commentAuthor}>{item.loginId}</Text>
+                  <Text style={styles.commentAuthor}>{item.loginId}   {item.createDate}</Text>
+
                   {item.loginId === loginId && (
                     <View style={styles.actionButtons}>
+
                       <TouchableOpacity onPress={() => handleEditComment(item.commentId, item.content)}>
                         <Text style={styles.actionButtonText}>수정</Text>
                       </TouchableOpacity>
+
                       <TouchableOpacity onPress={() => handleDeleteComment(item.commentId, item.boardId)}>
                         <Text style={styles.actionButtonText}>삭제</Text>
                       </TouchableOpacity>
@@ -591,7 +595,8 @@ return (
                 </View>
                 <View style={styles.commentItem}>
                   <Text style={styles.commentText}>{item.content}</Text>
-                  <View>
+                <View>
+                  
                     <TouchableOpacity onPress={onReplyButtonPress}>
                       <Text style={styles.replyButtonWithBorder}>답글</Text>
                     </TouchableOpacity>

@@ -189,6 +189,8 @@ const TeacherVerifyScreen = () => {
           career: career,                  // 경력
           team: team,                          // 소속
         }
+
+        alert(applyTeacher);
     
         const json = JSON.stringify(applyTeacher);
         const applyBlob = new Blob([json], {
