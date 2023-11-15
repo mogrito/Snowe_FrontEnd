@@ -17,13 +17,6 @@ import axios from 'axios';
 
 const Tab = createMaterialTopTabNavigator();
 
-const faceImage = 
-  { 김희찬: require('../Images/face.jpg') ,
-    홍주성: require('../Images/face1.jpg'), 
-    장원빈: require('../Images/face2.jpg') ,
-    김정훈: require('../Images/face3.jpg') ,
-  };
-
 const TeacherLessonListScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -120,21 +113,12 @@ const TeacherLessonListScreen = () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
 
-                    <View style={styles.imageContainer}>
-                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
-                    </View>
-
                     <View style={styles.textContainer}>
                     <Text style={styles.itemText}>{item.lessonTitle}</Text>
-                      <Text style={styles.itemText1}>{item.lessonIntroduce}</Text>
+   
                     </View>
-
-                    <View style={styles.textContainer}>
-                    <Text style={styles.itemText1}>{item.lessonLevel}/{item.lessonClass}</Text>
-                    </View>
-
-                    <View style={styles.textContainer}>
-                    <Text style={styles.itemText1}>{item.reserveCount}/{item.maxReserveCount}</Text>
+                    <View style={styles.textContainer1}>
+                    <Text style={styles.itemText1}>({item.reserveCount}/{item.maxReserveCount})</Text>
                     </View>
 
                     <TouchableOpacity
@@ -147,7 +131,7 @@ const TeacherLessonListScreen = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      style={styles.moreinfoButton}
+                      style={styles.moreinfoButton1}
                       onPress={() => {
                         showMemberByLesson(item.lessonId);
                         setStudentModalVisible(true);
@@ -173,21 +157,17 @@ const TeacherLessonListScreen = () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
 
-                  <View style={styles.imageContainer}>
-                  <Image style={styles.teacherImage} source={faceImage[item.name]} />
-                    </View>
-
                     <View style={styles.textContainer}>
                     <Text style={styles.itemText}>{item.lessonTitle}</Text>
-                      <Text style={styles.itemText1}>{item.lessonIntroduce}</Text>
+               
                     </View>
 
-                    <View style={styles.textContainer}>
-                    <Text style={styles.itemText1}>{item.lessonLevel}/{item.lessonClass}</Text>
-                    </View>
+                    {/* <View style={styles.textContainer}>
 
-                    <View style={styles.textContainer}>
-                    <Text style={styles.itemText1}>{item.reserveCount}/{item.maxReserveCount}</Text>
+                    </View> */}
+
+                    <View style={styles.textContainer1}>
+                    <Text style={styles.itemText1}>({item.reserveCount}/{item.maxReserveCount})</Text>
                     </View>
 
 
@@ -202,7 +182,7 @@ const TeacherLessonListScreen = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      style={styles.moreinfoButton}
+                      style={styles.moreinfoButton1}
                       onPress={() => {
                         showMemberByLesson(item.lessonId);
                         setStudentModalVisible(true);
@@ -228,21 +208,16 @@ const TeacherLessonListScreen = () => {
                 <View style={styles.item}>
                   <View style={styles.itemContent}>
 
-                    <View style={styles.imageContainer}>
-                    <Image style={styles.teacherImage} source={faceImage[item.name]} />
-                    </View>
 
                     <View style={styles.textContainer}>
                     <Text style={styles.itemText}>{item.lessonTitle}</Text>
-                      <Text style={styles.itemText1}>{item.lessonIntroduce}</Text>
                     </View>
 
-                    <View style={styles.textContainer}>
-                    <Text style={styles.itemText1}>{item.lessonLevel}/{item.lessonClass}</Text>
-                    </View>
+                    {/* <View style={styles.textContainer}>
+                    </View> */}
 
-                    <View style={styles.textContainer}>
-                    <Text style={styles.itemText1}>{item.reserveCount}/{item.maxReserveCount}</Text>
+                    <View style={styles.textContainer1}>
+                    <Text style={styles.itemText1}>({item.reserveCount}/{item.maxReserveCount})</Text>
                     </View>
 
                     
@@ -257,7 +232,7 @@ const TeacherLessonListScreen = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      style={styles.moreinfoButton}
+                      style={styles.moreinfoButton1}
                       onPress={() => {
                         showMemberByLesson(item.lessonId);
                         setStudentModalVisible(true);
@@ -279,7 +254,7 @@ const TeacherLessonListScreen = () => {
           <ScrollView>
             <View style={styles.modalContent}>
               
-            <Image style={styles.teacherImage} source={faceImage[selectedReservation?.name]} />
+              {/* <Image source={selectedReservation?.image} style={styles.modalImage} /> */}
               <Text style={styles.modalText1}>{selectedReservation?.lessonTitle}</Text>
               <Text style={styles.modalText}>{`한줄소개 : ${selectedReservation?.lessonIntroduce}`}</Text>
               <Text style={styles.modalText}>{`강습 장소 : ${selectedReservation?.resortId} `}</Text>
@@ -380,23 +355,40 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
+  textContainer1: {
+    marginRight:35,
+  },
+  
   itemText: {
-    fontSize: 16,
-    marginBottom: 5,
+    fontSize: 15,
+    marginBottom: 0,
     fontWeight: 'bold',
+    width:"230%",
+   
   },
   itemText1: {
     fontSize: 16,
-    marginTop: 5,
+
+
   },
   moreinfoButton: {
-    width: '20%',
+    width: '18%',
     padding: 10,
     borderRadius: 5,
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginRight:10,
+   
+  },
+  moreinfoButton1: {
+    width: '18%',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight : 1,
   },
   moreinfoButtonText: {
     textAlign: 'center',
