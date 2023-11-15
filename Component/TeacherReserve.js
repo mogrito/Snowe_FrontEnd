@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
     justifyContent: 'center',
-    marginBottom:90,
+    marginBottom:70,
   },
   cancelButton: {
     width: '30%',
