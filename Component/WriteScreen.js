@@ -115,7 +115,7 @@ function WriteScreen({ route }) {
       )
 
       console.log('새 글 작성 완료:', formData);
-      navigation.goBack();
+      navigation.pop();
     } catch (error) {
       // 에러 처리
       console.error('글 작성 중 오류발생:', error);

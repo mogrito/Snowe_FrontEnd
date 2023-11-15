@@ -41,7 +41,7 @@ function PostView({ route }) {
 
 
   useEffect(() => {
-  
+
     fetchBoardDetails(boardId); 
   }, [boardId]);
 
@@ -450,7 +450,7 @@ function PostView({ route }) {
         setBoardDetails(updatedBoardDetails);
         setRecommendCount(updatedBoardDetails.recommendCount);
 
-        alert('개추완료');
+        alert('추천하였습니다.');
       } else {
         // 요청이 실패한 경우 처리
         console.error('추천 요청 실패');
@@ -537,9 +537,9 @@ return (
             <Text style={styles.writerIdText}>조회 수 {viewCount}  추천 수 {recommendCount}  댓글 {commentCount}</Text>
           </View>
         </View>
-        <View style={styles.contentView}>
+        <ScrollView style={styles.contentView}>
           <Text style={styles.contentText}>{content}</Text>    
-        </View>
+        </ScrollView>
       </View>  
       <View>
         <FlatList
@@ -784,7 +784,6 @@ const styles = StyleSheet.create({
   borderLine: {
     borderBottomWidth: 0.6, // 아래에 테두리 두께
     borderColor: '#bbb', // 테두리 색상
-    paddingTop:50
   },
   titleBorderLineView: {
     borderBottomWidth: 0.6, // 아래에 테두리 두께

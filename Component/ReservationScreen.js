@@ -109,6 +109,7 @@ const ReservationScreen = () => {
 
   const reviewCloseModal = () => {
     setModalVisible(false);
+    setReview('');
 };
 
 const submitReview = async () => {
@@ -517,6 +518,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 16,
+    marginLeft:10
   },
   submitButtonText: {
     color: 'white',
