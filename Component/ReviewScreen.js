@@ -17,7 +17,7 @@ const ReviewScreen = () => {
   useEffect(() => {
     // reserveId, lessonId, teacherId 등을 사용하여 필요한 작업을 수행할 수 있습니다.
     console.log('Received Data:', lessonId, teacherId);
-  }, [lessonId, teacherId]);
+  }, [lessonId, teacherId, modalVisible]);
 
   const submitReview = async () => {
     try {
@@ -40,6 +40,7 @@ const ReviewScreen = () => {
       if (response.ok) {
         alert('리뷰 제출 성공');
         setModalVisible(false);
+        navigation.navigate('Reservation');
       } else {
         alert('리뷰 제출 실패');
       }
@@ -50,7 +51,7 @@ const ReviewScreen = () => {
 
     const closeModal = () => {
         setModalVisible(false);
-        navigation.navigate('Reservation');
+        // navigation.navigate('Reservation');
     };
 
   return (
