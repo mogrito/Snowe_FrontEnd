@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { LogBox } from 'react-native';
 import { NavigationContainer, useFocusEffect  } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -43,7 +44,7 @@ import ReviewScreen from './Component/ReviewScreen';
 const Tab = createMaterialBottomTabNavigator();
 const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
+LogBox.ignoreAllLogs();
 
 export default function App() {
   const [showFirstScreen, setShowFirstScreen] = useState(true);
