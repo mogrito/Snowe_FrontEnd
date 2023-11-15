@@ -37,7 +37,6 @@ import TeacherChangeMySelfScreen from './Component/TeacherChangeMySelf';
 import TeacherChangeTeamScreen from './Component/TeacherChangeTeam';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TeacherLessonListScreen from './Component/TeacherLessonList';
-import ReviewScreen from './Component/ReviewScreen';
 import AdminPage from './Component/adminpage';
 
 
