@@ -11,13 +11,23 @@ const ReviewScreen = () => {
 
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
-  const [modalVisible, setModalVisible] = useState(true); // 모달 열기/닫기 상태
+  const [modalVisible, setModalVisible] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
-    // reserveId, lessonId, teacherId 등을 사용하여 필요한 작업을 수행할 수 있습니다.
     console.log('Received Data:', lessonId, teacherId);
+    
   }, [lessonId, teacherId, modalVisible]);
+
+  useEffect(() => {
+    // 모달이 열린 상태에서 다른 로직을 수행할 수 있음
+    console.log('Modal is open');
+    
+    // 컴포넌트가 언마운트될 때 모달을 닫을 수 있도록 설정
+    return () => {
+      setModalVisible(false);
+    };
+  }, []);
 
   const submitReview = async () => {
     try {
@@ -51,7 +61,7 @@ const ReviewScreen = () => {
 
     const closeModal = () => {
         setModalVisible(false);
-        // navigation.navigate('Reservation');
+        navigation.navigate('Reservation');
     };
 
   return (
@@ -63,13 +73,13 @@ const ReviewScreen = () => {
       {/* 모달 컴포넌트 */}
       <Modal visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
-          <Text style={styles.title}>강의 리뷰 작성</Text>
+          <Text style={styles.reviewTitle}>강의 리뷰 작성</Text>
           <View style={styles.ratingContainer}>
             <Text>평점:</Text>
             {/* 별점 입력을 위한 구현은 여기에 추가 */}
           </View>
           <TextInput
-            style={styles.commentInput}
+            style={styles.reviewCommentInput}
             placeholder="리뷰를 작성해주세요."
             multiline
             value={review}
@@ -101,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
-  title: {
+  reviewTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
@@ -111,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
-  commentInput: {
+  reviewCommentInput: {
     height: 100,
     borderWidth: 1,
     borderColor: '#ccc',

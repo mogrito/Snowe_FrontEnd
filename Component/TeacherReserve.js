@@ -82,7 +82,6 @@ const TeacherReserveScreen = () => {
         },
       });
       const data = await response.json();
-      console.log(data);
       setFilteredTeachers(data);
 
     } catch (error) {
@@ -143,6 +142,12 @@ const TeacherReserveScreen = () => {
 
   const onGoBack = () => {
     navigation.goBack();
+  };
+  console.log('이거야 :', filteredTeachers);
+
+  const goToTeacherInfo = () => {
+    navigation.navigate('TeacherInfo');
+    setModalVisible(false);
   };
 
 
@@ -221,8 +226,16 @@ const TeacherReserveScreen = () => {
       <Modal animationType="slide" visible={modalVisible} presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
           <Text style={styles.reservationTitle}>예약 확인</Text>
-          <Image source={{ uri: selectedTeacher?.image }} style={styles.teacherModalImage} />
-          <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
+          <View style={styles.centerView}>
+            <Image source={{ uri: selectedTeacher?.image }} style={styles.teacherModalImage} />
+            <Text style={styles.teacherModalName}>{`${selectedTeacher?.name} 강사님`}</Text>
+            <TouchableOpacity
+              style={styles.teacherDetail}
+              onPress={goToTeacherInfo}
+            >
+              <Text>강사 정보 보기</Text>
+            </TouchableOpacity>
+          </View>
           <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-between' }}>
             <View>
               <Text style={styles.lessonData1}>{`강습명`}</Text>
@@ -382,9 +395,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonContainer: {
+    width:'100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginTop: 10,
+    justifyContent: 'center',
   },
   cancelButton: {
     width: '30%',
@@ -395,7 +409,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
-
   },
   checkReserveButton: {
     width: '30%',
@@ -426,7 +439,14 @@ const styles = StyleSheet.create({
     width: '20%',
     alignItems: 'center'
   },
-
+  centerView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  teacherDetail:{
+    backgroundColor:'yellow'
+  }
 });
 
 export default TeacherReserveScreen;

@@ -220,7 +220,6 @@ function DrawerNavigator() {
     >
       <Drawer.Screen name="SkiResortList" component={SkiResortListScreen} options={{ headerShown: false }} />
       <Drawer.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
-      <Drawer.Screen name="Review" component={ReviewScreen} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
 }
