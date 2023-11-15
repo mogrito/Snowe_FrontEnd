@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { getTokenFromLocal } from './TokenUtils';
 
 const URL = 'http://192.168.25.202:8080';
@@ -11,12 +11,13 @@ const ReviewScreen = () => {
 
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
-  const [modalVisible, setModalVisible] = useState(false); // 모달 열기/닫기 상태
+  const [modalVisible, setModalVisible] = useState(true); // 모달 열기/닫기 상태
+  const navigation = useNavigation();
 
   useEffect(() => {
     // reserveId, lessonId, teacherId 등을 사용하여 필요한 작업을 수행할 수 있습니다.
     console.log('Received Data:', lessonId, teacherId);
-  }, [lessonId, teacherId]);
+  }, [lessonId, teacherId, modalVisible]);
 
   const submitReview = async () => {
     try {
@@ -39,6 +40,7 @@ const ReviewScreen = () => {
       if (response.ok) {
         alert('리뷰 제출 성공');
         setModalVisible(false);
+        navigation.navigate('Reservation');
       } else {
         alert('리뷰 제출 실패');
       }
@@ -47,11 +49,16 @@ const ReviewScreen = () => {
     }
   };
 
+    const closeModal = () => {
+        setModalVisible(false);
+        // navigation.navigate('Reservation');
+    };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.submitButton} onPress={() => setModalVisible(true)}>
+      {/* <TouchableOpacity style={styles.submitButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.submitButtonText}>리뷰 작성</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* 모달 컴포넌트 */}
       <Modal visible={modalVisible} animationType="slide">
@@ -73,7 +80,7 @@ const ReviewScreen = () => {
           </TouchableOpacity>
 
           {/* 모달 닫기 버튼 */}
-          <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
             <Text style={styles.closeButtonText}>닫기</Text>
           </TouchableOpacity>
         </View>

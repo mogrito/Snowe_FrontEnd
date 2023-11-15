@@ -73,6 +73,9 @@ function PostView({ route }) {
       const boardData = await response.json();
       console.log(boardData); // 게시글 정보 확인
 
+      console.log(boardData.filePath);
+      console.log(boardData.fileSName);
+
       // 게시글 데이터에서 필요한 정보 추출
       const { title, content, recommendCount, loginId, category, createDate, commentCount, viewCount} = boardData;
 

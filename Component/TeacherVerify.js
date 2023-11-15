@@ -447,12 +447,17 @@ const TeacherVerifyScreen = () => {
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
+      width: '100%',
       alignItems: 'center',
-      padding: 40,
-      marginBottom:100,
-      marginTop:80,
+      justifyContent: 'space-between',
+      position: 'sticky',
+      // top:40,
+      padding:40,
+      // paddingVertical: 10,
+      // paddingHorizontal: 10,
+      zIndex: 1,
+      marginBottom:40,
+      marginTop:10,
       ...Platform.select({
         web: {
           alignSelf:'center'
