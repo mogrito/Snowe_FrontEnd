@@ -342,6 +342,7 @@ function TabNavigator({ navigation }) {
           ),
         }}
       />
+      
     </Tab.Navigator>
   );
 }

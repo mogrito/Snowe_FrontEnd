@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "14": "^3.1.6",
     "@expo-google-fonts/dm-serif-text": "^0.2.3",
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^19.0.0",

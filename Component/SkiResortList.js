@@ -29,7 +29,7 @@ const data = [
   },
   { 
     id: '4', 
-    name: '엘리시안 강촌스키장', 
+    name: '엘리시안 강촌 스키장', 
     location: { latitude: 37.8163989, longitude: 127.587019 }, 
     webcam: 'https://www.elysian.co.kr/gangchon/ski/ski_slope03.asp',
     bus: 'https://www.elysian.co.kr/reservation/free_shuttle.asp?rcd=1&resv_site_gbn=&resv_menu_cd=D',
@@ -37,7 +37,7 @@ const data = [
   },
   { 
     id: '5', 
-    name: '무주 덕유산 리조트스키장', 
+    name: '무주 덕유산 리조트 스키장', 
     location: { latitude: 35.8902945, longitude: 127.7375075 }, 
     webcam: 'https://www.mdysresort.com/guide.webcam.asp',
     bus: 'https://www.mdysresort.com/guide/shuttle_bus.asp',
@@ -53,7 +53,7 @@ const data = [
   },
   { 
     id: '7', 
-    name: '에덴밸리 리조트스키장', 
+    name: '에덴밸리 리조트 스키장', 
     location: { latitude: 35.4290765, longitude: 128.9844681 }, 
     webcam: 'https://www.edenvalley.co.kr/CS/cam_pop1.asp',
     bus: 'https://www.edenvalley.co.kr/CS/View.asp?location=06-6',
@@ -153,22 +153,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#DBEBF9',
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
     paddingTop: 60,
   },
   title: {
     fontSize: 25,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
+    marginLeft:4,
   },
   item: {
     backgroundColor: 'white',
-    padding: 16,
-    marginVertical: 8,
+    padding: 22,
+    marginVertical: 5,
     borderRadius: 8,
   },
   itemText: {
     fontSize: 16,
+    fontWeight:'bold',
   },
 });
 

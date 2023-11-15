@@ -1,16 +1,15 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Modal, ScrollView,} from 'react-native';
 import TransparentCircleButton from './TransparentCircleButton';
-import Swiper from 'react-native-swiper';
 import { useNavigation } from '@react-navigation/native';
 
 
 //brief = 약력 carrer = 경력 team = 소속 
 
 const levelColors = {
-  LV01: 'lightgreen',
-  LV02: 'lightblue',
-  LV03: 'lightpink',
+  Lv1: 'lightgreen',
+  Lv2: 'lightblue',
+  Lv3: 'lightpink',
 };
 
 const eachsubject = {
@@ -120,18 +119,22 @@ const TeacherInfoScreen = () => {
                 </View>
                 <Text style={styles.modalSubjectText}>" {selectedTeacher.introduce} "</Text>
               </View>
-              <Swiper autoplay={true} style={{ marginTop: 10, height: 200}}>          
-                <View style={styles.swiperSlide}>
-                  <Image source={require('../Images/skigosu.jpg')} style={styles.swiperImage} />  
-                </View>
-                <View style={styles.swiperSlide}>
-                  <Image source={require('../Images/snowee.jpg')} style={styles.swiperImage} />
-                </View>
-                <View style={styles.swiperSlide}>
-                  <Image source={require('../Images/skigosu1.jpg')} style={styles.swiperImage} />
-                </View>
-               </Swiper> 
-
+              <FlatList
+                data={[
+                  { id: '1', image: require('../Images/skigosu.jpg') },
+                  { id: '2', image: require('../Images/snow.jpg') },
+                  { id: '3', image: require('../Images/snowee.jpg') },
+                ]}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <View style={styles.swiperSlide}>
+                    <Image source={item.image} style={styles.swiperImage} />
+                  </View>
+                )}
+              />
               <Text style={styles.histories}>약력</Text>
 
               <View style={styles.history}>
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
   },
   subjectText: {
     fontSize: 16,
-    marginTop: 8,
+    marginTop: 3,
   },
   cancelButton: {
     width: '20%',
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     flexDirection: 'row',
-    textAlign: 'center',
+    alignItems: 'center',
     marginBottom: 20,
     marginRight: 30,
   },
@@ -355,9 +358,10 @@ const styles = StyleSheet.create({
     
   },
   swiperImage: {
-    width: '100%',
-    height: '110%',
-    marginTop:40
+    width: 396,
+    height: 200,
+    marginTop:20,
+    borderRadius:8,
   },
   headerimage:{
     flexDirection:'row'
